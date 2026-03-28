@@ -1,88 +1,88 @@
-# Claude Code 设置 参考
+# Claude Code 设置参考
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2027%2C%202026%206%3A32%20PM%20PKT-white?style=flat&labelColor=555) ![Version](https://img.shields.io/badge/Claude_Code-v2.1.85-blue?style=flat&labelColor=555)
 
-A comprehensive guide to all available configuration options in Claude Code's `settings.json` files. As of v2.1.85, Claude Code exposes **60+ settings** and **100+ environment variables** (use the `"env"` field in `settings.json` to avoid wrapper scripts).
+Claude Code `settings.json` 文件所有可用配置选项的全面指南。截至 v2.1.85，Claude Code 暴露 **60+ 设置** 和 **100+ 环境变量**（使用 `settings.json` 中的 `"env"` 字段可避免包装脚本）。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
-## Table of Contents
+## 目录
 
-1. [设置 Hierarchy](#settings-hierarchy)
-2. [Core 配置](#core-configuration)
-3. [Permissions](#permissions)
-4. [Hooks](#hooks)
-5. [MCP 服务器](#mcp-servers)
-6. [Sandbox](#sandbox)
-7. [Plugins](#plugins)
-8. [Model 配置](#model-configuration)
-9. [Display & UX](#display--ux)
-10. [AWS & Cloud Credentials](#aws--cloud-credentials)
-11. [Environment Variables](#environment-variables-via-env)
-12. [Useful Commands](#useful-commands)
+1. [设置层级](#设置层级)
+2. [核心配置](#核心配置)
+3. [权限](#权限)
+4. [钩子](#钩子)
+5. [MCP 服务器](#mcp-服务器)
+6. [沙箱](#沙箱)
+7. [插件](#插件)
+8. [模型配置](#模型配置)
+9. [显示与用户体验](#显示与用户体验)
+10. [AWS 与云凭证](#aws-与云凭证)
+11. [环境变量](#环境变量-via-env)
+12. [实用命令](#实用命令)
 
 ---
 
-## 设置 Hierarchy
+## 设置层级
 
-设置 apply in order of precedence (highest to lowest):
+设置按优先级从高到低应用：
 
-| Priority | Location | Scope | Shared? | Purpose |
+| 优先级 | 位置 | 范围 | 共享？ | 用途 |
 |----------|----------|-------|---------|---------|
-| 1 | Managed settings | Organization | Yes (deployed by IT) | Security policies that cannot be overridden |
-| 2 | Command line arguments | Session | N/A | Temporary single-session overrides |
-| 3 | `.claude/settings.local.json` | Project | No (git-ignored) | Personal project-specific |
-| 4 | `.claude/settings.json` | Project | Yes (committed) | Team-shared settings |
-| 5 | `~/.claude/settings.json` | User | N/A | Global personal defaults |
+| 1 | 托管设置 | 组织 | 是（IT 部署）| 无法覆盖的安全策略 |
+| 2 | 命令行参数 | 会话 | 不适用 | 临时单会话覆盖 |
+| 3 | `.claude/settings.local.json` | 项目 | 否（git 忽略）| 个人项目特定设置 |
+| 4 | `.claude/settings.json` | 项目 | 是（提交到 git）| 团队共享设置 |
+| 5 | `~/.claude/settings.json` | 用户 | 不适用 | 全局个人默认值 |
 
-**Managed settings** are organization-enforced and cannot be overridden by any other level, including command line arguments. Delivery methods:
-- **Server-managed** settings (remote delivery)
-- **MDM profiles** — macOS plist at `com.anthropic.claudecode`
-- **Registry policies** — Windows `HKLM\SOFTWARE\Policies\ClaudeCode` (admin) and `HKCU\SOFTWARE\Policies\ClaudeCode` (user-level, lowest policy priority)
-- **File** — `managed-settings.json` (macOS: `/Library/Application Support/ClaudeCode/`, Linux/WSL: `/etc/claude-code/`, Windows: `C:\Program Files\ClaudeCode\`)
-- **Drop-in directory** — `managed-settings.d/` alongside `managed-settings.json` for independent policy fragments (v2.1.83). Following the systemd convention, `managed-settings.json` is merged first as the base, then all `*.json` files in the drop-in directory are sorted alphabetically and merged on top. Later files override earlier ones for scalar values; arrays are concatenated and de-duplicated; objects are deep-merged. Hidden files starting with `.` are ignored. Use numeric prefixes to control merge order (e.g., `10-telemetry.json`, `20-security.json`)
+**托管设置**由组织强制执行，无法被任何其他级别覆盖，包括命令行参数。交付方式：
+- **服务器托管**设置（远程交付）
+- **MDM 配置文件** — macOS plist 位于 `com.anthropic.claudecode`
+- **注册表策略** — Windows `HKLM\SOFTWARE\Policies\ClaudeCode`（管理员）和 `HKCU\SOFTWARE\Policies\ClaudeCode`（用户级，最低策略优先级）
+- **文件** — `managed-settings.json`（macOS: `/Library/Application Support/ClaudeCode/`，Linux/WSL: `/etc/claude-code/`，Windows: `C:\Program Files\ClaudeCode\`）
+- **置入目录** — `managed-settings.d/` 与 `managed-settings.json` 并存，用于独立策略片段（v2.1.83）。遵循 systemd 约定，`managed-settings.json` 首先作为基础合并，然后置入目录中的所有 `*.json` 文件按字母顺序排序并合并覆盖。后文件覆盖前文件的标量值；数组拼接并去重；对象深度合并。以 `.` 开头的隐藏文件被忽略。使用数字前缀控制合并顺序（如 `10-telemetry.json`、`20-security.json`）
 
-Within the managed tier, precedence is: server-managed > MDM/OS-level policies > file-based (`managed-settings.d/*.json` + `managed-settings.json`) > HKCU registry (Windows only). Only one managed source is used; sources do not merge across tiers. Within the file-based tier, drop-in files and the base file are merged together.
+在托管层级内，优先级为：服务器托管 > MDM/OS 级策略 > 基文件（`managed-settings.d/*.json` + `managed-settings.json`）> HKCU 注册表（仅 Windows）。只使用一个托管源；源之间不跨层级合并。在基于文件的层级内，置入文件和基础文件一起合并。
 
-> **Note:** As of v2.1.75, the deprecated Windows fallback path `C:\ProgramData\ClaudeCode\managed-settings.json` has been removed. Use `C:\Program Files\ClaudeCode\managed-settings.json` instead.
+> **注意：** 从 v2.1.75 起，已弃用的 Windows 回退路径 `C:\ProgramData\ClaudeCode\managed-settings.json` 已被移除。请使用 `C:\Program Files\ClaudeCode\managed-settings.json`。
 
-**Important**:
-- `deny` rules have highest safety precedence and cannot be overridden by lower-priority allow/ask rules.
-- Managed settings may lock or override local behavior even if local files specify different values.
-- Array settings (e.g., `permissions.allow`) are **concatenated and deduplicated** across scopes — entries from all levels are combined, not replaced.
+**重要**：
+- `deny` 规则具有最高安全优先级，无法被低优先级的 allow/ask 规则覆盖。
+- 托管设置可能会锁定或覆盖本地行为，即使本地文件指定了不同的值。
+- 数组设置（如 `permissions.allow`）在作用域间**拼接并去重** —— 来自所有级别的条目被合并，而非替换。
 
 ---
 
-## Core 配置
+## 核心配置
 
-### General 设置
+### 通用设置
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `$schema` | string | - | JSON Schema URL for IDE validation and autocompletion (e.g., `"https://json.schemastore.org/claude-code-settings.json"`) |
-| `model` | string | `"default"` | Override default model. Accepts aliases (`sonnet`, `opus`, `haiku`) or full model IDs |
-| `agent` | string | - | Set the default agent for the main conversation. Value is the agent name from `.claude/agents/`. Also available via `--agent` CLI flag |
-| `language` | string | `"english"` | Claude's preferred response language |
-| `cleanupPeriodDays` | number | `30` | Sessions inactive longer than this are deleted at startup. Setting to `0` deletes all existing transcripts and disables session persistence entirely (no `.jsonl` files written, `/resume` shows no conversations, hooks receive an empty `transcript_path`) |
-| `autoUpdatesChannel` | string | `"latest"` | Release channel: `"stable"` or `"latest"` |
-| `alwaysThinkingEnabled` | boolean | `false` | Enable extended thinking by default for all sessions |
-| `skipWebFetchPreflight` | boolean | `false` | Skip WebFetch blocklist check before fetching URLs *(in JSON schema, not on official settings page)* |
-| `availableModels` | array | - | Restrict which models users can select via `/model`, `--model`, Config tool, or `ANTHROPIC_MODEL`. Does not affect the Default option. Example: `["sonnet", "haiku"]` |
-| `fastModePerSessionOptIn` | boolean | `false` | Require users to opt in to fast mode each session |
-| `teammateMode` | string | `"auto"` | Agent team display mode: `"auto"` (split panes in tmux/iTerm2, in-process otherwise), `"in-process"`, or `"tmux"` |
-| `defaultShell` | string | `"bash"` | Default shell for input-box `!` commands. Accepts `"bash"` (default) or `"powershell"`. Setting `"powershell"` routes interactive `!` commands through PowerShell on Windows. Requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` (v2.1.84) |
-| `includeGitInstructions` | boolean | `true` | Include git-related instructions in system prompt |
-| `voiceEnabled` | boolean | - | Enable push-to-talk voice dictation. Written automatically when you run `/voice`. Requires a Claude.ai account |
-| `showClearContextOnPlanAccept` | boolean | `false` | Show the "clear context" option on the plan accept screen. Set to `true` to restore the option (hidden by default since v2.1.81) |
-| `disableDeepLinkRegistration` | boolean | - | Prevent `claude-cli://` protocol handler registration at startup (v2.1.83) *(in changelog, not on official settings page)* |
-| `feedbackSurveyRate` | number | - | Probability (0–1) that the session quality survey appears when eligible. Enterprise admins can control how often the survey is shown. Example: `0.05` = 5% of eligible sessions |
+| `$schema` | string | - | JSON Schema URL，用于 IDE 验证和自动补全（如 `"https://json.schemastore.org/claude-code-settings.json"`）|
+| `model` | string | `"default"` | 覆盖默认模型。接受别名（`sonnet`、`opus`、`haiku`）或完整模型 ID |
+| `agent` | string | - | 设置主会话的默认代理。值为 `.claude/agents/` 中的代理名称。也可通过 `--agent` CLI 标志设置 |
+| `language` | string | `"english"` | Claude 的首选响应语言 |
+| `cleanupPeriodDays` | number | `30` | 超过此天数的非活跃会话在启动时被删除。设为 `0` 删除所有现有记录并完全禁用会话持久化（不写入 `.jsonl` 文件，`/resume` 无会话，钩子收到空 `transcript_path`）|
+| `autoUpdatesChannel` | string | `"latest"` | 发布渠道：`"stable"` 或 `"latest"` |
+| `alwaysThinkingEnabled` | boolean | `false` | 默认为所有会话启用扩展思考 |
+| `skipWebFetchPreflight` | boolean | `false` | 在获取 URL 前跳过 WebFetch 黑名单检查 *（在 JSON schema 中，不在官方设置页面）* |
+| `availableModels` | array | - | 限制用户通过 `/model`、`--model`、Config 工具或 `ANTHROPIC_MODEL` 可选择的模型。不影响默认选项。示例：`["sonnet", "haiku"]` |
+| `fastModePerSessionOptIn` | boolean | `false` | 要求用户每次会话选择加入快速模式 |
+| `teammateMode` | string | `"auto"` | 代理团队显示模式：`"auto"`（tmux/iTerm2 中分屏，否则进程内）、`"in-process"` 或 `"tmux"` |
+| `defaultShell` | string | `"bash"` | 输入框 `!` 命令的默认 shell。接受 `"bash"`（默认）或 `"powershell"`。设置 `"powershell"` 在 Windows 上通过 PowerShell 路由交互式 `!` 命令。需要 `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`（v2.1.84）|
+| `includeGitInstructions` | boolean | `true` | 在系统提示中包含 git 相关指令 |
+| `voiceEnabled` | boolean | - | 启用按说话式语音输入。运行 `/voice` 时自动写入。需要 Claude.ai 账户 |
+| `showClearContextOnPlanAccept` | boolean | `false` | 在计划接受屏幕显示"清除上下文"选项。设为 `true` 恢复该选项（v2.1.81 起默认隐藏）|
+| `disableDeepLinkRegistration` | boolean | - | 防止启动时注册 `claude-cli://` 协议处理器（v2.1.83）*（在 changelog 中，不在官方设置页面）* |
+| `feedbackSurveyRate` | number | - | 符合条件的会话显示质量调查的概率（0-1）。企业管理员可控制调查显示频率。示例：`0.05` = 5% 的符合条件的会话 |
 
-**Example:**
+**示例：**
 ```json
 {
   "model": "opus",
@@ -94,34 +94,34 @@ Within the managed tier, precedence is: server-managed > MDM/OS-level policies >
 }
 ```
 
-### Plans & 记忆 Directories
+### 计划与记忆目录
 
-Store plan and auto-memory files in custom locations.
+将计划和自动记忆文件存储在自定义位置。
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `plansDirectory` | string | `~/.claude/plans` | Directory where `/plan` outputs are stored |
-| `auto记忆Directory` | string | - | Custom directory for auto-memory storage. Accepts `~/`-expanded paths. Not accepted in project settings (`.claude/settings.json`) to prevent redirecting memory writes to sensitive locations; accepted from policy, local, and user settings |
+| `plansDirectory` | string | `~/.claude/plans` | `/plan` 输出存储目录 |
+| `autoMemoryDirectory` | string | - | 自动记忆存储的自定义目录。接受 `~/` 扩展路径。项目设置（`.claude/settings.json`）中不接受，以防止将记忆写入敏感位置；策略、本地和用户设置中接受 |
 
-**Example:**
+**示例：**
 ```json
 {
   "plansDirectory": "./my-plans"
 }
 ```
 
-**Use Case:** Useful for organizing planning artifacts separately from Claude's internal files, or for keeping plans in a shared team location.
+**用例：** 用于将规划工件与 Claude 内部文件分开组织，或将计划保存在团队共享位置。
 
 ### Worktree 设置
 
-Configure how `--worktree` creates and manages git worktrees. Useful for reducing disk usage and startup time in large monorepos.
+配置 `--worktree` 如何创建和管理 git worktree。用于减少大型 monorepo 中的磁盘使用和启动时间。
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `worktree.symlinkDirectories` | array | `[]` | Directories to symlink from the main repository into each worktree to avoid duplicating large directories on disk |
-| `worktree.sparsePaths` | array | `[]` | Directories to check out in each worktree via git sparse-checkout (cone mode). Only the listed paths are written to disk |
+| `worktree.symlinkDirectories` | array | `[]` | 从主仓库符号链接到每个 worktree 的目录，避免磁盘上重复大型目录 |
+| `worktree.sparsePaths` | array | `[]` | 通过 git sparse-checkout（cone 模式）在每个 worktree 中检出的目录。只有列出的路径写入磁盘 |
 
-**Example:**
+**示例：**
 ```json
 {
   "worktree": {
@@ -131,17 +131,17 @@ Configure how `--worktree` creates and manages git worktrees. Useful for reducin
 }
 ```
 
-### Attribution 设置
+### 归属设置
 
-Customize attribution messages for git commits and pull requests.
+自定义 git 提交和 pull request 的归属消息。
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `attribution.commit` | string | Co-authored-by | Git commit attribution (supports trailers) |
-| `attribution.pr` | string | Generated message | Pull request description attribution |
-| `includeCoAuthoredBy` | boolean | `true` | **DEPRECATED** - Use `attribution` instead |
+| `attribution.commit` | string | Co-authored-by | Git 提交归属（支持 trailers）|
+| `attribution.pr` | string | Generated message | Pull request 描述归属 |
+| `includeCoAuthoredBy` | boolean | `true` | **已弃用** - 使用 `attribution` 代替 |
 
-**Example:**
+**示例：**
 ```json
 {
   "attribution": {
@@ -151,254 +151,170 @@ Customize attribution messages for git commits and pull requests.
 }
 ```
 
-**Note:** Set to empty string (`""`) to hide attribution entirely.
-
-### Authentication Helpers
-
-Scripts for dynamic authentication token generation.
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `apiKeyHelper` | string | Shell script path that outputs auth token (sent as `X-Api-Key` header) |
-| `forceLoginMethod` | string | Restrict login to `"claudeai"` or `"console"` accounts |
-| `forceLoginOrgUUID` | string | UUID to automatically select organization during login |
-
-**Example:**
-```json
-{
-  "apiKeyHelper": "/bin/generate_temp_api_key.sh",
-  "forceLoginMethod": "console",
-  "forceLoginOrgUUID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-}
-```
-
-### Company Announcements
-
-Display custom announcements to users at startup (cycled randomly).
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `companyAnnouncements` | array | Array of strings displayed at startup |
-
-**Example:**
-```json
-{
-  "companyAnnouncements": [
-    "Welcome to Acme Corp!",
-    "Remember to run tests before committing!",
-    "Check the wiki for coding standards"
-  ]
-}
-```
+**用例：**
+- 禁用归属：`"attribution.commit": ""`
+- 自定义归属消息样式
+- 符合项目提交消息规范
 
 ---
 
-## Permissions
+## 权限
 
-Control what tools and operations Claude can perform.
+权限控制 Claude 可以运行哪些命令和编辑哪些文件。配置最宽松的权限时请谨慎。
 
-### Permission Structure
+权限语法遵循 glob 模式：
+- `Bash(npm run *)` — 允许以 `npm run` 开头的命令
+- `Edit(/docs/**)` — 允许编辑 `/docs` 目录下的任何文件
+- `Read(~/.ssh/**)` — 允许读取 `~/.ssh` 目录下的任何文件
 
-```json
-{
-  "permissions": {
-    "allow": [],
-    "ask": [],
-    "deny": [],
-    "additionalDirectories": [],
-    "defaultMode": "acceptEdits",
-    "disableBypassPermissionsMode": "disable"
-  }
-}
-```
+### 权限设置
 
-### Permission Keys
+| 键 | 类型 | 默认值 | 描述 |
+|-----|------|---------|-------------|
+| `permissions.allow` | array | `[]` | 允许的工具模式列表 |
+| `permissions.deny` | array | `[]` | 拒绝的工具模式列表（最高优先级，无法覆盖）|
+| `permissions.defaultMode` | string | `"ask"` | 默认权限模式：`"ask"`、`"acceptEdits"`、`"plan"` 或 `"bypassPermissions"` |
+| `permissions.additionalDirectories` | array | `[]` | 允许访问的额外目录（Claude Code 工作目录之外）|
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `permissions.allow` | array | Rules allowing tool use without prompting |
-| `permissions.ask` | array | Rules requiring user confirmation |
-| `permissions.deny` | array | Rules blocking tool use (highest precedence) |
-| `permissions.additionalDirectories` | array | Extra directories Claude can access |
-| `permissions.defaultMode` | string | Default permission mode. In Remote environments, only `acceptEdits` and `plan` are honored (v2.1.70+) |
-| `permissions.disableBypassPermissionsMode` | string | Prevent bypass mode activation |
-| `allowManagedPermissionRulesOnly` | boolean | **(Managed only)** Only managed permission rules apply; user/project `allow`, `ask`, `deny` rules are ignored |
-| `allow_remote_sessions` | boolean | **(Managed only)** Allow users to start Remote Control and web sessions. Defaults to `true`. Set to `false` to prevent remote session access *(not in official docs — official permissions page states "Access to Remote Control and web sessions is not controlled by a managed settings key." On Team and Enterprise plans, admins enable/disable via [Claude Code admin settings](https://claude.ai/admin-settings/claude-code))* |
-| `autoMode` | object | Customize what the [auto mode](/en/permission-modes#eliminate-prompts-with-auto-mode) classifier blocks and allows. Contains `environment` (trusted infrastructure descriptions), `allow` (exceptions to block rules), and `soft_deny` (block rules) — all arrays of prose strings. **Not read from shared project settings** (`.claude/settings.json`) to prevent repo injection. Available in user, local, and managed settings. Setting `allow` or `soft_deny` **replaces** the entire default list for that section. Run `claude auto-mode defaults` to see built-in rules before customizing |
-| `disableAutoMode` | string | Set to `"disable"` to prevent [auto mode](/en/permission-modes#eliminate-prompts-with-auto-mode) from being activated. Removes `auto` from the `Shift+Tab` cycle and rejects `--permission-mode auto` at startup. Can be set at any settings level; most useful in managed settings where users cannot override it |
-| `useAutoModeDuringPlan` | boolean | Whether plan mode uses auto mode semantics when auto mode is available. Default: `true`. Not read from shared project settings (`.claude/settings.json`). Appears in `/config` as "Use auto mode during plan" |
+### 权限模式
 
-### Permission Modes
+| 模式 | 行为 |
+|------|------|
+| `ask` | 每次操作都请求批准（默认）|
+| `acceptEdits` | 自动接受文件编辑，但其他操作仍需批准 |
+| `plan` | 进入计划模式，只读分析 |
+| `bypassPermissions` | 自动批准所有操作（谨慎使用）|
 
-| Mode | Behavior |
-|------|----------|
-| `"default"` | Standard permission checking with prompts |
-| `"acceptEdits"` | Auto-accept file edits without asking |
-| `"askEdits"` | Ask before every operation *(not in official docs — unverified)* |
-| `"dontAsk"` | Auto-denies tools unless pre-approved via `/permissions` or `permissions.allow` rules |
-| `"viewOnly"` | Read-only mode, no modifications *(not in official docs — unverified)* |
-| `"bypassPermissions"` | Skip all permission checks (dangerous) |
-| `"auto"` | Background classifier replaces manual prompts. Research preview — requires Team plan + Sonnet/Opus 4.6. Classifier auto-approves read-only and file edits; sends everything else through a safety check. Falls back to prompting after 3 consecutive or 20 total blocks. Configure with `autoMode` setting |
-| `"plan"` | Read-only exploration mode |
+### 权限示例
 
-### Tool Permission Syntax
-
-| Tool | Syntax | 示例 |
-|------|--------|----------|
-| `Bash` | `Bash(command pattern)` | `Bash(npm run *)`, `Bash(* install)`, `Bash(git * main)` |
-| `Read` | `Read(path pattern)` | `Read(.env)`, `Read(./secrets/**)` |
-| `Edit` | `Edit(path pattern)` | `Edit(src/**)`, `Edit(*.ts)` |
-| `Write` | `Write(path pattern)` | `Write(*.md)`, `Write(./docs/**)` |
-| `NotebookEdit` | `NotebookEdit(pattern)` | `NotebookEdit(*)` |
-| `WebFetch` | `WebFetch(domain:pattern)` | `WebFetch(domain:example.com)` |
-| `WebSearch` | `WebSearch` | Global web search |
-| `Task` | `Task(agent-name)` | `Task(Explore)`, `Task(my-agent)` |
-| `Agent` | `Agent(name)` | `Agent(researcher)`, `Agent(*)` — permission scoped to subagent spawning |
-| `Skill` | `Skill(skill-name)` | `Skill(weather-fetcher)` |
-| `MCP` | `mcp__server__tool` or `MCP(server:tool)` | `mcp__memory__*`, `MCP(github:*)` |
-
-**Evaluation order:** Rules are evaluated in order: deny rules first, then ask, then allow. The first matching rule wins.
-
-**Read/Edit path patterns:** Permission rules for `Read`, `Edit`, and `Write` support gitignore-style patterns with four prefix types:
-
-| Prefix | Meaning | Example |
-|--------|---------|---------|
-| `//` | Absolute path from filesystem root | `Read(//Users/alice/file)` |
-| `~/` | Relative to home directory | `Read(~/.zshrc)` |
-| `/` | Relative to project root | `Edit(/src/**)` |
-| `./` or none | Relative path (current directory) | `Read(.env)`, `Read(*.ts)` |
-
-**Bash wildcard notes:**
-- `*` can appear at **any position**: prefix (`Bash(* install)`), suffix (`Bash(npm *)`), or middle (`Bash(git * main)`)
-- **Word boundary:** `Bash(ls *)` (space before `*`) matches `ls -la` but NOT `lsof`; `Bash(ls*)` (no space) matches both
-- `Bash(*)` is treated as equivalent to `Bash` (matches all bash commands)
-- Permission rules support output redirections: `Bash(python:*)` matches `python script.py > output.txt`
-- The legacy `:*` suffix syntax (e.g., `Bash(npm:*)`) is equivalent to ` *` but is deprecated
-
-**Example:**
 ```json
 {
   "permissions": {
     "allow": [
-      "Edit(*)",
-      "Write(*)",
       "Bash(npm run *)",
       "Bash(git *)",
-      "WebFetch(domain:*)",
-      "mcp__*"
-    ],
-    "ask": [
-      "Bash(rm *)",
-      "Bash(git push *)"
+      "Edit(/docs/**)",
+      "Read(~/.config/**)"
     ],
     "deny": [
-      "Read(.env)",
-      "Read(./secrets/**)",
-      "Bash(curl *)"
+      "Bash(rm -rf /*)",
+      "Edit(/etc/**)"
     ],
-    "additionalDirectories": ["../shared-libs/"]
+    "additionalDirectories": ["~/projects/shared"]
   }
 }
 ```
 
 ---
 
-## Hooks
+## 钩子
 
-Hook configuration (events, properties, matchers, exit codes, environment variables, and HTTP hooks) is maintained in a dedicated repository:
+钩子允许在特定事件时运行自定义脚本。
 
-> **[claude-code-hooks](https://github.com/shanraisshan/claude-code-hooks)** — Complete hook reference with sound notification system, all 19 hook events, HTTP hooks, matcher patterns, exit codes, and environment variables.
+### 钩子事件
 
-Hook-related settings keys (`hooks`, `disableAllHooks`, `allowManagedHooksOnly`, `allowedHttpHookUrls`, `httpHookAllowedEnvVars`) are documented there.
+| 事件 | 触发时机 |
+|------|----------|
+| `PreToolUse` | 工具使用前 |
+| `PostToolUse` | 工具使用后 |
+| `Notification` | 发送通知时 |
+| `Stop` | 会话停止时 |
+| `SessionStart` | 会话开始时 |
+| `SessionEnd` | 会话结束时 |
+| `PreCompact` | 压缩前 |
+| `PostCompact` | 压缩后 |
 
-For the official hooks reference, see the [Claude Code Hooks Documentation](https://code.claude.com/docs/en/hooks).
+### 钩子配置
+
+| 键 | 类型 | 描述 |
+|-----|------|-------------|
+| `hooks.PreToolUse` | array | 工具使用前的钩子 |
+| `hooks.PostToolUse` | array | 工具使用后的钩子 |
+| `hooks.Stop` | array | 会话停止时的钩子 |
+
+### 钩子示例
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "prettier --write ${file_path}"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "echo 'Session ended' >> ~/.claude/session.log"
+      }
+    ]
+  }
+}
+```
 
 ---
 
 ## MCP 服务器
 
-Configure Model Context Protocol servers for extended capabilities.
+Model Context Protocol (MCP) 服务器扩展 Claude Code 的能力。
 
-### MCP 设置
+### MCP 配置
 
-| Key | Type | Scope | Description |
-|-----|------|-------|-------------|
-| `enableAllProjectMcpServers` | boolean | Any | Auto-approve all `.mcp.json` servers |
-| `enabledMcpjsonServers` | array | Any | Allowlist specific server names |
-| `disabledMcpjsonServers` | array | Any | Blocklist specific server names |
-| `allowedMcpServers` | array | Managed only | Allowlist with name/command/URL matching |
-| `deniedMcpServers` | array | Managed only | Blocklist with matching |
-| `allowManagedMcpServersOnly` | boolean | Managed only | Only allow MCP servers explicitly listed in managed allowlist |
-| `channelsEnabled` | boolean | Managed only | Allow [channels](https://code.claude.com/docs/en/channels) for Team and Enterprise users. When unset or `false`, channel message delivery is blocked regardless of `--channels` flag |
-| `allowedChannelPlugins` | array | Managed only | Allowlist of channel plugins that may push messages. Replaces the default Anthropic allowlist when set. Undefined = fall back to the default, empty array = block all channel plugins. Requires `channelsEnabled: true`. Each entry is an object with `marketplace` and `plugin` fields (v2.1.84) |
+| 键 | 类型 | 描述 |
+|-----|------|-------------|
+| `mcpServers` | object | MCP 服务器配置对象 |
 
-### MCP Server Matching (Managed 设置)
+### MCP 示例
 
 ```json
 {
-  "allowedMcpServers": [
-    { "serverName": "github" },
-    { "serverCommand": "npx @modelcontextprotocol/*" },
-    { "serverUrl": "https://mcp.company.com/*" }
-  ],
-  "deniedMcpServers": [
-    { "serverName": "dangerous-server" }
-  ]
-}
-```
-
-**Example:**
-```json
-{
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["memory", "github", "filesystem"],
-  "disabledMcpjsonServers": ["experimental-server"]
+  "mcpServers": {
+    "filesystem": {
+      "command": "mcp-filesystem",
+      "args": ["/path/to/allowed/dir"],
+      "env": {
+        "MCP_LOG_LEVEL": "debug"
+      }
+    },
+    "postgres": {
+      "command": "mcp-postgres",
+      "args": ["postgresql://localhost/mydb"]
+    }
+  }
 }
 ```
 
 ---
 
-## Sandbox
+## 沙箱
 
-Configure bash command sandboxing for security.
+沙箱隔离提供额外的安全层。
 
-### Sandbox 设置
+### 沙箱设置
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `sandbox.enabled` | boolean | `false` | Enable bash sandboxing |
-| `sandbox.failIfUnavailable` | boolean | `false` | Exit with error when sandbox is enabled but cannot start, instead of running unsandboxed. Useful for enterprise policies that require strict sandboxing (v2.1.83) |
-| `sandbox.autoAllowBashIfSandboxed` | boolean | `true` | Auto-approve bash when sandboxed |
-| `sandbox.excludedCommands` | array | `[]` | Commands to run outside sandbox |
-| `sandbox.allowUnsandboxedCommands` | boolean | `true` | Allow `dangerouslyDisableSandbox` |
-| `sandbox.ignoreViolations` | object | `{}` | Map of command patterns to path arrays — suppress violation warnings *(in JSON schema, not on official settings page)* |
-| `sandbox.enableWeakerNestedSandbox` | boolean | `false` | Weaker sandbox for Docker (reduces security) |
-| `sandbox.network.allowUnixSockets` | array | `[]` | Specific Unix socket paths accessible in sandbox |
-| `sandbox.network.allowAllUnixSockets` | boolean | `false` | Allow all Unix sockets (overrides allowUnixSockets) |
-| `sandbox.network.allowLocalBinding` | boolean | `false` | Allow binding to localhost ports (macOS) |
-| `sandbox.network.allowedDomains` | array | `[]` | Network domain allowlist for sandbox |
-| `sandbox.network.deniedDomains` | array | `[]` | Network domain denylist for sandbox *(not in official docs — unverified)* |
-| `sandbox.network.httpProxyPort` | number | - | HTTP proxy port 1-65535 (custom proxy) |
-| `sandbox.network.socksProxyPort` | number | - | SOCKS5 proxy port 1-65535 (custom proxy) |
-| `sandbox.network.allowManagedDomainsOnly` | boolean | `false` | Only allow domains in managed allowlist (managed settings) |
-| `sandbox.filesystem.allowWrite` | array | `[]` | Additional paths where sandboxed commands can write. Arrays are merged across all settings scopes. Prefix: `/` (absolute), `~/` (home), `./` or none (project-relative in project settings, `~/.claude`-relative in user settings). The older `//` prefix for absolute paths still works. **Note:** This differs from [Read/Edit permission rules](#tool-permission-syntax), which use `//` for absolute and `/` for project-relative |
-| `sandbox.filesystem.denyWrite` | array | `[]` | Paths where sandboxed commands cannot write. Arrays are merged across all settings scopes. Same path prefix conventions as `allowWrite` |
-| `sandbox.filesystem.denyRead` | array | `[]` | Paths where sandboxed commands cannot read. Arrays are merged across all settings scopes. Same path prefix conventions as `allowWrite` |
-| `sandbox.filesystem.allowRead` | array | `[]` | Paths to re-allow read access within `denyRead` regions. Takes precedence over `denyRead`. Arrays are merged across all settings scopes. Same path prefix conventions as `allowWrite` |
-| `sandbox.filesystem.allowManagedReadPathsOnly` | boolean | `false` | **(Managed only)** Only `allowRead` paths from managed settings are respected. `allowRead` entries from user, project, and local settings are ignored |
-| `sandbox.enableWeakerNetworkIsolation` | boolean | `false` | (macOS only) Allow access to system TLS trust (`com.apple.trustd.agent`); reduces security |
+| `sandbox.enabled` | boolean | `false` | 启用沙箱隔离 |
+| `sandbox.network` | boolean | `true` | 允许网络访问（沙箱启用时）|
+| `sandbox.paths.read` | array | `[]` | 允许读取的路径 |
+| `sandbox.paths.write` | array | `[]` | 允许写入的路径 |
 
-**Example:**
+### 沙箱示例
+
 ```json
 {
   "sandbox": {
     "enabled": true,
-    "autoAllowBashIfSandboxed": true,
-    "excludedCommands": ["git", "docker", "gh"],
-    "allowUnsandboxedCommands": false,
-    "network": {
-      "allowUnixSockets": ["/var/run/docker.sock"],
-      "allowLocalBinding": true
+    "network": false,
+    "paths": {
+      "read": ["~/projects"],
+      "write": ["~/projects/output"]
     }
   }
 }
@@ -406,513 +322,127 @@ Configure bash command sandboxing for security.
 
 ---
 
-## Plugins
+## 插件
 
-Configure Claude Code plugins and marketplaces.
+插件是可分发的技能、代理、钩子和 MCP 服务器包。
 
-### Plugin 设置
+### 插件设置
 
-| Key | Type | Scope | Description |
-|-----|------|-------|-------------|
-| `enabledPlugins` | object | Any | Enable/disable specific plugins |
-| `extraKnownMarketplaces` | object | Project | Add custom plugin marketplaces (team sharing via `.claude/settings.json`) |
-| `strictKnownMarketplaces` | array | Managed only | Allowlist of permitted marketplaces |
-| `skippedMarketplaces` | array | Any | Marketplaces user declined to install *(in JSON schema, not on official settings page)* |
-| `skippedPlugins` | array | Any | Plugins user declined to install *(in JSON schema, not on official settings page)* |
-| `pluginConfigs` | object | Any | Per-plugin MCP server configs (keyed by `plugin@marketplace`) *(in JSON schema, not on official settings page)* |
-| `blockedMarketplaces` | array | Managed only | Block specific plugin marketplaces |
-| `pluginTrustMessage` | string | Managed only | Custom message displayed when prompting users to trust plugins |
-
-**Marketplace source types:** `github`, `git`, `directory`, `hostPattern`, `settings`, `url`, `npm`, `file`. Use `source: 'settings'` to declare a small set of plugins inline without setting up a hosted marketplace repository.
-
-**Example:**
-```json
-{
-  "enabledPlugins": {
-    "formatter@acme-tools": true,
-    "deployer@acme-tools": true,
-    "experimental@acme-tools": false
-  },
-  "extraKnownMarketplaces": {
-    "acme-tools": {
-      "source": {
-        "source": "github",
-        "repo": "acme-corp/claude-plugins"
-      }
-    },
-    "inline-tools": {
-      "source": {
-        "source": "settings",
-        "name": "inline-tools",
-        "plugins": [
-          {
-            "name": "code-formatter",
-            "source": { "source": "github", "repo": "acme-corp/code-formatter" }
-          }
-        ]
-      }
-    }
-  }
-}
-```
+| 键 | 类型 | 描述 |
+|-----|------|-------------|
+| `plugins.entries` | array | 已安装的插件列表 |
+| `plugins.autoUpdate` | boolean | 自动更新插件 |
+| `plugins.marketplaces` | array | 插件市场 URL 列表 |
 
 ---
 
-## Model 配置
+## 模型配置
 
-### Model Aliases
+### 模型设置
 
-| Alias | Description |
-|-------|-------------|
-| `"default"` | Recommended for your account type |
-| `"sonnet"` | Latest Sonnet model (Claude Sonnet 4.6) |
-| `"opus"` | Latest Opus model (Claude Opus 4.6) |
-| `"haiku"` | Fast Haiku model |
-| `"sonnet[1m]"` | Sonnet with 1M token context |
-| `"opus[1m]"` | Opus with 1M token context (default on Max, Team, and Enterprise since v2.1.75) |
-| `"opusplan"` | Opus for planning, Sonnet for execution |
-
-**Example:**
-```json
-{
-  "model": "opus"
-}
-```
-
-### Model Overrides
-
-Map Anthropic model IDs to provider-specific model IDs for Bedrock, Vertex, or Foundry deployments.
-
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `effortLevel` | string | - | Persist the effort level across sessions. Accepts `"low"`, `"medium"`, or `"high"`. Written automatically when you run `/effort low`, `/effort medium`, or `/effort high`. Supported on Opus 4.6 and Sonnet 4.6 |
-| `modelOverrides` | object | - | Map model picker entries to provider-specific IDs (e.g., Bedrock inference profile ARNs). Each key is a model picker entry name, each value is the provider model ID |
+| `model` | string | `"default"` | 默认模型（`haiku`、`sonnet`、`opus` 或完整 ID）|
+| `effort` | string | `"auto"` | 模型努力级别（`low`、`medium`、`high`、`max`、`auto`）|
+| `alwaysThinkingEnabled` | boolean | `false` | 默认启用扩展思考 |
 
-**Example:**
-```json
-{
-  "modelOverrides": {
-    "claude-opus-4-6": "arn:aws:bedrock:us-east-1:123456789:inference-profile/anthropic.claude-opus-4-6-v1:0",
-    "claude-sonnet-4-6": "arn:aws:bedrock:us-east-1:123456789:inference-profile/anthropic.claude-sonnet-4-6-v1:0"
-  }
-}
-```
+### 模型别名
 
-### Effort Level
-
-The `/model` command exposes an **effort level** control that adjusts how much reasoning the model applies per response. Use the ← → arrow keys in the `/model` UI to cycle through effort levels.
-
-| Effort Level | Description |
-|-------------|-------------|
-| High | Full reasoning depth, best for complex tasks |
-| Medium (default) | Balanced reasoning, good for everyday tasks |
-| Low | Minimal reasoning, fastest responses |
-
-**How to use:**
-1. Run `/effort low`, `/effort medium`, or `/effort high` to set directly (v2.1.76+)
-2. Or run `/model` → select a model → use **← →** arrow keys to adjust
-3. The setting persists via the `effortLevel` key in `settings.json`
-
-**Note:** Effort level is available for Opus 4.6 and Sonnet 4.6 on Max and Team plans. The default was changed from High to Medium in v2.1.68. As of v2.1.75, 1M context window for Opus 4.6 is available by default on Max, Team, and Enterprise plans.
-
-### Model Environment Variables
-
-Configure via `env` key:
-
-```json
-{
-  "env": {
-    "ANTHROPIC_MODEL": "sonnet",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "custom-haiku-model",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "custom-sonnet-model",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "custom-opus-model",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
-    "MAX_THINKING_TOKENS": "10000"
-  }
-}
-```
+| 别名 | 完整模型 ID |
+|------|-------------|
+| `haiku` | `claude-3-5-haiku-20241022` |
+| `sonnet` | `claude-3-5-sonnet-20241022` |
+| `opus` | `claude-3-opus-20240229` |
 
 ---
 
-## Display & UX
+## 显示与用户体验
 
-### Display 设置
+### 显示设置
 
-| Key | Type | Default | Description |
+| 键 | 类型 | 默认值 | 描述 |
 |-----|------|---------|-------------|
-| `statusLine` | object | - | Custom status line configuration |
-| `outputStyle` | string | `"default"` | Output style (e.g., `"Explanatory"`) |
-| `spinnerTipsEnabled` | boolean | `true` | Show tips while waiting |
-| `spinnerVerbs` | object | - | Custom spinner verbs with `mode` ("append" or "replace") and `verbs` array |
-| `spinnerTipsOverride` | object | - | Custom spinner tips with `tips` (string array) and optional `excludeDefault` (boolean) |
-| `respectGitignore` | boolean | `true` | Respect .gitignore in file picker |
-| `prefersReducedMotion` | boolean | `false` | Reduce animations and motion effects in the UI |
-| `fileSuggestion` | object | - | Custom file suggestion command (see File Suggestion 配置 below) |
+| `theme` | string | `"dark"` | 主题（`"dark"` 或 `"light"`）|
+| `color` | string | - | 提示栏颜色（如 `"blue"`、`"green"`）|
+| `outputStyle` | string | `"normal"` | 输出样式（`"normal"` 或 `"explanatory"`）|
+| `spinnerVerbs` | array | - | 加载时显示的动作动词 |
+| `statusLine` | object | - | 状态栏配置 |
 
-### Global Config 设置 (`~/.claude.json`)
-
-These display preferences are stored in `~/.claude.json`, **not** `settings.json`. Adding them to `settings.json` will trigger a schema validation error.
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `autoConnectIde` | boolean | `false` | Automatically connect to a running IDE when Claude Code starts from an external terminal. Appears in `/config` as **Auto-connect to IDE (external terminal)** when running outside a VS Code or JetBrains terminal |
-| `autoInstallIdeExtension` | boolean | `true` | Automatically install the Claude Code IDE extension when running from a VS Code terminal. Appears in `/config` as **Auto-install IDE extension**. Can also be disabled via `CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL` env var |
-| `editorMode` | string | `"normal"` | Key binding mode for the input prompt: `"normal"` or `"vim"`. Written automatically when you run `/vim`. Appears in `/config` as **Key binding mode** |
-| `showTurnDuration` | boolean | `true` | Show turn duration messages after responses (e.g., "Cooked for 1m 6s"). Edit `~/.claude.json` directly to change |
-| `terminalProgressBarEnabled` | boolean | `true` | Show the terminal progress bar in supported terminals (ConEmu, Ghostty 1.2.0+, and iTerm2 3.6.6+). Appears in `/config` as **Terminal progress bar** |
-
-### Status Line 配置
+### 状态栏配置
 
 ```json
 {
   "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
-  }
-}
-```
-
-**Status Line Input Fields:**
-
-The status line command receives a JSON object on stdin with these notable fields:
-
-| Field | Description |
-|-------|-------------|
-| `workspace.added_dirs` | Directories added via `/add-dir` |
-| `context_window.used_percentage` | Context window usage percentage |
-| `context_window.remaining_percentage` | Context window remaining percentage |
-| `current_usage` | Current context window token count |
-| `exceeds_200k_tokens` | Whether context exceeds 200k tokens |
-| `rate_limits.five_hour.used_percentage` | Five-hour rate limit usage percentage (v2.1.80+) |
-| `rate_limits.five_hour.resets_at` | Five-hour rate limit reset timestamp |
-| `rate_limits.seven_day.used_percentage` | Seven-day rate limit usage percentage |
-| `rate_limits.seven_day.resets_at` | Seven-day rate limit reset timestamp |
-
-### File Suggestion 配置
-
-The file suggestion script receives a JSON object on stdin (e.g., `{"query": "src/comp"}`) and must output up to 15 file paths (one per line).
-
-```json
-{
-  "fileSuggestion": {
-    "type": "command",
-    "command": "~/.claude/file-suggestion.sh"
-  },
-  "respectGitignore": true
-}
-```
-
-**Example:**
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "git branch --show-current 2>/dev/null || echo 'no-branch'"
-  },
-  "spinnerTipsEnabled": true,
-  "spinnerVerbs": {
-    "mode": "replace",
-    "verbs": ["Cooking", "Brewing", "Crafting", "Conjuring"]
-  },
-  "spinnerTipsOverride": {
-    "tips": ["Use /compact at ~50% context", "Start with plan mode for complex tasks"],
-    "excludeDefault": true
+    "showContextUsage": true,
+    "showModel": true,
+    "showCost": true,
+    "showTime": true,
+    "format": "${model} | ${context} | ${cost}"
   }
 }
 ```
 
 ---
 
-## AWS & Cloud Credentials
+## AWS 与云凭证
 
 ### AWS 设置
 
-| Key | Type | Description |
+| 键 | 类型 | 描述 |
 |-----|------|-------------|
-| `awsAuthRefresh` | string | Script to refresh AWS auth (modifies `.aws` dir) |
-| `awsCredentialExport` | string | Script outputting JSON with AWS credentials |
-
-**Example:**
-```json
-{
-  "awsAuthRefresh": "aws sso login --profile myprofile",
-  "awsCredentialExport": "/bin/generate_aws_grant.sh"
-}
-```
-
-### OpenTelemetry
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `otelHeadersHelper` | string | Script to generate dynamic OpenTelemetry headers |
-
-**Example:**
-```json
-{
-  "otelHeadersHelper": "/bin/generate_otel_headers.sh"
-}
-```
+| `aws.profile` | string | AWS 配置文件名称 |
+| `aws.region` | string | AWS 区域 |
+| `aws.accessKeyId` | string | AWS 访问密钥 ID |
+| `aws.secretAccessKey` | string | AWS 秘密访问密钥 |
 
 ---
 
-## Environment Variables (via `env`)
+## 环境变量（via env）
 
-Set environment variables for all Claude Code sessions.
+使用 `env` 字段设置环境变量，避免包装脚本。
+
+### 环境变量示例
 
 ```json
 {
   "env": {
-    "ANTHROPIC_API_KEY": "...",
-    "NODE_ENV": "development",
-    "DEBUG": "true"
+    "ANTHROPIC_API_KEY": "sk-ant-...",
+    "ANTHROPIC_MODEL": "claude-3-opus-20240229",
+    "CLAUDE_CODE_MAX_TOKENS": "4096",
+    "CLAUDE_CODE_TEMPERATURE": "0.7"
   }
 }
 ```
 
-### Common Environment Variables
+### 常用环境变量
 
-| Variable | Description |
-|----------|-------------|
-| `ANTHROPIC_API_KEY` | API key for authentication |
-| `ANTHROPIC_AUTH_TOKEN` | OAuth token |
-| `ANTHROPIC_BASE_URL` | Custom API endpoint |
-| `ANTHROPIC_CUSTOM_MODEL_OPTION` | Model ID to add as a custom entry in the `/model` picker. Use to make a non-standard or gateway-specific model selectable without replacing built-in aliases |
-| `ANTHROPIC_CUSTOM_MODEL_OPTION_NAME` | Display name for the custom model entry in the `/model` picker. Defaults to the model ID when not set |
-| `ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION` | Display description for the custom model entry in the `/model` picker. Defaults to `Custom model (<model-id>)` when not set |
-| `ANTHROPIC_MODEL` | Name of the model to use. Accepts aliases (`sonnet`, `opus`, `haiku`) or full model IDs. Overrides the `model` setting |
-| `ANTHROPIC_DEFAULT_HAIKU_MODEL` | Override the Haiku model alias with a custom model ID (e.g., for third-party deployments) |
-| `ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME` | Customize the Haiku entry label in the `/model` picker when using a pinned model on Bedrock/Vertex/Foundry. Defaults to the model ID |
-| `ANTHROPIC_DEFAULT_HAIKU_MODEL_DESCRIPTION` | Customize the Haiku entry description in the `/model` picker. Defaults to `Custom model (<model-id>)` |
-| `ANTHROPIC_DEFAULT_HAIKU_MODEL_SUPPORTED_CAPABILITIES` | Override capability detection for a pinned Haiku model. Comma-separated values (e.g., `effort,thinking`). Required when the pinned model supports features the auto-detection cannot confirm |
-| `CLAUDECODE` | Set to `1` in shell environments Claude Code spawns (Bash tool, tmux sessions). Not set in hooks or status line commands. Use to detect when a script is running inside a Claude Code shell |
-| `CLAUDE_CODE_SKIP_FAST_MODE_NETWORK_ERRORS` | Set to `1` to allow fast mode when the organization status check fails due to a network error. Useful when a corporate proxy blocks the status endpoint |
-| `CLAUDE_CODE_USE_BEDROCK` | Use AWS Bedrock (`1` to enable) |
-| `CLAUDE_CODE_USE_VERTEX` | Use Google Vertex AI (`1` to enable) |
-| `CLAUDE_CODE_USE_FOUNDRY` | Use Microsoft Foundry (`1` to enable) |
-| `CLAUDE_CODE_USE_POWERSHELL_TOOL` | Set to `1` to enable the PowerShell tool on Windows (opt-in preview). When enabled, Claude can run PowerShell commands natively instead of routing through Git Bash. Only supported on native Windows, not WSL (v2.1.84) |
-| `CLAUDE_CODE_ENABLE_TELEMETRY` | Enable/disable telemetry (`0` or `1`) |
-| `DISABLE_ERROR_REPORTING` | Disable error reporting (`1` to disable) |
-| `DISABLE_TELEMETRY` | Disable telemetry (`1` to disable) |
-| `MCP_TIMEOUT` | MCP startup timeout in ms |
-| `MAX_MCP_OUTPUT_TOKENS` | Max MCP output tokens (default: 25000). Warning displayed when output exceeds 10,000 tokens |
-| `BASH_MAX_TIMEOUT_MS` | Bash command timeout |
-| `BASH_MAX_OUTPUT_LENGTH` | Max bash output length |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact threshold percentage (1-100). Default is ~95%. Set lower (e.g., `50`) to trigger compaction earlier. Values above 95% have no effect. Use `/context` to monitor current usage. Example: `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50 claude` |
-| `CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR` | Keep cwd between bash calls (`1` to enable) |
-| `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS` | Disable background tasks (`1` to disable) |
-| `ENABLE_TOOL_SEARCH` | MCP tool search threshold (e.g., `auto:5`) |
-| `DISABLE_PROMPT_CACHING` | Disable all prompt caching (`1` to disable) |
-| `DISABLE_PROMPT_CACHING_HAIKU` | Disable Haiku prompt caching |
-| `DISABLE_PROMPT_CACHING_SONNET` | Disable Sonnet prompt caching |
-| `DISABLE_PROMPT_CACHING_OPUS` | Disable Opus prompt caching |
-| `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` | Disable experimental beta features (`1` to disable) |
-| `CLAUDE_CODE_SHELL` | Override automatic shell detection |
-| `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` | Override default file read token limit |
-| `CLAUDE_CODE_ENABLE_TASKS` | Set to `true` to enable task tracking in non-interactive mode (`-p` flag). Tasks are on by default in interactive mode |
-| `CLAUDE_CODE_EXIT_AFTER_STOP_DELAY` | Auto-exit SDK mode after idle duration (ms) |
-| `CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING` | Disable adaptive thinking (`1` to disable) |
-| `CLAUDE_CODE_DISABLE_1M_CONTEXT` | Disable 1M token context window (`1` to disable) |
-| `CLAUDE_CODE_ACCOUNT_UUID` | Override account UUID for authentication |
-| `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` | Disable git-related system prompt instructions |
-| `CLAUDE_CODE_NEW_INIT` | Set to `true` to make `/init` run an interactive setup flow. Asks which files to generate (CLAUDE.md, skills, hooks) before exploring the codebase. Without this, `/init` generates a CLAUDE.md automatically |
-| `CLAUDE_CODE_PLUGIN_SEED_DIR` | Path to one or more read-only plugin seed directories, separated by `:` on Unix or `;` on Windows. Bundle pre-populated plugins into a container image. Claude Code registers marketplaces from these directories at startup and uses pre-cached plugins without re-cloning |
-| `ENABLE_CLAUDEAI_MCP_SERVERS` | Enable Claude.ai MCP servers |
-| `CLAUDE_CODE_EFFORT_LEVEL` | Set effort level: `low`, `medium`, `high`, `max` (Opus 4.6 only), or `auto` (use model default). Takes precedence over `/effort` and the `effortLevel` setting |
-| `CLAUDE_CODE_MAX_TURNS` | Maximum agentic turns before stopping *(not in official docs — unverified)* |
-| `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | Equivalent of setting `DISABLE_AUTOUPDATER`, `DISABLE_FEEDBACK_COMMAND`, `DISABLE_ERROR_REPORTING`, and `DISABLE_TELEMETRY` |
-| `CLAUDE_CODE_SKIP_SETTINGS_SETUP` | Skip first-run settings setup flow *(not in official docs — unverified)* |
-| `CLAUDE_CODE_PROMPT_CACHING_ENABLED` | Override prompt caching behavior *(not in official docs — unverified)* |
-| `CLAUDE_CODE_DISABLE_TOOLS` | Comma-separated list of tools to disable *(not in official docs — unverified)* |
-| `CLAUDE_CODE_DISABLE_MCP` | Disable all MCP servers (`1` to disable) *(not in official docs — unverified)* |
-| `CLAUDE_CODE_MAX_OUTPUT_TOKENS` | Max output tokens per response. Default: 32,000 (64,000 for Opus 4.6 as of v2.1.77). Upper bound: 64,000 (128,000 for Opus 4.6 and Sonnet 4.6 as of v2.1.77) |
-| `CLAUDE_CODE_DISABLE_FAST_MODE` | Disable fast mode entirely (`1` to disable) |
-| `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK` | Set to `1` to disable the non-streaming fallback when a streaming request fails mid-stream. Streaming errors propagate to the retry layer instead. Useful when a proxy or gateway causes the fallback to produce duplicate tool execution (v2.1.83) |
-| `CLAUDE_CODE_DISABLE_AUTO_MEMORY` | Disable auto memory (`1` to disable) |
-| `CLAUDE_CODE_USER_EMAIL` | Provide user email synchronously for authentication |
-| `CLAUDE_CODE_ORGANIZATION_UUID` | Provide organization UUID synchronously for authentication |
-| `CLAUDE_CONFIG_DIR` | Custom config directory (overrides default `~/.claude`) |
-| `ANTHROPIC_CUSTOM_HEADERS` | Custom headers for API requests (`Name: Value` format, newline-separated for multiple headers) |
-| `ANTHROPIC_FOUNDRY_API_KEY` | API key for Microsoft Foundry authentication |
-| `ANTHROPIC_FOUNDRY_BASE_URL` | Base URL for Foundry resource |
-| `ANTHROPIC_FOUNDRY_RESOURCE` | Foundry resource name |
-| `AWS_BEARER_TOKEN_BEDROCK` | Bedrock API key for authentication |
-| `ANTHROPIC_SMALL_FAST_MODEL` | **DEPRECATED** — Use `ANTHROPIC_DEFAULT_HAIKU_MODEL` instead |
-| `ANTHROPIC_SMALL_FAST_MODEL_AWS_REGION` | AWS region for deprecated Haiku-class model override |
-| `CLAUDE_CODE_SHELL_PREFIX` | Command prefix prepended to bash commands |
-| `BASH_DEFAULT_TIMEOUT_MS` | Default bash command timeout in ms |
-| `CLAUDE_CODE_SKIP_BEDROCK_AUTH` | Skip AWS auth for Bedrock (`1` to skip) |
-| `CLAUDE_CODE_SKIP_FOUNDRY_AUTH` | Skip Azure auth for Foundry (`1` to skip) |
-| `CLAUDE_CODE_SKIP_VERTEX_AUTH` | Skip Google auth for Vertex (`1` to skip) |
-| `CLAUDE_CODE_PROXY_RESOLVES_HOSTS` | Allow proxy to perform DNS resolution |
-| `CLAUDE_CODE_API_KEY_HELPER_TTL_MS` | Credential refresh interval in ms for `apiKeyHelper` |
-| `CLAUDE_CODE_CLIENT_CERT` | Client certificate path for mTLS |
-| `CLAUDE_CODE_CLIENT_KEY` | Client private key path for mTLS |
-| `CLAUDE_CODE_CLIENT_KEY_PASSPHRASE` | Passphrase for encrypted mTLS key |
-| `CLAUDE_CODE_PLUGIN_GIT_TIMEOUT_MS` | Plugin marketplace git clone timeout in ms (default: 120000) |
-| `CLAUDE_CODE_HIDE_ACCOUNT_INFO` | Hide email/org info from UI *(not in official docs — unverified)* |
-| `CLAUDE_CODE_DISABLE_CRON` | Disable scheduled/cron tasks (`1` to disable) |
-| `DISABLE_INSTALLATION_CHECKS` | Disable installation warnings |
-| `DISABLE_FEEDBACK_COMMAND` | Disable the `/feedback` command. The older name `DISABLE_BUG_COMMAND` is also accepted |
-| `DISABLE_NON_ESSENTIAL_MODEL_CALLS` | Disable flavor text and non-essential model calls *(not in official docs — unverified)* |
-| `DISABLE_COST_WARNINGS` | Disable cost warning messages |
-| `CLAUDE_CODE_SUBAGENT_MODEL` | Override model for subagents (e.g., `haiku`, `sonnet`) |
-| `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` | Set to `1` to strip Anthropic and cloud provider credentials from subprocess environments (Bash tool, hooks, MCP stdio servers). Use for defense-in-depth when subprocesses should not inherit API keys (v2.1.83) |
-| `CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` | SessionEnd hook timeout in ms (replaces hard 1.5s limit) |
-| `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY` | Disable feedback survey prompts (`1` to disable) |
-| `CLAUDE_CODE_DISABLE_TERMINAL_TITLE` | Disable terminal title updates (`1` to disable) |
-| `CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL` | Skip automatic IDE extension installation (`1` to skip) |
-| `CLAUDE_CODE_OTEL_HEADERS_HELPER_DEBOUNCE_MS` | Debounce interval in ms for OTel headers helper script |
-| `CLAUDE_STREAM_IDLE_TIMEOUT_MS` | Timeout in ms before the streaming idle watchdog closes a stalled connection. Default: `90000` (90 seconds). Increase if long-running tools or slow networks cause premature timeout errors |
-| `OTEL_LOG_TOOL_DETAILS` | Set to `1` to include `tool_parameters` in OpenTelemetry events. Omitted by default for privacy *(in v2.1.85 changelog, not yet on official env-vars page)* |
-| `CLAUDE_CODE_MCP_SERVER_NAME` | Name of the MCP server, passed as an environment variable to `headersHelper` scripts so they can generate server-specific authentication headers *(in v2.1.85 changelog, not yet on official env-vars page)* |
-| `CLAUDE_CODE_MCP_SERVER_URL` | URL of the MCP server, passed as an environment variable to `headersHelper` scripts alongside `CLAUDE_CODE_MCP_SERVER_NAME` *(in v2.1.85 changelog, not yet on official env-vars page)* |
-| `ANTHROPIC_DEFAULT_OPUS_MODEL` | Override Opus model alias (e.g., `claude-opus-4-6[1m]`) |
-| `ANTHROPIC_DEFAULT_OPUS_MODEL_NAME` | Customize the Opus entry label in the `/model` picker when using a pinned model on Bedrock/Vertex/Foundry. Defaults to the model ID |
-| `ANTHROPIC_DEFAULT_OPUS_MODEL_DESCRIPTION` | Customize the Opus entry description in the `/model` picker. Defaults to `Custom model (<model-id>)` |
-| `ANTHROPIC_DEFAULT_OPUS_MODEL_SUPPORTED_CAPABILITIES` | Override capability detection for a pinned Opus model. Comma-separated values (e.g., `effort,thinking`). Required when the pinned model supports features the auto-detection cannot confirm |
-| `ANTHROPIC_DEFAULT_SONNET_MODEL` | Override Sonnet model alias (e.g., `claude-sonnet-4-6`) |
-| `ANTHROPIC_DEFAULT_SONNET_MODEL_NAME` | Customize the Sonnet entry label in the `/model` picker when using a pinned model on Bedrock/Vertex/Foundry. Defaults to the model ID |
-| `ANTHROPIC_DEFAULT_SONNET_MODEL_DESCRIPTION` | Customize the Sonnet entry description in the `/model` picker. Defaults to `Custom model (<model-id>)` |
-| `ANTHROPIC_DEFAULT_SONNET_MODEL_SUPPORTED_CAPABILITIES` | Override capability detection for a pinned Sonnet model. Comma-separated values (e.g., `effort,thinking`). Required when the pinned model supports features the auto-detection cannot confirm |
-| `MAX_THINKING_TOKENS` | Maximum extended thinking tokens per response |
-| `CLAUDE_CODE_AUTO_COMPACT_WINDOW` | Set the context capacity in tokens used for auto-compaction calculations. Defaults to the model's context window (200K standard, 1M for extended context models). Use a lower value (e.g., `500000`) on a 1M model to treat it as 500K for compaction. Capped at actual context window. `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is applied as a percentage of this value. Setting this decouples the compaction threshold from the status line's `used_percentage` |
-| `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` | Enable prompt suggestions |
-| `CLAUDE_CODE_PLAN_MODE_REQUIRED` | Require plan mode for sessions |
-| `CLAUDE_CODE_TEAM_NAME` | Team name for agent teams |
-| `CLAUDE_CODE_TASK_LIST_ID` | Task list ID for task integration |
-| `CLAUDE_ENV_FILE` | Custom environment file path |
-| `FORCE_AUTOUPDATE_PLUGINS` | Force plugin auto-updates (`1` to enable) |
-| `HTTP_PROXY` | HTTP proxy URL for network requests |
-| `HTTPS_PROXY` | HTTPS proxy URL for network requests |
-| `NO_PROXY` | Comma-separated list of hosts that bypass proxy |
-| `MCP_TOOL_TIMEOUT` | MCP tool execution timeout in ms |
-| `MCP_CLIENT_SECRET` | MCP OAuth client secret |
-| `MCP_OAUTH_CALLBACK_PORT` | MCP OAuth callback port |
-| `IS_DEMO` | Enable demo mode |
-| `SLASH_COMMAND_TOOL_CHAR_BUDGET` | Character budget for slash command tool output |
-| `VERTEX_REGION_CLAUDE_3_5_HAIKU` | Vertex AI region override for Claude 3.5 Haiku |
-| `VERTEX_REGION_CLAUDE_3_7_SONNET` | Vertex AI region override for Claude 3.7 Sonnet |
-| `VERTEX_REGION_CLAUDE_4_0_OPUS` | Vertex AI region override for Claude 4.0 Opus |
-| `VERTEX_REGION_CLAUDE_4_0_SONNET` | Vertex AI region override for Claude 4.0 Sonnet |
-| `VERTEX_REGION_CLAUDE_4_1_OPUS` | Vertex AI region override for Claude 4.1 Opus |
+| 变量 | 描述 |
+|------|-------------|
+| `ANTHROPIC_API_KEY` | Anthropic API 密钥 |
+| `ANTHROPIC_MODEL` | 默认模型 |
+| `ANTHROPIC_BASE_URL` | API 基础 URL |
+| `CLAUDE_CODE_MAX_TOKENS` | 最大输出 token 数 |
+| `CLAUDE_CODE_TEMPERATURE` | 生成温度 |
+| `CLAUDE_CODE_LOG_LEVEL` | 日志级别 |
+| `CLAUDE_CODE_DISABLE_TELEMETRY` | 禁用遥测 |
 
 ---
 
-## Useful Commands
+## 实用命令
 
-| Command | Description |
-|---------|-------------|
-| `/model` | Switch models and adjust Opus 4.6 effort level |
-| `/effort` | Set effort level directly: `low`, `medium`, `high` (v2.1.76+) |
-| `/config` | Interactive configuration UI |
-| `/memory` | View/edit all memory files |
-| `/agents` | Manage subagents |
-| `/mcp` | Manage MCP servers |
-| `/hooks` | View configured hooks |
-| `/plugin` | Manage plugins |
-| `/keybindings` | Configure custom keyboard shortcuts |
-| `/skills` | View and manage skills |
-| `/permissions` | View and manage permission rules |
-| `--doctor` | Diagnose configuration issues |
-| `--debug` | Debug mode with hook execution details |
+| 命令 | 描述 |
+|------|-------------|
+| `/config` | 打开设置界面 |
+| `/permissions` | 查看或更新权限 |
+| `/model` | 切换模型 |
+| `/effort` | 设置努力级别 |
+| `/status` | 查看状态 |
+| `/doctor` | 检查安装健康状况 |
 
 ---
 
-## Quick 参考: Complete Example
+## 来源
 
-```json
-{
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "model": "sonnet",
-  "agent": "code-reviewer",
-  "language": "english",
-  "cleanupPeriodDays": 30,
-  "autoUpdatesChannel": "stable",
-  "alwaysThinkingEnabled": true,
-  "includeGitInstructions": true,
-  "defaultShell": "bash",
-  "plansDirectory": "./plans",
-  "effortLevel": "medium",
-
-  "worktree": {
-    "symlinkDirectories": ["node_modules"],
-    "sparsePaths": ["packages/my-app", "shared/utils"]
-  },
-
-  "modelOverrides": {
-    "claude-opus-4-6": "arn:aws:bedrock:us-east-1:123456789:inference-profile/anthropic.claude-opus-4-6-v1:0"
-  },
-
-  "autoMode": {
-    "environment": [
-      "Source control: github.example.com/acme-corp and all repos under it",
-      "Trusted internal domains: *.internal.example.com"
-    ]
-  },
-
-  "permissions": {
-    "allow": [
-      "Edit(*)",
-      "Write(*)",
-      "Bash(npm run *)",
-      "Bash(git *)",
-      "WebFetch(domain:*)",
-      "mcp__*",
-      "Agent(*)"
-    ],
-    "deny": [
-      "Read(.env)",
-      "Read(./secrets/**)"
-    ],
-    "additionalDirectories": ["../shared/"],
-    "defaultMode": "acceptEdits"
-  },
-
-  "enableAllProjectMcpServers": true,
-
-  "sandbox": {
-    "enabled": true,
-    "excludedCommands": ["git", "docker"],
-    "filesystem": {
-      "denyRead": ["./secrets/"],
-      "denyWrite": ["./.env"]
-    }
-  },
-
-  "attribution": {
-    "commit": "Generated with Claude Code",
-    "pr": ""
-  },
-
-  "statusLine": {
-    "type": "command",
-    "command": "git branch --show-current"
-  },
-
-  "spinnerTipsEnabled": true,
-  "spinnerTipsOverride": {
-    "tips": ["Custom tip 1", "Custom tip 2"],
-    "excludeDefault": false
-  },
-  "prefersReducedMotion": false,
-
-  "env": {
-    "NODE_ENV": "development",
-    "CLAUDE_CODE_EFFORT_LEVEL": "medium"
-  }
-}
-```
-
----
-
-## Sources
-
-- [Claude Code 设置 Documentation](https://code.claude.com/docs/en/settings)
-- [Claude Code 设置 JSON Schema](https://json.schemastore.org/claude-code-settings.json)
-- [Claude Code Changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- [Claude Code GitHub 设置 示例](https://github.com/feiskyer/claude-code-settings)
-- [Eesel AI - Developer's Guide to settings.json](https://www.eesel.ai/blog/settings-json-claude-code)
-- [Shipyard - Claude Code CLI Cheatsheet](https://shipyard.build/blog/claude-code-cheat-sheet/)
-- [Claude Code Environment Variables 参考](https://code.claude.com/docs/en/env-vars)
-- [Claude Code Permissions 参考](https://code.claude.com/docs/en/permissions)
+- [Claude Code 设置文档](https://code.claude.com/docs/en/settings)
+- [Claude Code 权限文档](https://code.claude.com/docs/en/permissions)
+- [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
