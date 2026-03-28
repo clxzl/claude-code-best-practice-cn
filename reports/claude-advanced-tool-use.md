@@ -11,7 +11,7 @@ API-level features (now GA) that reduce token consumption, latency, and improve 
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [概述](#overview)
 2. [Programmatic Tool Calling (PTC)](#programmatic-tool-calling-ptc)
 3. [Dynamic Filtering for Web Search/Fetch](#dynamic-filtering-for-web-searchfetch)
 4. [Tool Search Tool](#tool-search-tool)
@@ -20,7 +20,7 @@ API-level features (now GA) that reduce token consumption, latency, and improve 
 
 ---
 
-## Overview
+## 概述
 
 | Feature | Problem Solved | Token Savings | Availability |
 |---------|---------------|---------------|--------------|
@@ -281,7 +281,7 @@ Loading all tool definitions upfront wastes context. If you have 50 MCP tools at
 
 Mark infrequently-used tools with `defer_loading: true`. They're excluded from the initial context. Claude discovers them on-demand via a Tool Search Tool.
 
-### Configuration
+### 配置
 
 ```json
 {
@@ -298,7 +298,7 @@ Mark infrequently-used tools with `defer_loading: true`. They're excluded from t
 }
 ```
 
-### Best Practices
+### 最佳实践
 
 - Keep 3-5 most-used tools always loaded, defer the rest
 - Write clear, descriptive tool names and descriptions (search relies on them)
@@ -335,7 +335,7 @@ JSON schemas define structure but can't express:
 
 Add `input_examples` to tool definitions — concrete usage patterns beyond the schema.
 
-### Configuration
+### 配置
 
 ```json
 {
@@ -370,7 +370,7 @@ Add `input_examples` to tool definitions — concrete usage patterns beyond the 
 }
 ```
 
-### Best Practices
+### 最佳实践
 
 - Use **realistic data**, not placeholder strings like "example_value"
 - Show **variety**: minimal, partial, and full specifications

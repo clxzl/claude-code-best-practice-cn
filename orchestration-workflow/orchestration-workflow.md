@@ -119,7 +119,7 @@ The agent has `weather-fetcher` preloaded into its context at startup. It follow
 - **Purpose**: Instructions for fetching real-time temperature data
 - **Data Source**: Open-Meteo API for Dubai, UAE
 - **Output**: Temperature value and unit (Celsius or Fahrenheit)
-- **Note**: This is an agent skill — preloaded into `weather-agent`, not invoked directly
+- **注意**: This is an agent skill — preloaded into `weather-agent`, not invoked directly
 
 ## Execution Flow
 
@@ -167,7 +167,7 @@ Input: /weather-orchestrator
 4. **Skill for Output**: The SVG creator runs independently, receiving data from the command context
 5. **Clean Separation**: Fetch (agent) → Render (skill) — each component has a single responsibility
 
-## Architecture Patterns
+## 架构 Patterns
 
 ### Agent Skill (Preloaded)
 

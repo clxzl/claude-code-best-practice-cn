@@ -72,7 +72,7 @@ Subagents in `.claude/agents/*.md` use YAML frontmatter:
 - `isolation`: Set to `"worktree"` to run in a temporary git worktree
 - `color`: CLI output color for visual distinction
 
-### Configuration Hierarchy
+### 配置 Hierarchy
 1. **Managed** (`managed-settings.json` / MDM plist / Registry): Organization-enforced, cannot be overridden
 2. Command line arguments: Single-session overrides
 3. `.claude/settings.local.json`: Personal project settings (git-ignored)

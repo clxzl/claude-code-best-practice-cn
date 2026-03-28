@@ -126,7 +126,7 @@ Verify the 5-level override chain:
 - Is the version control column correct?
 - Is the managed settings policy layer documented accurately?
 
-### Example Accuracy
+### 示例 Accuracy
 Verify the Quick Reference complete example:
 - Does it use current setting keys with valid syntax?
 - Does it demonstrate the most important settings from each section?

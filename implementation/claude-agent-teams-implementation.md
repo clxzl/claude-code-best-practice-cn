@@ -1,4 +1,4 @@
-# Agent Teams Implementation
+# Agent Teams 实现
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar_12%2C_2026-white?style=flat&labelColor=555)
 

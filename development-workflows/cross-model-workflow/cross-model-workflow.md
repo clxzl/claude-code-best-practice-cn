@@ -1,8 +1,8 @@
-# Cross-Model (Claude Code + Codex) Workflow
+# Cross-Model (Claude Code + Codex) 工作流
 
 based on [claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) and [codex-cli-best-practice](https://github.com/shanraisshan/codex-cli-best-practice)
 
-## Workflow
+## 工作流
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -50,6 +50,6 @@ based on [claude-code-best-practice](https://github.com/shanraisshan/claude-code
 
 ## How cross-model workflow actually looks in production
 
-![Cross-Model Workflow](assets/cross-model-workflow.png)
+![Cross-Model 工作流](assets/cross-model-workflow.png)
 
 *Last Updated: 2026-03-06*

@@ -1,4 +1,4 @@
-# 10 Tips for Using Claude Code — From the Claude Code Team
+# 10 Claude Code 使用技巧 — From the Claude Code Team
 
 A summary of team tips shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on February 1, 2026.
 
@@ -57,7 +57,7 @@ One engineer tells Claude to maintain a notes directory for every task/project, 
 
 ## 4/ Create Your Own Skills and Commit Them to Git
 
-Reuse across every project. Tips from the team:
+Reuse across every project. 技巧 from the team:
 
 - If you do something more than once a day, turn it into a skill or command
 - Build a `/techdebt` slash command and run it at the end of every session to find and kill duplicated code

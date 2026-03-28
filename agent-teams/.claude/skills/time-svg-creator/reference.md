@@ -28,7 +28,7 @@
 | `{{DATE}}` | Date extracted from `formatted` (first 10 chars) | `2026-03-12` |
 | `{{FORMATTED}}` | The full `formatted` string (used in markdown only) | `2026-03-12 14:30:45 +04` |
 
-### Design Specs
+### 设计 Specs
 
 | Property | Value |
 |----------|-------|

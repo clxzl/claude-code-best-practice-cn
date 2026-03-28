@@ -1,4 +1,4 @@
-# Scheduled Tasks Implementation
+# Scheduled Tasks 实现
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar_10%2C_2026-white?style=flat&labelColor=555)
 

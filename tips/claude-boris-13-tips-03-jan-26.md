@@ -1,4 +1,4 @@
-# How I Use Claude Code — 13 Tips from Boris Cherny
+# How I Use Claude Code — 13 技巧 from Boris Cherny
 
 A summary of setup tips shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on January 3, 2026.
 

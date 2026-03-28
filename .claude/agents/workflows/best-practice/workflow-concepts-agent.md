@@ -82,7 +82,7 @@ For each concept in the CONCEPTS table, verify:
 - The URL hasn't changed or been redirected
 - The linked page actually covers the concept described
 
-### Description Accuracy
+### 描述 Accuracy
 For each concept, verify:
 - The location path is correct
 - The description matches the official docs

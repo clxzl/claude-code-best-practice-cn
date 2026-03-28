@@ -1,4 +1,4 @@
-# RPI Workflow
+# RPI 工作流
 
 **RPI** = **R**esearch → **P**lan → **I**mplement
 
@@ -13,19 +13,19 @@ A systematic development workflow with validation gates at each phase. Prevents 
 
 ---
 
-## Overview
+## 概述
 
-![RPI Workflow](rpi-workflow.svg)
+![RPI 工作流](rpi-workflow.svg)
 
 ---
 
-## Installation
+## 安装
 
 Copy the `.claude` folder (containing `agents/` and `commands/rpi/`) to your repository root, then create the `rpi/plans` directory.
 
 ---
 
-## Example Workflow
+## Example 工作流
 
 ### Feature: User Authentication
 

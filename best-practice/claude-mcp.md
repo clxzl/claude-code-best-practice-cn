@@ -1,4 +1,4 @@
-# MCP Servers Best Practice
+# MCP 服务器 Best Practice
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2002%2C%202026%2012%3A30%20PM%20PKT-white?style=flat&labelColor=555)<br>
 [![Implemented](https://img.shields.io/badge/Implemented-2ea44f?style=flat)](../.mcp.json)
@@ -14,7 +14,7 @@ MCP (Model Context Protocol) servers extend Claude Code with connections to exte
 
 ---
 
-## MCP Servers for Daily Use
+## MCP 服务器 for Daily Use
 
 > *"Went overboard with 15 MCP servers thinking more = better. Ended up using only 4 daily."* — [r/mcp](https://reddit.com/r/mcp/comments/1mj0fxs/) (682 upvotes)
 
@@ -30,7 +30,7 @@ Research (Context7/DeepWiki) -> Debug (Playwright/Chrome) -> Document (Excalidra
 
 ---
 
-## Configuration
+## 配置
 
 MCP servers are configured in `.mcp.json` at the project root (project-scoped) or in `~/.claude.json` (user-scoped).
 
@@ -41,7 +41,7 @@ MCP servers are configured in `.mcp.json` at the project root (project-scoped) o
 | **stdio** | Spawns a local process | `npx`, `python`, binary |
 | **http** | Connects to a remote URL | HTTP/SSE endpoint |
 
-### Example `.mcp.json`
+### 示例 `.mcp.json`
 
 ```json
 {
@@ -79,7 +79,7 @@ Use environment variable expansion for secrets instead of committing API keys in
 }
 ```
 
-### Settings for MCP Servers
+### 设置 for MCP 服务器
 
 These settings in `.claude/settings.json` control MCP server approval:
 
@@ -126,7 +126,7 @@ Precedence: Subagent > Project > User
 
 ## Sources
 
-- [MCP Servers — Claude Code Docs](https://code.claude.com/docs/en/mcp)
+- [MCP 服务器 — Claude Code Docs](https://code.claude.com/docs/en/mcp)
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [5 MCPs that have genuinely made me 10x faster — r/mcp](https://reddit.com/r/mcp/comments/1qarjqm/)
 - [MCP Server Overload Discussion — r/mcp](https://reddit.com/r/mcp/comments/1mj0fxs/)

@@ -1,4 +1,4 @@
-# Code Review & Test Time Compute — Tips from Boris Cherny
+# Code Review & Test Time Compute — 技巧 from Boris Cherny
 
 A summary of insights shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on March 10, 2026.
 

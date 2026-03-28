@@ -1,8 +1,8 @@
-# Day 0 — Claude Code Setup
+# Day 0 — Claude Code 设置
 
 This guide walks you through installing Claude Code on your machine and authenticating so you can start using it.
 
-## Step 1: Install Claude Code
+## 步骤 1: Install Claude Code
 
 Choose your operating system:
 
@@ -16,7 +16,7 @@ Follow the guide for your OS, then come back here for authentication.
 
 ---
 
-## Step 2: Verify Installation
+## 步骤 2: Verify 安装
 
 After following your OS-specific guide, confirm everything is working:
 
@@ -27,7 +27,7 @@ claude --version  # Should show the installed Claude Code version
 
 ---
 
-## Step 3: Login
+## 步骤 3: Login
 
 <img src="assets/login.png" alt="Claude Code login screen" width="50%">
 

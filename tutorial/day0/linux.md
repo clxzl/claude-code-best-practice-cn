@@ -1,12 +1,12 @@
-# Linux Setup
+# Linux 设置
 
 [Back to Day 0](README.md)
 
-## Prerequisites
+## 前提条件
 
 You need **Node.js v18 or higher** and **npm**.
 
-## Step 1: Install Node.js
+## 步骤 1: Install Node.js
 
 ### Option A: Via nodejs.org Download Page with fnm (Recommended)
 
@@ -26,13 +26,13 @@ You need **Node.js v18 or higher** and **npm**.
 3. The page will show you the exact commands to run. Open your terminal and copy-paste them. They will look something like this:
 
    ```bash
-   # Step 1 — Install fnm
+   # 步骤 1 — Install fnm
    curl -fsSL https://fnm.vercel.app/install | bash
 
-   # Step 2 — Restart your terminal or reload your shell profile
+   # 步骤 2 — Restart your terminal or reload your shell profile
    source ~/.bashrc   # or: source ~/.zshrc (if you use zsh)
 
-   # Step 3 — Install Node.js
+   # 步骤 3 — Install Node.js
    fnm install 24   # The page will show the exact version number
    ```
 
@@ -77,7 +77,7 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-## Step 2: Verify Node.js
+## 步骤 2: Verify Node.js
 
 ```bash
 node --version
@@ -86,7 +86,7 @@ npm --version
 
 Both should print version numbers. `node --version` must show v18.x or higher.
 
-## Step 3: Install Claude Code
+## 步骤 3: Install Claude Code
 
 ```bash
 npm install -g @anthropic-ai/claude-code
@@ -102,7 +102,7 @@ npm install -g @anthropic-ai/claude-code
 >   source ~/.bashrc
 >   ```
 
-## Step 4: Verify Claude Code
+## 步骤 4: Verify Claude Code
 
 ```bash
 claude --version
@@ -112,7 +112,7 @@ You should see the Claude Code version printed. Now head back to [README.md](REA
 
 ---
 
-## Notes
+## 注意事项
 
 - **WSL (Windows Subsystem for Linux):** This guide works inside WSL too. Just follow these steps from your WSL terminal.
 - **PATH issues:** If `claude` is not found after install, ensure npm's global bin is in your PATH. Run `npm config get prefix` — the `bin/` subdirectory of that path needs to be in your PATH.

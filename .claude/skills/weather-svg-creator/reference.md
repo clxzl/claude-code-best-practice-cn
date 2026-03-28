@@ -19,7 +19,7 @@
 | `[value]` | Numeric temperature from input | `26.2` |
 | `[C/F]` | Unit abbreviation | `C` or `F` |
 
-### Design Specs
+### 设计 Specs
 
 | Property | Value |
 |----------|-------|

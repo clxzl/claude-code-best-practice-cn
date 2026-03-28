@@ -15,7 +15,7 @@ You **MUST** parse the user input to extract the feature slug (the folder name i
 
 This command creates comprehensive planning documentation for a feature request. It generates detailed specifications, technical design, and implementation plans in the feature's RPI folder.
 
-**Prerequisites**:
+**前提条件**:
 - Feature folder exists at `rpi/{feature-slug}/`
 - Research completed with GO recommendation (`rpi/{feature-slug}/research/RESEARCH.md` exists)
 
@@ -38,7 +38,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 0: Load Context
 
-**Prerequisites**: Feature slug provided
+**前提条件**: Feature slug provided
 
 **Process**:
 1. **Verify research completed**:
@@ -69,7 +69,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 1: Understand Feature Requirements
 
-**Prerequisites**: Phase 0 complete
+**前提条件**: Phase 0 complete
 
 **Process**:
 1. **Parse Feature Description** from research report:
@@ -103,7 +103,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 2: Analyze Technical Requirements
 
-**Prerequisites**: Phase 1 complete
+**前提条件**: Phase 1 complete
 
 **Process**:
 1. **Review Component Architecture**:
@@ -145,7 +145,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 3: Design Feature Architecture
 
-**Prerequisites**: Phases 1-2 complete
+**前提条件**: Phases 1-2 complete
 
 **Agent**: senior-software-engineer
 
@@ -195,7 +195,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 4: Break Down Implementation Tasks
 
-**Prerequisites**: Phases 1-3 complete
+**前提条件**: Phases 1-3 complete
 
 **Process**:
 1. **Identify Implementation Phases**:
@@ -236,7 +236,7 @@ This command creates comprehensive planning documentation for a feature request.
 
 ### Phase 5: Generate Documentation
 
-**Prerequisites**: Phases 1-4 complete
+**前提条件**: Phases 1-4 complete
 
 **Agent**: documentation-analyst-writer (via Task tool)
 
@@ -342,7 +342,7 @@ Files created:
 - **Testing Requirements**: {Z} test suites
 - **Risk Level**: {Low/Medium/High}
 
-### Implementation Phases
+### 实现 Phases
 
 1. **Phase 1**: {phase-name} - {task-count} tasks
 2. **Phase 2**: {phase-name} - {task-count} tasks
@@ -390,9 +390,9 @@ Files created:
 
 ---
 
-## Notes
+## 注意事项
 
-- **Prerequisites**: Research completed with GO recommendation
+- **前提条件**: Research completed with GO recommendation
 - **Part of RPI Workflow**: Step 3 of 4 (Describe → Research → Plan → Implement)
 
 **Best Practices**:

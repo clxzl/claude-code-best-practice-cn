@@ -1,4 +1,4 @@
-# Skills Implementation
+# Skills 实现
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar_02%2C_2026-white?style=flat&labelColor=555)
 
@@ -93,7 +93,7 @@ This is an **agent skill** — preloaded into the `weather-agent` at startup via
 
 ## Two Skill Patterns
 
-| Pattern | Invocation | Example | Key Difference |
+| Pattern | Invocation | 示例 | Key Difference |
 |---------|-----------|---------|----------------|
 | **Skill** | `Skill(skill: "name")` | `weather-svg-creator` | Invoked directly via Skill tool |
 | **Agent Skill** | Preloaded via `skills:` field | `weather-fetcher` | Injected into agent context at startup |

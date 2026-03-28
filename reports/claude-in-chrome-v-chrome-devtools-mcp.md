@@ -1,4 +1,4 @@
-# Comprehensive Browser Automation MCP Comparison Report
+# Comprehensive Browser Automation MCP 比较 报告
 
 <table width="100%">
 <tr>
@@ -7,7 +7,7 @@
 </tr>
 </table>
 
-## Executive Summary
+## Executive 摘要
 
 Based on extensive research, I've analyzed the two tools from your screenshots plus a third major contender. Here's my comprehensive breakdown to help you choose the best option for automated testing of your work.
 
@@ -37,7 +37,7 @@ Based on extensive research, I've analyzed the two tools from your screenshots p
 
 ---
 
-## 2. Detailed Feature Comparison
+## 2. Detailed Feature 比较
 
 | Feature | Chrome DevTools MCP | Claude in Chrome | Playwright MCP |
 |---------|---------------------|------------------|----------------|
@@ -119,7 +119,7 @@ BROWSER MGMT:             newPage, closePage
 
 ---
 
-## 4. Use Case Analysis for Automated Testing
+## 4. Use Case 分析 for Automated Testing
 
 ### **Chrome DevTools MCP is BEST for:**
 
@@ -184,7 +184,7 @@ BROWSER MGMT:             newPage, closePage
 
 ---
 
-## 5. Token Efficiency Analysis
+## 5. Token Efficiency 分析
 
 | Tool | Token Usage | % of Context | Efficiency Rating |
 |------|-------------|--------------|-------------------|
@@ -336,8 +336,8 @@ claude mcp add chrome-devtools -s user -- npx chrome-devtools-mcp@latest
 - [Playwright MCP - GitHub](https://github.com/microsoft/playwright-mcp)
 - [Simon Willison - Using Playwright MCP with Claude Code](https://til.simonwillison.net/claude-code/playwright-mcp-claude-code)
 - [Testomat.io - Playwright MCP Claude Code](https://testomat.io/blog/playwright-mcp-claude-code/)
-- [MCP Integration Guide - Scrapeless](https://www.scrapeless.com/en/blog/mcp-integration-guide)
-- [Chrome DevTools MCP Guide - Vladimir Siedykh](https://vladimirsiedykh.com/blog/chrome-devtools-mcp-ai-browser-debugging-complete-guide-2025)
+- [MCP Integration 指南 - Scrapeless](https://www.scrapeless.com/en/blog/mcp-integration-guide)
+- [Chrome DevTools MCP 指南 - Vladimir Siedykh](https://vladimirsiedykh.com/blog/chrome-devtools-mcp-ai-browser-debugging-complete-guide-2025)
 - [Addy Osmani - Give your AI eyes](https://addyosmani.com/blog/devtools-mcp/)
 
 ---

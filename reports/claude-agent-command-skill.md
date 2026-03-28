@@ -44,7 +44,7 @@ A comparison of the three extension mechanisms in Claude Code: subagents, comman
 - The task benefits from **running in the background** or in a **git worktree**
 - You need **tool restrictions** or a **different permission mode** (e.g., `acceptEdits`, `plan`)
 
-**Example**: `weather-agent` — autonomously fetches weather data using its preloaded `weather-fetcher` skill, runs in a separate context with restricted tools.
+**示例**: `weather-agent` — autonomously fetches weather data using its preloaded `weather-fetcher` skill, runs in a separate context with restricted tools.
 
 ### Use a Command when:
 
@@ -52,7 +52,7 @@ A comparison of the three extension mechanisms in Claude Code: subagents, comman
 - The workflow involves **orchestrating** other agents or skills
 - You want to **keep context lean** — command content is not injected into the session context until the user triggers it
 
-**Example**: `weather-orchestrator` — the user triggers it, it asks for C/F preference, invokes the agent, then invokes the SVG skill.
+**示例**: `weather-orchestrator` — the user triggers it, it asks for C/F preference, invokes the agent, then invokes the SVG skill.
 
 ### Use a Skill when:
 
@@ -60,7 +60,7 @@ A comparison of the three extension mechanisms in Claude Code: subagents, comman
 - The task is a **reusable procedure** that can be invoked from multiple places (commands, agents, or Claude itself)
 - You need **agent preloading** — baking domain knowledge into a specific agent at startup
 
-**Example**: `weather-svg-creator` — Claude auto-invokes it when the user asks for a weather card; also callable from commands.
+**示例**: `weather-svg-creator` — Claude auto-invokes it when the user asks for a weather card; also callable from commands.
 
 ---
 
@@ -93,7 +93,7 @@ weather-svg-creator (skill — creates SVG inline)
 
 ---
 
-## Frontmatter Comparison
+## Frontmatter 比较
 
 ### Agent Frontmatter
 

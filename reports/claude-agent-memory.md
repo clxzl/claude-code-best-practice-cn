@@ -11,7 +11,7 @@ Persistent memory for subagents — enabling agents to learn, remember, and buil
 
 ---
 
-## Overview
+## 概述
 
 Introduced in **Claude Code v2.1.33** (February 2026), the `memory` frontmatter field gives each subagent its own persistent markdown-based knowledge store. Before this, every agent invocation started from scratch.
 
@@ -93,7 +93,7 @@ This combines **skills** (static knowledge at startup) with **memory** (dynamic 
 
 ---
 
-## Tips
+## 技巧
 
 - **Prompt memory usage** — Include explicit instructions: `"Before starting, review your memory. After completing, update your memory with what you learned."`
 - **Request memory checks** when invoking agents: `"Review this PR, and check your memory for patterns you've seen before."`

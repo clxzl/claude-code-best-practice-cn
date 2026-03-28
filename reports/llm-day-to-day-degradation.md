@@ -21,7 +21,7 @@ Can a deployed LLM's performance change day-to-day even though the model weights
 ---
 ---
 
-# 🔥 Claude Code Ops 4.6 Analysis. High Reasoning
+# 🔥 Claude Code Ops 4.6 分析. High Reasoning
 
 When Anthropic launches a model like Opus 4.6, the **model weights** — billions of learned parameters — are frozen. Training is enormously expensive (millions of dollars, weeks of compute). Nobody is retraining the model overnight.
 
@@ -152,7 +152,7 @@ This means even with zero bugs and zero changes, the same model can produce noti
 
 ### System Prompt Changes
 
-The model weights don't change, but the **system prompt** wrapping those weights can be updated at any time. Analysis of Claude's system prompt evolution shows dozens of iterations, with "hot-fixes" — short instructions added to patch undesired behavior — being added and removed regularly.
+The model weights don't change, but the **system prompt** wrapping those weights can be updated at any time. 分析 of Claude's system prompt evolution shows dozens of iterations, with "hot-fixes" — short instructions added to patch undesired behavior — being added and removed regularly.
 
 Claude 3.7's system prompt contained multiple hot-fix instructions targeting common LLM "gotchas." Claude 4.0's system prompt removed all of them, with the behaviors addressed during post-training through reinforcement learning instead.
 
@@ -177,7 +177,7 @@ This demonstrates that model swaps **do happen** in the industry — sometimes i
 
 ---
 
-## Contributing Factors
+## 贡献指南 Factors
 
 ### Quantization Under Load
 
@@ -271,24 +271,24 @@ The measurement problem is severe: day-to-day variance of ±8-14% means you cann
 - [How is ChatGPT's Behavior Changing Over Time? — Stanford/UC Berkeley](https://arxiv.org/abs/2307.09009) — Landmark study on LLM drift (2023)
 - [The Truth About ChatGPT's Degrading Capabilities — TechTalks](https://bdtechtalks.com/2023/07/24/chatgpt-capabilities-degrading-study/) — Methodological critique of the Stanford study
 - [LLMs Are Getting Dumber and We Have No Idea Why — Ignorance.ai](https://www.ignorance.ai/p/llms-are-getting-dumber-and-we-have) — Five theories for perceived degradation
-- [When Claude Forgets How to Code — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — Analysis of Claude quality fluctuations and infrastructure causes
+- [When Claude Forgets How to Code — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — 分析 of Claude quality fluctuations and infrastructure causes
 - [Smoothing Out LLM Variance — Scale AI](https://scale.com/blog/smoothing-out-llm-variance) — Measured ±8-14% day-to-day variance across providers
 - [What We Can Learn from Anthropic's System Prompt Updates — PromptLayer](https://blog.promptlayer.com/what-we-can-learn-from-anthropics-system-prompt-updates/) — System prompt evolution analysis
 - [Claude's System Prompt Changes Reveal Anthropic's Priorities — Drew Breunig](https://www.dbreunig.com/2025/06/03/comparing-system-prompts-across-claude-versions.html) — Hot-fix patterns in system prompts
 - [Complaints About Secretly Switching Models — OpenAI Forum](https://community.openai.com/t/complaints-about-secretly-switching-models/1360150) — Documented silent model swaps
 - [Speculative Decoding — BentoML LLM Inference Handbook](https://bentoml.com/llm/inference-optimization/speculative-decoding) — How draft models affect serving
-- [A Visual Guide to Mixture of Experts — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE architecture and routing explained
+- [A Visual 指南 to Mixture of Experts — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE architecture and routing explained
 
 ---
 ---
 
 # 🔥 Codex 5.3 High Reason and Finding
 
-### Report Scope
+### 报告 Scope
 
 This section explains why users can experience a short window where Claude output quality drops while Codex 5.3 feels stable or stronger on coding tasks. The focus is not on permanent model quality rankings. The focus is short-horizon production behavior under real serving conditions.
 
-Report date: March 5, 2026.
+报告 date: March 5, 2026.
 
 ### Observed Pattern
 
@@ -355,6 +355,6 @@ To reduce day-to-day variance in production:
 5. Keep a fallback provider/model path for incident windows.
 6. Separate "model quality" from "serving reliability" in internal dashboards.
 
-### Final Conclusion
+### Final 结论
 
 Codex 5.3 looking better during a short Claude degradation window is a technically plausible and expected outcome in modern LLM operations. The strongest explanation is not permanent model collapse. The strongest explanation is temporary serving-path degradation at one provider, combined with coding-specific optimization and stable operation at the other provider during the same period.

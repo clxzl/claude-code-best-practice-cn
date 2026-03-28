@@ -36,7 +36,7 @@ Current Dubai Temperature: [X]°[C/F]
 Unit: [Celsius/Fahrenheit]
 ```
 
-## Notes
+## 注意事项
 
 - Only fetch the temperature, do not perform any transformations or write any files
 - Open-Meteo is free, requires no API key, and uses coordinate-based lookups for reliability

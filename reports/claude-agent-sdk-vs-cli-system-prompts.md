@@ -11,13 +11,13 @@
 
 ---
 
-## Executive Summary
+## Executive 摘要
 
 When sending the same message (e.g., "What is the capital of Norway?") through the **Claude Agent SDK** versus the **Claude CLI (Claude Code)**, the system prompts accompanying these messages are fundamentally different. The CLI uses a **modular system prompt architecture** (~269 base tokens with additional context conditionally loaded based on features), while the SDK uses a minimal prompt by default. **There is no guarantee of identical output between the two**, even with matching configurations, due to the absence of a seed parameter and inherent non-determinism in Claude's architecture.
 
 ---
 
-## 1. System Prompt Comparison
+## 1. System Prompt 比较
 
 ### Claude CLI (Claude Code)
 
@@ -27,7 +27,7 @@ The Claude CLI uses a **modular system prompt architecture** with a ~269-token b
 |-----------|-------------|---------|
 | **Base System Prompt** | Core instructions and behavior | Always (~269 tokens) |
 | **Tool Instructions** | 18+ builtin tools (Write, Read, Edit, Bash, TodoWrite, etc.) | Always |
-| **Coding Guidelines** | Code style, formatting rules, security practices | Always |
+| **Coding 指南lines** | Code style, formatting rules, security practices | Always |
 | **Safety Rules** | Refusal rules, injection defense, harm prevention | Always |
 | **Response Style** | Tone, verbosity, explanation depth, emoji usage | Always |
 | **Environment Context** | Working directory, git status, platform info | Always |
@@ -61,7 +61,7 @@ The Agent SDK uses a **minimal system prompt by default** containing:
 
 ## 2. What Each Interface Sends
 
-### Example: "What is the capital of Norway?"
+### 示例: "What is the capital of Norway?"
 
 #### Via Claude CLI
 
@@ -138,7 +138,7 @@ System Prompt: [modular, matches CLI]
 | **CLAUDE.md loading** | `settingSources: ["project"]` | Loads project-level instructions |
 | **Output styles** | `settingSources: ["user"]` or `settingSources: ["project"]` | Loads saved output styles |
 
-### Configuration Comparison Table
+### 配置 比较 Table
 
 | Feature | CLI Default | SDK Default | SDK with Preset |
 |---------|-------------|-------------|-----------------|
@@ -252,7 +252,7 @@ Even with perfectly matching configurations:
 | Batch processing | Agent SDK | Better for automation pipelines |
 | One-off tasks | Claude CLI | Faster setup, immediate context |
 
-### Design Recommendations
+### 设计 Recommendations
 
 1. **Don't rely on bit-perfect reproducibility**
    - Build applications robust to minor output variations
@@ -291,7 +291,7 @@ Even with perfectly matching configurations:
 
 ---
 
-## 8. Summary Table
+## 8. 摘要 Table
 
 | Aspect | Claude CLI | Agent SDK (Default) | Agent SDK (Preset) |
 |--------|------------|--------------------|--------------------|
@@ -306,7 +306,7 @@ Even with perfectly matching configurations:
 
 ---
 
-## 9. Conclusion
+## 9. 结论
 
 **Q: What system prompts accompany the same message in SDK vs CLI?**
 
@@ -332,7 +332,7 @@ The CLI uses a **modular system prompt architecture** with a ~269-token base pro
 - [Claude Code Best Practices - Anthropic Engineering](https://www.anthropic.com/engineering/claude-code-best-practices)
 - [Claude Messages API Reference](https://docs.anthropic.com/en/api/messages)
 - [GitHub Issue #3370: Non-deterministic output](https://github.com/anthropics/claude-code/issues/3370)
-- [Claude Code System Prompts Repository](https://github.com/Piebald-AI/claude-code-system-prompts) - Analysis of modular prompt architecture
+- [Claude Code System Prompts Repository](https://github.com/Piebald-AI/claude-code-system-prompts) - 分析 of modular prompt architecture
 - [Why Deterministic Output from LLMs is Nearly Impossible](https://unstract.com/blog/understanding-why-deterministic-output-from-llms-is-nearly-impossible/)
 
 ---

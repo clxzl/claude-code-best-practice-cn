@@ -1,4 +1,4 @@
-# Claude Code Settings Reference
+# Claude Code 设置 参考
 
 ![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2027%2C%202026%206%3A32%20PM%20PKT-white?style=flat&labelColor=555) ![Version](https://img.shields.io/badge/Claude_Code-v2.1.85-blue?style=flat&labelColor=555)
 
@@ -13,14 +13,14 @@ A comprehensive guide to all available configuration options in Claude Code's `s
 
 ## Table of Contents
 
-1. [Settings Hierarchy](#settings-hierarchy)
-2. [Core Configuration](#core-configuration)
+1. [设置 Hierarchy](#settings-hierarchy)
+2. [Core 配置](#core-configuration)
 3. [Permissions](#permissions)
 4. [Hooks](#hooks)
-5. [MCP Servers](#mcp-servers)
+5. [MCP 服务器](#mcp-servers)
 6. [Sandbox](#sandbox)
 7. [Plugins](#plugins)
-8. [Model Configuration](#model-configuration)
+8. [Model 配置](#model-configuration)
 9. [Display & UX](#display--ux)
 10. [AWS & Cloud Credentials](#aws--cloud-credentials)
 11. [Environment Variables](#environment-variables-via-env)
@@ -28,9 +28,9 @@ A comprehensive guide to all available configuration options in Claude Code's `s
 
 ---
 
-## Settings Hierarchy
+## 设置 Hierarchy
 
-Settings apply in order of precedence (highest to lowest):
+设置 apply in order of precedence (highest to lowest):
 
 | Priority | Location | Scope | Shared? | Purpose |
 |----------|----------|-------|---------|---------|
@@ -58,9 +58,9 @@ Within the managed tier, precedence is: server-managed > MDM/OS-level policies >
 
 ---
 
-## Core Configuration
+## Core 配置
 
-### General Settings
+### General 设置
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -94,14 +94,14 @@ Within the managed tier, precedence is: server-managed > MDM/OS-level policies >
 }
 ```
 
-### Plans & Memory Directories
+### Plans & 记忆 Directories
 
 Store plan and auto-memory files in custom locations.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `plansDirectory` | string | `~/.claude/plans` | Directory where `/plan` outputs are stored |
-| `autoMemoryDirectory` | string | - | Custom directory for auto-memory storage. Accepts `~/`-expanded paths. Not accepted in project settings (`.claude/settings.json`) to prevent redirecting memory writes to sensitive locations; accepted from policy, local, and user settings |
+| `auto记忆Directory` | string | - | Custom directory for auto-memory storage. Accepts `~/`-expanded paths. Not accepted in project settings (`.claude/settings.json`) to prevent redirecting memory writes to sensitive locations; accepted from policy, local, and user settings |
 
 **Example:**
 ```json
@@ -112,7 +112,7 @@ Store plan and auto-memory files in custom locations.
 
 **Use Case:** Useful for organizing planning artifacts separately from Claude's internal files, or for keeping plans in a shared team location.
 
-### Worktree Settings
+### Worktree 设置
 
 Configure how `--worktree` creates and manages git worktrees. Useful for reducing disk usage and startup time in large monorepos.
 
@@ -131,7 +131,7 @@ Configure how `--worktree` creates and manages git worktrees. Useful for reducin
 }
 ```
 
-### Attribution Settings
+### Attribution 设置
 
 Customize attribution messages for git commits and pull requests.
 
@@ -243,7 +243,7 @@ Control what tools and operations Claude can perform.
 
 ### Tool Permission Syntax
 
-| Tool | Syntax | Examples |
+| Tool | Syntax | 示例 |
 |------|--------|----------|
 | `Bash` | `Bash(command pattern)` | `Bash(npm run *)`, `Bash(* install)`, `Bash(git * main)` |
 | `Read` | `Read(path pattern)` | `Read(.env)`, `Read(./secrets/**)` |
@@ -315,11 +315,11 @@ For the official hooks reference, see the [Claude Code Hooks Documentation](http
 
 ---
 
-## MCP Servers
+## MCP 服务器
 
 Configure Model Context Protocol servers for extended capabilities.
 
-### MCP Settings
+### MCP 设置
 
 | Key | Type | Scope | Description |
 |-----|------|-------|-------------|
@@ -332,7 +332,7 @@ Configure Model Context Protocol servers for extended capabilities.
 | `channelsEnabled` | boolean | Managed only | Allow [channels](https://code.claude.com/docs/en/channels) for Team and Enterprise users. When unset or `false`, channel message delivery is blocked regardless of `--channels` flag |
 | `allowedChannelPlugins` | array | Managed only | Allowlist of channel plugins that may push messages. Replaces the default Anthropic allowlist when set. Undefined = fall back to the default, empty array = block all channel plugins. Requires `channelsEnabled: true`. Each entry is an object with `marketplace` and `plugin` fields (v2.1.84) |
 
-### MCP Server Matching (Managed Settings)
+### MCP Server Matching (Managed 设置)
 
 ```json
 {
@@ -362,7 +362,7 @@ Configure Model Context Protocol servers for extended capabilities.
 
 Configure bash command sandboxing for security.
 
-### Sandbox Settings
+### Sandbox 设置
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -410,7 +410,7 @@ Configure bash command sandboxing for security.
 
 Configure Claude Code plugins and marketplaces.
 
-### Plugin Settings
+### Plugin 设置
 
 | Key | Type | Scope | Description |
 |-----|------|-------|-------------|
@@ -458,7 +458,7 @@ Configure Claude Code plugins and marketplaces.
 
 ---
 
-## Model Configuration
+## Model 配置
 
 ### Model Aliases
 
@@ -536,7 +536,7 @@ Configure via `env` key:
 
 ## Display & UX
 
-### Display Settings
+### Display 设置
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -547,9 +547,9 @@ Configure via `env` key:
 | `spinnerTipsOverride` | object | - | Custom spinner tips with `tips` (string array) and optional `excludeDefault` (boolean) |
 | `respectGitignore` | boolean | `true` | Respect .gitignore in file picker |
 | `prefersReducedMotion` | boolean | `false` | Reduce animations and motion effects in the UI |
-| `fileSuggestion` | object | - | Custom file suggestion command (see File Suggestion Configuration below) |
+| `fileSuggestion` | object | - | Custom file suggestion command (see File Suggestion 配置 below) |
 
-### Global Config Settings (`~/.claude.json`)
+### Global Config 设置 (`~/.claude.json`)
 
 These display preferences are stored in `~/.claude.json`, **not** `settings.json`. Adding them to `settings.json` will trigger a schema validation error.
 
@@ -561,7 +561,7 @@ These display preferences are stored in `~/.claude.json`, **not** `settings.json
 | `showTurnDuration` | boolean | `true` | Show turn duration messages after responses (e.g., "Cooked for 1m 6s"). Edit `~/.claude.json` directly to change |
 | `terminalProgressBarEnabled` | boolean | `true` | Show the terminal progress bar in supported terminals (ConEmu, Ghostty 1.2.0+, and iTerm2 3.6.6+). Appears in `/config` as **Terminal progress bar** |
 
-### Status Line Configuration
+### Status Line 配置
 
 ```json
 {
@@ -589,7 +589,7 @@ The status line command receives a JSON object on stdin with these notable field
 | `rate_limits.seven_day.used_percentage` | Seven-day rate limit usage percentage |
 | `rate_limits.seven_day.resets_at` | Seven-day rate limit reset timestamp |
 
-### File Suggestion Configuration
+### File Suggestion 配置
 
 The file suggestion script receives a JSON object on stdin (e.g., `{"query": "src/comp"}`) and must output up to 15 file paths (one per line).
 
@@ -626,7 +626,7 @@ The file suggestion script receives a JSON object on stdin (e.g., `{"query": "sr
 
 ## AWS & Cloud Credentials
 
-### AWS Settings
+### AWS 设置
 
 | Key | Type | Description |
 |-----|------|-------------|
@@ -819,7 +819,7 @@ Set environment variables for all Claude Code sessions.
 
 ---
 
-## Quick Reference: Complete Example
+## Quick 参考: Complete Example
 
 ```json
 {
@@ -908,11 +908,11 @@ Set environment variables for all Claude Code sessions.
 
 ## Sources
 
-- [Claude Code Settings Documentation](https://code.claude.com/docs/en/settings)
-- [Claude Code Settings JSON Schema](https://json.schemastore.org/claude-code-settings.json)
+- [Claude Code 设置 Documentation](https://code.claude.com/docs/en/settings)
+- [Claude Code 设置 JSON Schema](https://json.schemastore.org/claude-code-settings.json)
 - [Claude Code Changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- [Claude Code GitHub Settings Examples](https://github.com/feiskyer/claude-code-settings)
+- [Claude Code GitHub 设置 示例](https://github.com/feiskyer/claude-code-settings)
 - [Eesel AI - Developer's Guide to settings.json](https://www.eesel.ai/blog/settings-json-claude-code)
 - [Shipyard - Claude Code CLI Cheatsheet](https://shipyard.build/blog/claude-code-cheat-sheet/)
-- [Claude Code Environment Variables Reference](https://code.claude.com/docs/en/env-vars)
-- [Claude Code Permissions Reference](https://code.claude.com/docs/en/permissions)
+- [Claude Code Environment Variables 参考](https://code.claude.com/docs/en/env-vars)
+- [Claude Code Permissions 参考](https://code.claude.com/docs/en/permissions)

@@ -128,7 +128,7 @@ Skill descriptions are loaded into context up to a character budget (default 15,
 - Run `/context` to check for warnings about excluded skills
 - Set `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable to increase the limit
 
-## Best Practices
+## 最佳实践
 
 1. **Put shared workflows in root `.claude/skills/`** - Repository-wide conventions, commit workflows, and shared patterns.
 
@@ -140,7 +140,7 @@ Skill descriptions are loaded into context up to a character budget (default 15,
 
 5. **Use namespacing in skill names** - Consider prefixing with package names (e.g., `frontend-review`, `backend-deploy`) to avoid confusion.
 
-## Comparison: Skills vs CLAUDE.md Loading
+## 比较: Skills vs CLAUDE.md Loading
 
 | Behavior | CLAUDE.md | Skills |
 |----------|-----------|--------|

@@ -152,7 +152,7 @@ You are typically the **first agent** in the feature analysis workflow:
 5. **Then**: technical-cto-advisor (for strategic assessment)
 6. **Finally**: documentation-analyst-writer (for report generation)
 
-## Best Practices
+## 最佳实践
 
 ### Do's
 - Extract both explicit and implicit requirements
@@ -230,7 +230,7 @@ You are successful when:
 - Requirements are complete and actionable
 - Output format is consistent and well-structured
 
-## Notes
+## 注意事项
 
 - Always search the codebase for similar features before completing your analysis
 - When in doubt, ask clarifying questions - better to pause than proceed with wrong assumptions

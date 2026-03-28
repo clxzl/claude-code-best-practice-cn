@@ -15,7 +15,7 @@ You **MUST** parse the user input to extract the feature slug (the folder name i
 
 This command executes phased implementation of features based on planning documentation. It orchestrates specialized agents, enforces validation gates, and ensures constitutional compliance throughout implementation.
 
-**Prerequisites**:
+**前提条件**:
 - Feature folder exists at `rpi/{feature-slug}/`
 - Planning completed (`rpi/{feature-slug}/plan/PLAN.md` exists)
 
@@ -33,7 +33,7 @@ This command executes phased implementation of features based on planning docume
 
 All agents use **Opus model** for maximum quality.
 
-### Implementation Agent
+### 实现 Agent
 
 | Agent | Type | When to Use |
 |-------|------|-------------|
@@ -56,7 +56,7 @@ All implementation tasks are handled by the `senior-software-engineer` agent.
 
 ## Phase 0: Load Context and Rules
 
-**Prerequisites**: Feature slug parsed from user input
+**前提条件**: Feature slug parsed from user input
 
 **Process**:
 
@@ -210,7 +210,7 @@ Acting as the [agent-name] agent, implement Phase N deliverables for [feature-na
 ## Files to Modify
 [List files with specific changes from PLAN.md]
 
-## Implementation Requirements
+## 实现 Requirements
 1. Follow existing code patterns identified in discovery
 2. Honor constitutional constraints (type safety, testing, etc.)
 3. Follow project-specific rules (if applicable)
@@ -404,7 +404,7 @@ Update checkboxes in PLAN.md:
 ### Code Review
 [Review verdict and notes]
 
-### Notes
+### 注意事项
 [Any additional notes]
 
 ---
@@ -424,7 +424,7 @@ Update checkboxes in PLAN.md:
 
 ## Error Handling
 
-### Implementation Failures
+### 实现 Failures
 
 **If implementation fails**:
 1. Document the specific failure
@@ -473,7 +473,7 @@ Update checkboxes in PLAN.md:
 On successful completion of all phases:
 
 ```markdown
-## Implementation Complete
+## 实现 Complete
 
 ### Feature Summary
 - **Feature**: [feature-name]
@@ -564,7 +564,7 @@ Before marking implementation complete:
 
 ---
 
-## Notes
+## 注意事项
 
 ### When to Use This Command
 
@@ -579,7 +579,7 @@ Before marking implementation complete:
 - Exploratory prototyping
 - Documentation-only changes
 
-### Best Practices
+### 最佳实践
 
 1. **Review PLAN.md first**: Understand what you're implementing
 2. **Trust code discovery**: Let Explore agent inform implementation

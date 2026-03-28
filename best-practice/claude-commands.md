@@ -42,7 +42,7 @@ Claude Code commands — frontmatter fields and official built-in slash commands
 | 2 | `/logout` | ![Auth](https://img.shields.io/badge/Auth-2980B9?style=flat) | Log out from Claude Code |
 | 3 | `/upgrade` | ![Auth](https://img.shields.io/badge/Auth-2980B9?style=flat) | Open the upgrade page to switch to a higher plan tier |
 | 4 | `/color [color\|default]` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | Set the prompt bar color for the current session |
-| 5 | `/config` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | Open the Settings interface to adjust theme, model, output style, and other preferences. Alias: `/settings` |
+| 5 | `/config` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | Open the 设置 interface to adjust theme, model, output style, and other preferences. Alias: `/settings` |
 | 6 | `/keybindings` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | Customize keyboard shortcuts per context and create chord sequences |
 | 7 | `/permissions` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | View or update tool permissions. Alias: `/allowed-tools` |
 | 8 | `/privacy-settings` | ![Config](https://img.shields.io/badge/Config-F39C12?style=flat) | Manage privacy and telemetry preferences |
@@ -58,7 +58,7 @@ Claude Code commands — frontmatter fields and official built-in slash commands
 | 18 | `/extra-usage` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Configure pay-as-you-go overflow billing for subscription plans |
 | 19 | `/insights` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Generate a report analyzing your Claude Code sessions, including project areas, interaction patterns, and friction points |
 | 20 | `/stats` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Visualize daily usage, session history, streaks, and model preferences |
-| 21 | `/status` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Open the Settings interface (Status tab) showing version, model, account, and connectivity |
+| 21 | `/status` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Open the 设置 interface (Status tab) showing version, model, account, and connectivity |
 | 22 | `/usage` | ![Context](https://img.shields.io/badge/Context-8E44AD?style=flat) | Show plan usage limits and rate limit status (subscription plans only) |
 | 23 | `/doctor` | ![Debug](https://img.shields.io/badge/Debug-E74C3C?style=flat) | Check the health of your Claude Code installation |
 | 24 | `/feedback [description]` | ![Debug](https://img.shields.io/badge/Debug-E74C3C?style=flat) | Generate a GitHub issue URL for reporting bugs or feedback. Alias: `/bug` |
@@ -75,7 +75,7 @@ Claude Code commands — frontmatter fields and official built-in slash commands
 | 35 | `/plugin` | ![Extensions](https://img.shields.io/badge/Extensions-16A085?style=flat) | Manage Claude Code plugins |
 | 36 | `/reload-plugins` | ![Extensions](https://img.shields.io/badge/Extensions-16A085?style=flat) | Reload installed plugins without restarting |
 | 37 | `/skills` | ![Extensions](https://img.shields.io/badge/Extensions-16A085?style=flat) | List available skills |
-| 38 | `/memory` | ![Memory](https://img.shields.io/badge/Memory-3498DB?style=flat) | Edit CLAUDE.md memory files, enable or disable auto-memory, and view auto-memory entries |
+| 38 | `/memory` | ![记忆](https://img.shields.io/badge/记忆-3498DB?style=flat) | Edit CLAUDE.md memory files, enable or disable auto-memory, and view auto-memory entries |
 | 39 | `/effort [low\|medium\|high\|max\|auto]` | ![Model](https://img.shields.io/badge/Model-E67E22?style=flat) | Set the model effort level |
 | 40 | `/fast [on\|off]` | ![Model](https://img.shields.io/badge/Model-E67E22?style=flat) | Toggle fast mode — same Opus 4.6 model with faster output |
 | 41 | `/model` | ![Model](https://img.shields.io/badge/Model-E67E22?style=flat) | Switch models (haiku, sonnet, opus) and adjust effort level |

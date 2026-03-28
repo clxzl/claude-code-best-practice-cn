@@ -1,4 +1,4 @@
-# Windows Setup
+# Windows 设置
 
 [Back to Day 0](README.md)
 

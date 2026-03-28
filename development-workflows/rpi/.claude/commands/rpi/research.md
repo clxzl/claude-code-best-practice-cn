@@ -24,7 +24,7 @@ This command performs comprehensive research and analysis of feature requests **
 - Determine the right approach (build, buy, partner, or decline)
 - Make go/no-go recommendation with clear rationale
 
-**Prerequisites**:
+**前提条件**:
 - Feature folder exists at `rpi/{feature-slug}/`
 - Feature request file exists at `rpi/{feature-slug}/REQUEST.md`
 
@@ -51,7 +51,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 0: Load Context
 
-**Prerequisites**: Feature slug provided, `rpi/{feature-slug}/REQUEST.md` exists
+**前提条件**: Feature slug provided, `rpi/{feature-slug}/REQUEST.md` exists
 
 **Process**:
 1. **Read feature description**:
@@ -81,7 +81,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 1: Parse Feature Request
 
-**Prerequisites**: Phase 0 complete
+**前提条件**: Phase 0 complete
 
 **Agent**: requirement-parser (planning domain)
 
@@ -108,7 +108,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 2: Product Analysis with Constitution Alignment
 
-**Prerequisites**: Phase 1 complete, requirements clear
+**前提条件**: Phase 1 complete, requirements clear
 
 **Agent**: product-manager
 
@@ -141,7 +141,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 2.5: Technical Discovery (Code Exploration)
 
-**Prerequisites**: Phases 1-2 complete, product viability established
+**前提条件**: Phases 1-2 complete, product viability established
 
 **Agent**: Explore (via Task tool with subagent_type="Explore")
 
@@ -177,7 +177,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 3: Technical Feasibility Assessment
 
-**Prerequisites**: Phases 1-2.5 complete, code explored
+**前提条件**: Phases 1-2.5 complete, code explored
 
 **Agent**: senior-software-engineer
 
@@ -210,7 +210,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 4: Strategic Assessment
 
-**Prerequisites**: Phases 1-3 complete
+**前提条件**: Phases 1-3 complete
 
 **Agent**: technical-cto-advisor
 
@@ -240,7 +240,7 @@ This command performs comprehensive research and analysis of feature requests **
 
 ### Phase 5: Generate Research Report
 
-**Prerequisites**: Phases 1-4 complete
+**前提条件**: Phases 1-4 complete
 
 **Agent**: documentation-analyst-writer (via Task tool)
 
@@ -360,7 +360,7 @@ Based on the **[GO/NO-GO]** recommendation:
 
 ---
 
-## Notes
+## 注意事项
 
 - **When to Use**: After Step 1 (Describe) creates the feature folder
 - **Critical Gate**: This prevents wasted effort on non-viable features

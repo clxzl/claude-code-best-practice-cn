@@ -11,7 +11,7 @@ Understanding how usage limits work in Claude Code and how to keep working when 
 
 ---
 
-## Overview
+## 概述
 
 Claude Code on subscription plans (Pro, Max 5x, Max 20x) has usage limits that reset on a rolling window. Three built-in slash commands help you monitor and manage usage:
 

@@ -11,11 +11,11 @@ A comprehensive comparison of which Claude Code features are global-only (`~/.cl
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [概述](#overview)
 2. [Global-Only Features](#global-only-features)
 3. [Dual-Scope Features](#dual-scope-features)
 4. [Settings Precedence](#settings-precedence)
-5. [Directory Structure Comparison](#directory-structure-comparison)
+5. [Directory Structure 比较](#directory-structure-comparison)
 6. [Tasks System](#tasks-system)
 7. [Agent Teams](#agent-teams)
 8. [Design Principles](#design-principles)
@@ -23,7 +23,7 @@ A comprehensive comparison of which Claude Code features are global-only (`~/.cl
 
 ---
 
-## Overview
+## 概述
 
 Claude Code uses a **scope hierarchy** where some features exist at both the global (`~/.claude/`) and project (`.claude/`) levels, while others are exclusively global. The design principle: things that are *personal state* or *cross-project coordination* live globally; things that are *team-shareable project config* can live at the project level.
 
@@ -83,7 +83,7 @@ Policy layer: `managed-settings.json` is organization-enforced and cannot be ove
 
 ---
 
-## Directory Structure Comparison
+## Directory Structure 比较
 
 ### Global Scope (`~/.claude/`)
 
@@ -207,7 +207,7 @@ Announced **February 5, 2026** as an experimental feature. Agent Teams allow mul
 }
 ```
 
-### Configuration
+### 配置
 
 Team configs live at `~/.claude/teams/{team-name}/` and support modes:
 
@@ -218,7 +218,7 @@ Team configs live at `~/.claude/teams/{team-name}/` and support modes:
 
 ---
 
-## Design Principles
+## 设计 Principles
 
 The global-only vs dual-scope split follows a clear pattern:
 

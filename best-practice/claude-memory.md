@@ -1,4 +1,4 @@
-# Claude Memory
+# Claude 记忆
 
 Persistent context via CLAUDE.md files — how to write them and how they load in monorepos.
 
@@ -39,7 +39,7 @@ When you start Claude Code, it walks **upward** from your current working direct
 
 CLAUDE.md files in subdirectories below your current working directory are **NOT loaded at launch**. They are only included when Claude reads files in those subdirectories during your session. This is known as **lazy loading**.
 
-### Example Monorepo Structure
+### 示例 Monorepo Structure
 
 Consider a typical monorepo with separate directories for different components:
 
@@ -104,7 +104,7 @@ claude
 
 - **Context is optimized** — By lazily loading descendant CLAUDE.md files, Claude Code avoids loading potentially hundreds of kilobytes of irrelevant instructions at startup.
 
-### Best Practices
+### 最佳实践
 
 1. **Put shared conventions in root CLAUDE.md** — Coding standards, commit message formats, PR templates, and other repository-wide guidelines.
 

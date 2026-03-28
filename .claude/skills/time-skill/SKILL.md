@@ -24,7 +24,7 @@ Display the current date and time in Pakistan Standard Time (UTC+5).
    Current Time in Pakistan (PKT): YYYY-MM-DD HH:MM:SS PKT
    ```
 
-## Requirements
+## 要求
 
 - Always use the `Asia/Karachi` timezone (UTC+5)
 - Use 24-hour format

@@ -125,15 +125,15 @@ Skills that perform routine maintenance and operational procedures — some of w
 
 ---
 
-## Tips for Making Skills
+## 技巧 for Making Skills
 
 9 best practices for writing effective skills, plus guidance on distribution and measurement.
 
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/14.png" alt="Tips for Making Skills grid" width="50%" /></a>
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/14.png" alt="技巧 for Making Skills grid" width="50%" /></a>
 
 ---
 
-### Tip 1: Don't State the Obvious
+### 提示 1: Don't State the Obvious
 
 Claude Code knows a lot about your codebase, and Claude knows a lot about coding, including many default opinions. If you're publishing a skill that is primarily about knowledge, try to focus on information that pushes Claude out of its normal way of thinking. The frontend design skill is a great example — it was built by iterating with customers on improving Claude's design taste, avoiding classic patterns like the Inter font and purple gradients.
 
@@ -141,7 +141,7 @@ Claude Code knows a lot about your codebase, and Claude knows a lot about coding
 
 ---
 
-### Tip 2: Build a Gotchas Section
+### 提示 2: Build a Gotchas Section
 
 The highest-signal content in any skill is the Gotchas section. These sections should be built up from common failure points that Claude runs into when using your skill. Ideally, you will update your skill over time to capture these gotchas.
 
@@ -149,7 +149,7 @@ The highest-signal content in any skill is the Gotchas section. These sections s
 
 ---
 
-### Tip 3: Use the File System & Progressive Disclosure
+### 提示 3: Use the File System & Progressive Disclosure
 
 A skill is a folder, not just a markdown file. You should think of the entire file system as a form of context engineering and progressive disclosure. Tell Claude what files are in your skill, and it will read them at appropriate times. The simplest form is to point to other markdown files — e.g., split detailed function signatures and usage examples into `references/api.md`. You can have folders of references, scripts, examples, etc.
 
@@ -157,7 +157,7 @@ A skill is a folder, not just a markdown file. You should think of the entire fi
 
 ---
 
-### Tip 4: Avoid Railroading Claude
+### 提示 4: Avoid Railroading Claude
 
 Claude will generally try to stick to your instructions, and because skills are so reusable you'll want to be careful of being too specific. Give Claude the information it needs, but give it the flexibility to adapt to the situation. Instead of prescriptive step-by-step instructions, give the goal and constraints.
 
@@ -165,7 +165,7 @@ Claude will generally try to stick to your instructions, and because skills are 
 
 ---
 
-### Tip 5: Think through the Setup
+### 提示 5: Think through the Setup
 
 Some skills may need to be set up with context from the user. A good pattern is to store this setup information in a `config.json` file in the skill directory. If the config is not set up, the agent can then ask the user for information. You can instruct Claude to use the AskUserQuestion tool for structured, multiple choice questions.
 
@@ -173,7 +173,7 @@ Some skills may need to be set up with context from the user. A good pattern is 
 
 ---
 
-### Tip 6: The Description Field Is For the Model
+### 提示 6: The Description Field Is For the Model
 
 When Claude Code starts a session, it builds a listing of every available skill with its description. This listing is what Claude scans to decide "is there a skill for this request?" Which means the description field is not a summary — it's a description of **when to trigger** this skill. Write it for the model.
 
@@ -181,7 +181,7 @@ When Claude Code starts a session, it builds a listing of every available skill 
 
 ---
 
-### Tip 7: Memory & Storing Data
+### 提示 7: Memory & Storing Data
 
 Some skills can include a form of memory by storing data within them. You could store data in anything as simple as an append-only text log file or JSON files, or as complicated as a SQLite database. Data stored in the skill directory may be deleted when you upgrade the skill, so use `${CLAUDE_PLUGIN_DATA}` as a stable folder per plugin to store data in.
 
@@ -189,7 +189,7 @@ Some skills can include a form of memory by storing data within them. You could 
 
 ---
 
-### Tip 8: Store Scripts & Generate Code
+### 提示 8: Store Scripts & Generate Code
 
 One of the most powerful tools you can give Claude is code. Giving Claude scripts and libraries lets Claude spend its turns on composition, deciding what to do next rather than reconstructing boilerplate. Claude can then generate scripts on the fly to compose this functionality for more advanced analysis.
 
@@ -197,7 +197,7 @@ One of the most powerful tools you can give Claude is code. Giving Claude script
 
 ---
 
-### Tip 9: On Demand Hooks
+### 提示 9: On Demand Hooks
 
 Skills can include hooks that are only activated when the skill is called, and last for the duration of the session. Use this for more opinionated hooks that you don't want to run all the time but are extremely useful sometimes.
 
