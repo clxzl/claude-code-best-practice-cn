@@ -1,30 +1,30 @@
 ---
 name: time-svg-creator
-description: Creates an SVG time card showing the current time for Dubai. Writes the SVG to agent-teams/output/dubai-time.svg and updates agent-teams/output/output.md.
+description: 创建一个 SVG 时间卡片，显示迪拜的当前时间。将 SVG 写入 agent-teams/output/dubai-time.svg 并更新 agent-teams/output/output.md。
 allowed-tools: Write, Read
 ---
 
-# Time SVG Creator Skill
+# 时间 SVG 创建器 Skill
 
-Creates a visual SVG time card for Dubai, UAE and writes the output files.
+为阿联酋迪拜创建一个可视化的时间 SVG 卡片并写入输出文件。
 
-## Task
+## 任务
 
-You will receive three fields from the calling context: `time`, `timezone`, and `formatted`. Create an SVG time card and write both the SVG and a markdown summary.
+你将从调用上下文中接收三个字段：`time`、`timezone` 和 `formatted`。创建一个 SVG 时间卡片并写入 SVG 和 Markdown 摘要。
 
-## Instructions
+## 指令
 
-1. **Create SVG** — Use the SVG template from [reference.md](reference.md), replacing placeholders with actual values
-2. **Write SVG file** — Write to `agent-teams/output/dubai-time.svg`
-3. **Write summary** — Write to `agent-teams/output/output.md` using the markdown template from [reference.md](reference.md)
+1. **创建 SVG** — 使用 [reference.md](reference.md) 中的 SVG 模板，用实际值替换占位符
+2. **写入 SVG 文件** — 写入 `agent-teams/output/dubai-time.svg`
+3. **写入摘要** — 使用 [reference.md](reference.md) 中的 Markdown 模板写入 `agent-teams/output/output.md`
 
-## Rules
+## 规则
 
-- Use the EXACT time values provided — NEVER re-fetch or recalculate
-- The SVG must be self-contained and valid
-- Both output files go in the `agent-teams/output/` directory
+- 使用提供的精确时间值 — 永远不要重新获取或重新计算
+- SVG 必须是自包含且有效的
+- 两个输出文件都放在 `agent-teams/output/` 目录中
 
-## Additional resources
+## 附加资源
 
-- For SVG template, output template, and design specs, see [reference.md](reference.md)
-- For example input/output pairs, see [examples.md](examples.md)
+- SVG 模板、输出模板和设计规范，请参阅 [reference.md](reference.md)
+- 示例输入/输出配对，请参阅 [examples.md](examples.md)

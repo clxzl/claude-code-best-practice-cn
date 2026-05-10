@@ -1,15 +1,15 @@
-# Weather SVG Creator — Examples
+# 天气 SVG 创建器 — 示例
 
-## Example 1: Celsius
+## 示例 1：摄氏度
 
-### Input
+### 输入
 
 ```
 Temperature: 26.2°C
 Unit: Celsius
 ```
 
-### SVG Output (`orchestration-workflow/weather.svg`)
+### SVG 输出 (`orchestration-workflow/weather.svg`)
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" width="300" height="160">
@@ -20,36 +20,36 @@ Unit: Celsius
 </svg>
 ```
 
-### Markdown Output (`orchestration-workflow/output.md`)
+### Markdown 输出 (`orchestration-workflow/output.md`)
 
 ```markdown
-# Weather Result
+# 天气结果
 
-## Temperature
+## 温度
 26.2°C
 
-## Location
+## 位置
 Dubai, UAE
 
-## Unit
+## 单位
 Celsius
 
-## SVG Card
+## SVG 卡片
 ![Weather Card](weather.svg)
 ```
 
 ---
 
-## Example 2: Fahrenheit
+## 示例 2：华氏度
 
-### Input
+### 输入
 
 ```
 Temperature: 79.2°F
 Unit: Fahrenheit
 ```
 
-### SVG Output (`orchestration-workflow/weather.svg`)
+### SVG 输出 (`orchestration-workflow/weather.svg`)
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" width="300" height="160">
@@ -60,20 +60,20 @@ Unit: Fahrenheit
 </svg>
 ```
 
-### Markdown Output (`orchestration-workflow/output.md`)
+### Markdown 输出 (`orchestration-workflow/output.md`)
 
 ```markdown
-# Weather Result
+# 天气结果
 
-## Temperature
+## 温度
 79.2°F
 
-## Location
+## 位置
 Dubai, UAE
 
-## Unit
+## 单位
 Fahrenheit
 
-## SVG Card
+## SVG 卡片
 ![Weather Card](weather.svg)
 ```

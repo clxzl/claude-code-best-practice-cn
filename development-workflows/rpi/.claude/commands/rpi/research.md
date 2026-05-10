@@ -1,381 +1,381 @@
 ---
-description: Research and analyze feature viability - GO/NO-GO decision gate
+description: 研究和分析功能可行性 - GO/NO-GO 决策门禁
 argument-hint: "<feature-slug>"
 ---
 
-## User Input
+## 用户输入
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** parse the user input to extract the feature slug (the folder name in `rpi/`).
+你**必须**解析用户输入以提取功能标识（`rpi/` 中的文件夹名称）。
 
-**Expected Input Format**: `rpi/{feature-slug}/REQUEST.md`
+**期望输入格式**：`rpi/{feature-slug}/REQUEST.md`
 
-## Purpose
+## 目的
 
-This command performs comprehensive research and analysis of feature requests **before** the planning phase begins. It acts as a critical GO/NO-GO gate to determine whether a feature idea should proceed to detailed planning.
+此命令在规划阶段开始**之前**对功能请求进行全面研究和分析。它作为一个关键的 GO/NO-GO 门禁，决定一个功能想法是否应进入详细规划。
 
-**Key Objectives**:
-- Assess product-market fit and user value
-- Evaluate technical feasibility and complexity
-- Identify risks and potential blockers
-- Determine the right approach (build, buy, partner, or decline)
-- Make go/no-go recommendation with clear rationale
+**关键目标**：
+- 评估产品市场匹配度和用户价值
+- 评估技术可行性和复杂性
+- 识别风险和潜在障碍
+- 确定正确的方法（构建、购买、合作或拒绝）
+- 做出 go/no-go 建议并给出清晰理由
 
-**前提条件**:
-- Feature folder exists at `rpi/{feature-slug}/`
-- Feature request file exists at `rpi/{feature-slug}/REQUEST.md`
+**前提条件**：
+- 功能文件夹存在于 `rpi/{feature-slug}/`
+- 功能请求文件存在于 `rpi/{feature-slug}/REQUEST.md`
 
-**Output Location**: `rpi/{feature-slug}/research/RESEARCH.md`
+**输出位置**：`rpi/{feature-slug}/research/RESEARCH.md`
 
-**This is Step 2 of the RPI Workflow** (after initial feature description in Step 1).
+**这是 RPI 工作流的第 2 步**（在第 1 步初始功能描述之后）。
 
-## Outline
+## 大纲
 
-1. **Load Context**: Read feature description from `rpi/{feature-slug}/` and project constitution (if exists)
-2. **Parse Feature Request**: Use requirement-parser agent to extract structured requirements
-3. **Execute Multi-Phase Research**:
-   - Phase 1: Parse Feature Request (requirement-parser agent)
-   - Phase 2: Product Analysis with Constitution Alignment (product-manager agent)
-   - Phase 2.5: Technical Discovery (Explore agent) - **CRITICAL: Deep code exploration**
-   - Phase 3: Technical Feasibility (senior-software-engineer agent)
-   - Phase 4: Strategic Assessment (technical-cto-advisor agent)
-   - Phase 5: Generate Research Report (documentation-analyst-writer agent)
-4. **Synthesize Recommendation**: Combine all analyses into clear go/no-go recommendation
-5. **Validate Output**: Check against quality gates
-6. **Report Completion**: Provide recommendation, next steps, and report location
+1. **加载上下文**：读取 `rpi/{feature-slug}/` 中的功能描述和项目章程（如存在）
+2. **解析功能请求**：使用 requirement-parser Agent 提取结构化需求
+3. **执行多阶段研究**：
+   - 阶段 1：解析功能请求（requirement-parser Agent）
+   - 阶段 2：产品分析与章程对齐（product-manager Agent）
+   - 阶段 2.5：技术探索（Explore Agent）- **关键：深度代码探索**
+   - 阶段 3：技术可行性（senior-software-engineer Agent）
+   - 阶段 4：战略评估（technical-cto-advisor Agent）
+   - 阶段 5：生成研究报告（documentation-analyst-writer Agent）
+4. **综合建议**：将所有分析合并为清晰的 go/no-go 建议
+5. **验证输出**：根据质量门禁检查
+6. **报告完成**：提供建议、后续步骤和报告位置
 
-## Phases
+## 阶段
 
-### Phase 0: Load Context
+### 阶段 0：加载上下文
 
-**前提条件**: Feature slug provided, `rpi/{feature-slug}/REQUEST.md` exists
+**前提条件**：已提供功能标识，`rpi/{feature-slug}/REQUEST.md` 存在
 
-**Process**:
-1. **Read feature description**:
-   - Read `rpi/{feature-slug}/REQUEST.md` (required)
-   - Extract feature requirements and goals from REQUEST.md
+**流程**：
+1. **读取功能描述**：
+   - 读取 `rpi/{feature-slug}/REQUEST.md`（必需）
+   - 从 REQUEST.md 提取功能需求和目标
 
-2. **Check for project constitution** (optional):
-   - Look for a constitution or principles document in the repository
-   - Common locations: `constitution.md`, `PRINCIPLES.md`, `.project/constitution.md`
-   - If found, extract core principles, constraints, and objectives
+2. **检查项目章程**（可选）：
+   - 在仓库中查找章程或原则文档
+   - 常见位置：`constitution.md`、`PRINCIPLES.md`、`.project/constitution.md`
+   - 如果找到，提取核心原则、约束和目标
 
-3. **Create research context**:
-   - Synthesize into concise summary for agents
-   - Identify key alignment criteria
+3. **创建研究上下文**：
+   - 为 Agent 合成简洁摘要
+   - 识别关键对齐标准
 
-**Outputs**:
-- Feature description summary
-- Constitutional principles (if found)
-- Alignment criteria for evaluation
+**输出**：
+- 功能描述摘要
+- 章程原则（如找到）
+- 用于评估的对齐标准
 
-**Validation**:
-- [ ] Feature folder exists in `rpi/{feature-slug}/`
-- [ ] Feature description extracted
-- [ ] Constitution checked and loaded (if exists)
-
----
-
-### Phase 1: Parse Feature Request
-
-**前提条件**: Phase 0 complete
-
-**Agent**: requirement-parser (planning domain)
-
-**Process**:
-1. **Launch requirement-parser agent** with feature description
-2. **Agent extracts**:
-   - Feature name and type
-   - Target component(s)
-   - Goals and objectives
-   - Functional and non-functional requirements
-   - Constraints and assumptions
-   - Complexity estimate
-   - Clarifying questions (if any)
-
-3. **Review parsing results**:
-   - If clarifying questions exist, **STOP and ask user** before proceeding
-
-**Outputs**:
-- Structured requirements document
-- Feature metadata (name, type, component, complexity)
-- Clarifying questions (if any)
+**验证**：
+- [ ] 功能文件夹存在于 `rpi/{feature-slug}/`
+- [ ] 功能描述已提取
+- [ ] 章程已检查并加载（如存在）
 
 ---
 
-### Phase 2: Product Analysis with Constitution Alignment
+### 阶段 1：解析功能请求
 
-**前提条件**: Phase 1 complete, requirements clear
+**前提条件**：阶段 0 完成
 
-**Agent**: product-manager
+**Agent**：requirement-parser（规划领域）
 
-**Process**:
-1. **Launch product-manager agent** with:
-   - Parsed requirements from Phase 1
-   - Constitutional context from Phase 0
+**流程**：
+1. **启动 requirement-parser Agent**，传入功能描述
+2. **Agent 提取**：
+   - 功能名称和类型
+   - 目标组件
+   - 目标和目的
+   - 功能性和非功能性需求
+   - 约束和假设
+   - 复杂度估计
+   - 澄清问题（如有）
 
-2. **Agent analyzes**:
-   - **User Value**: Who benefits? How much impact?
-   - **Market Fit**: Does this align with market needs?
-   - **Product Vision**: Does this fit our product strategy?
-   - **Constitutional Alignment**: Does this align with project principles?
-   - **Constraints Check**: Does this violate any constitutional constraints?
+3. **审查解析结果**：
+   - 如果存在澄清问题，**停止并向用户提问**后再继续
 
-3. **Agent provides**:
-   - Product viability score (High/Medium/Low)
-   - User value assessment
-   - Strategic alignment evaluation
-   - Priority recommendation
-   - Product concerns or red flags
-
-**Outputs**:
-- Product viability assessment
-- User value analysis
-- Strategic alignment score
-- Constitutional alignment summary (if applicable)
+**输出**：
+- 结构化需求文档
+- 功能元数据（名称、类型、组件、复杂度）
+- 澄清问题（如有）
 
 ---
 
-### Phase 2.5: Technical Discovery (Code Exploration)
+### 阶段 2：产品分析与章程对齐
 
-**前提条件**: Phases 1-2 complete, product viability established
+**前提条件**：阶段 1 完成，需求明确
 
-**Agent**: Explore (via Task tool with subagent_type="Explore")
+**Agent**：product-manager
 
-**Purpose**: **CRITICAL PHASE** - Deeply analyze existing codebase BEFORE making technical feasibility assessment.
+**流程**：
+1. **启动 product-manager Agent**，传入：
+   - 阶段 1 的解析需求
+   - 阶段 0 的章程上下文
 
-**Process**:
-1. **Launch Explore agent** with target component(s)
-2. **Agent investigates**:
-   - **Existing Implementation**: What code already exists for similar functionality?
-   - **Integration Points**: What systems/modules would this feature touch?
-   - **Current Architecture**: How is the current system structured?
-   - **Data Models**: What database schemas or data structures exist?
-   - **Dependencies**: What libraries, services are already integrated?
-   - **Existing Patterns**: What coding patterns and conventions are used?
+2. **Agent 分析**：
+   - **用户价值**：谁受益？影响有多大？
+   - **市场匹配度**：这是否符合市场需求？
+   - **产品愿景**：这是否符合我们的产品策略？
+   - **章程对齐**：这是否与项目原则一致？
+   - **约束检查**：这是否违反任何章程约束？
 
-3. **Agent provides**:
-   - **Current State Summary**: What exists today
-   - **Integration Analysis**: Where proposed feature would fit
-   - **Code Conflicts**: What would break or conflict
-   - **Leverage Opportunities**: What can be reused vs rebuilt
-   - **Technical Constraints**: Real constraints from existing code
+3. **Agent 提供**：
+   - 产品可行性评分（高/中/低）
+   - 用户价值评估
+   - 战略对齐评估
+   - 优先级建议
+   - 产品关注点或危险信号
 
-**Outputs**:
-- Current implementation summary
-- Integration points map
-- Code conflicts identified
-- Reusable components identified
-- Technical constraints from code
-
-**Critical**: This phase ensures Phase 3 is based on **actual code reality**, not assumptions.
+**输出**：
+- 产品可行性评估
+- 用户价值分析
+- 战略对齐评分
+- 章程对齐摘要（如适用）
 
 ---
 
-### Phase 3: Technical Feasibility Assessment
+### 阶段 2.5：技术探索（代码探索）
 
-**前提条件**: Phases 1-2.5 complete, code explored
+**前提条件**：阶段 1-2 完成，产品可行性已确立
 
-**Agent**: senior-software-engineer
+**Agent**：Explore（通过 Task 工具，subagent_type="Explore"）
 
-**Process**:
-1. **Launch senior-software-engineer agent** with:
-   - Parsed requirements from Phase 1
-   - Product context from Phase 2
-   - **Technical discovery results from Phase 2.5**
+**目的**：**关键阶段** - 在进行技术可行性评估之前深度分析现有代码库。
 
-2. **Agent analyzes** (informed by Phase 2.5 discoveries):
-   - **Technical Approach**: What are the implementation options?
-   - **Complexity**: How difficult is this to build?
-   - **Dependencies**: What systems/services are needed?
-   - **Technical Debt**: Will this create or reduce tech debt?
-   - **Risks**: What are the technical risks?
+**流程**：
+1. **启动 Explore Agent**，传入目标组件
+2. **Agent 调查**：
+   - **现有实现**：已存在哪些类似功能的代码？
+   - **集成点**：此功能会触及哪些系统/模块？
+   - **当前架构**：当前系统是如何构建的？
+   - **数据模型**：存在哪些数据库模式或数据结构？
+   - **依赖项**：已集成哪些库、服务？
+   - **现有模式**：使用了哪些编码模式和规范？
 
-3. **Agent provides**:
-   - Technical feasibility score (High/Medium/Low)
-   - Recommended approach (with alternatives)
-   - Complexity estimate (Simple/Medium/Complex)
-   - Technical risks and mitigations
+3. **Agent 提供**：
+   - **当前状态摘要**：今天有什么
+   - **集成分析**：建议的功能应放在哪里
+   - **代码冲突**：什么会破坏或冲突
+   - **复用机会**：什么可以复用 vs 重建
+   - **技术约束**：来自现有代码的真实约束
 
-**Outputs**:
-- Technical feasibility score
-- Recommended implementation approach
-- Complexity and effort estimate
-- Technical risks and mitigations
+**输出**：
+- 当前实现摘要
+- 集成点映射
+- 已识别的代码冲突
+- 已识别的可复用组件
+- 来自代码的技术约束
 
----
-
-### Phase 4: Strategic Assessment
-
-**前提条件**: Phases 1-3 complete
-
-**Agent**: technical-cto-advisor
-
-**Process**:
-1. **Launch technical-cto-advisor agent** with all previous phase outputs
-
-2. **Agent synthesizes**:
-   - **Overall Assessment**: Combine product + technical perspectives
-   - **Strategic Alignment**: Does this align with engineering principles AND project constitution?
-   - **Risk vs. Reward**: Is the value worth the effort and risk?
-   - **Alternative Options**: Build, buy, partner, defer, or decline?
-
-3. **Agent provides**:
-   - **Go/No-Go Recommendation**: Clear decision with confidence level
-   - **Rationale**: Detailed reasoning
-   - **Recommended Approach**: If "go", what's the best path forward?
-   - **Conditions**: Any prerequisites for proceeding?
-   - **Risks**: Key risks if we proceed
-
-**Outputs**:
-- Go/No-Go recommendation
-- Strategic rationale
-- Recommended approach
-- Risk summary
+**关键**：此阶段确保阶段 3 基于**实际代码现实**，而非假设。
 
 ---
 
-### Phase 5: Generate Research Report
+### 阶段 3：技术可行性评估
 
-**前提条件**: Phases 1-4 complete
+**前提条件**：阶段 1-2.5 完成，代码已探索
 
-**Agent**: documentation-analyst-writer (via Task tool)
+**Agent**：senior-software-engineer
 
-**Process**:
-1. **Launch documentation-analyst-writer agent** with all phase outputs
+**流程**：
+1. **启动 senior-software-engineer Agent**，传入：
+   - 阶段 1 的解析需求
+   - 阶段 2 的产品上下文
+   - **阶段 2.5 的技术探索结果**
 
-2. **Agent generates report** with sections:
-   - **Executive Summary**: One-paragraph overview with recommendation
-   - **Feature Overview**: Name, type, component, goals
-   - **Requirements Summary**: Key functional and non-functional requirements
-   - **Product Analysis**: User value, market fit, strategic alignment
-   - **Technical Discovery**: Current state, integration points, constraints from code
-   - **Technical Analysis**: Feasibility, approach, complexity, risks
-   - **Strategic Recommendation**: Go/no-go with detailed rationale
-   - **Next Steps**: What to do based on recommendation
+2. **Agent 分析**（基于阶段 2.5 的发现）：
+   - **技术方案**：有哪些实施选项？
+   - **复杂度**：构建难度有多大？
+   - **依赖项**：需要哪些系统/服务？
+   - **技术债务**：这会增加还是减少技术债务？
+   - **风险**：技术风险有哪些？
 
-3. **Agent creates markdown file**: `rpi/{feature-slug}/research/RESEARCH.md`
+3. **Agent 提供**：
+   - 技术可行性评分（高/中/低）
+   - 推荐方案（含替代方案）
+   - 复杂度估计（简单/中等/复杂）
+   - 技术风险和缓解措施
 
-**Outputs**:
-- Complete research report saved to `rpi/{feature-slug}/research/RESEARCH.md`
-
----
-
-## Sub-Agent Delegation
-
-This command orchestrates 6 specialist agents:
-
-| Phase | Agent | Type | Location |
-|-------|-------|------|----------|
-| Phase 1 | requirement-parser | Custom | .claude/agents/requirement-parser.md |
-| Phase 2 | product-manager | Custom | .claude/agents/product-manager.md |
-| Phase 2.5 | Explore | Built-in | Task tool with subagent_type="Explore" |
-| Phase 3 | senior-software-engineer | Custom | .claude/agents/senior-software-engineer.md |
-| Phase 4 | technical-cto-advisor | Custom | .claude/agents/technical-cto-advisor.md |
-| Phase 5 | documentation-analyst-writer | Built-in | Task tool with subagent_type="documentation-analyst-writer" |
+**输出**：
+- 技术可行性评分
+- 推荐实施方案
+- 复杂度和工作量估计
+- 技术风险和缓解措施
 
 ---
 
-## Completion Report
+### 阶段 4：战略评估
 
-Report the following on successful completion:
+**前提条件**：阶段 1-3 完成
 
-### Research Recommendation
+**Agent**：technical-cto-advisor
 
-**Decision**: [GO | NO-GO | CONDITIONAL GO | DEFER]
+**流程**：
+1. **启动 technical-cto-advisor Agent**，传入所有前序阶段输出
 
-**Confidence**: [High | Medium | Low]
+2. **Agent 综合**：
+   - **总体评估**：合并产品 + 技术视角
+   - **战略对齐**：这是否与工程原则和项目章程一致？
+   - **风险 vs 回报**：价值是否值得付出的努力和风险？
+   - **替代选项**：构建、购买、合作、推迟或拒绝？
 
-**Rationale** (1-2 sentences):
-[Key reasons for recommendation]
+3. **Agent 提供**：
+   - **Go/No-Go 建议**：带置信度的明确决定
+   - **理由**：详细推理
+   - **推荐方案**：如果"go"，最佳路径是什么？
+   - **条件**：继续进行的先决条件？
+   - **风险**：如果继续的关键风险
+
+**输出**：
+- Go/No-Go 建议
+- 战略理由
+- 推荐方案
+- 风险摘要
 
 ---
 
-### Research Summary
+### 阶段 5：生成研究报告
 
-**Feature**: {feature-name}
-**Type**: {feature-type}
-**Component**: {target-component}
-**Complexity**: {Simple | Medium | Complex}
+**前提条件**：阶段 1-4 完成
 
-**Scores**:
-- Product Viability: [High/Medium/Low]
-- Technical Feasibility: [High/Medium/Low]
-- Overall Assessment: [High/Medium/Low]
+**Agent**：documentation-analyst-writer（通过 Task 工具）
 
-**Key Risks**:
+**流程**：
+1. **启动 documentation-analyst-writer Agent**，传入所有阶段输出
+
+2. **Agent 生成报告**，包含以下部分：
+   - **执行摘要**：一段话概述含建议
+   - **功能概述**：名称、类型、组件、目标
+   - **需求摘要**：关键功能性和非功能性需求
+   - **产品分析**：用户价值、市场匹配度、战略对齐
+   - **技术发现**：当前状态、集成点、来自代码的约束
+   - **技术分析**：可行性、方案、复杂度、风险
+   - **战略建议**：go/no-go 及详细理由
+   - **后续步骤**：根据建议该做什么
+
+3. **Agent 创建 Markdown 文件**：`rpi/{feature-slug}/research/RESEARCH.md`
+
+**输出**：
+- 完整研究报告保存至 `rpi/{feature-slug}/research/RESEARCH.md`
+
+---
+
+## 子 Agent 委派
+
+此命令编排 6 个专家 Agent：
+
+| 阶段 | Agent | 类型 | 位置 |
+|-------|-------|------|------|
+| 阶段 1 | requirement-parser | 自定义 | .claude/agents/requirement-parser.md |
+| 阶段 2 | product-manager | 自定义 | .claude/agents/product-manager.md |
+| 阶段 2.5 | Explore | 内置 | Task 工具，subagent_type="Explore" |
+| 阶段 3 | senior-software-engineer | 自定义 | .claude/agents/senior-software-engineer.md |
+| 阶段 4 | technical-cto-advisor | 自定义 | .claude/agents/technical-cto-advisor.md |
+| 阶段 5 | documentation-analyst-writer | 内置 | Task 工具，subagent_type="documentation-analyst-writer" |
+
+---
+
+## 完成报告
+
+成功完成后报告以下内容：
+
+### 研究建议
+
+**决定**：[GO | NO-GO | CONDITIONAL GO | DEFER]
+
+**置信度**：[高 | 中 | 低]
+
+**理由**（1-2 句话）：
+[建议的关键原因]
+
+---
+
+### 研究摘要
+
+**功能**：{feature-name}
+**类型**：{feature-type}
+**组件**：{target-component}
+**复杂度**：{简单 | 中等 | 复杂}
+
+**评分**：
+- 产品可行性：[高/中/低]
+- 技术可行性：[高/中/低]
+- 总体评估：[高/中/低]
+
+**关键风险**：
 1. {risk-1}
 2. {risk-2}
 3. {risk-3}
 
 ---
 
-### Report Location
+### 报告位置
 
-**Full Research Report**: `rpi/{feature-slug}/research/RESEARCH.md`
-
----
-
-### Next Steps
-
-Based on the **[GO/NO-GO]** recommendation:
-
-**If GO**:
-1. Review the research report: `rpi/{feature-slug}/research/RESEARCH.md`
-2. Proceed to planning: `/rpi:plan "{feature-slug}"`
-
-**If CONDITIONAL GO**:
-1. Review conditions in report
-2. Address conditions before proceeding
-3. Re-run research if needed
-
-**If DEFER**:
-1. Review timeline recommendation in report
-2. Revisit when timing is appropriate
-
-**If NO-GO**:
-1. Review rationale in report
-2. Consider alternatives mentioned
-3. Archive for future reference
+**完整研究报告**：`rpi/{feature-slug}/research/RESEARCH.md`
 
 ---
 
-## Error Handling
+### 后续步骤
 
-**If REQUEST.md doesn't exist**:
-- Action: Stop and inform user
-- Message: "Feature request file `rpi/{feature-slug}/REQUEST.md` not found. Create the feature folder and REQUEST.md first (Step 1: Describe in Plan Mode)."
+根据 **[GO/NO-GO]** 建议：
 
-**If feature description is too vague**:
-- Action: requirement-parser will identify clarifying questions
-- Message: "Need more information. Please answer:"
-- Next: Wait for answers, then proceed
+**如果 GO**：
+1. 审查研究报告：`rpi/{feature-slug}/research/RESEARCH.md`
+2. 进入规划：`/rpi:plan "{feature-slug}"`
 
-**If agents fail or timeout**:
-- Action: Retry once
-- Next: If retry fails, ask user whether to continue with incomplete research
+**如果 CONDITIONAL GO**：
+1. 审查报告中的条件
+2. 在继续之前解决条件
+3. 如有需要重新运行研究
+
+**如果 DEFER**：
+1. 审查报告中的时间线建议
+2. 在适当时机重新审视
+
+**如果 NO-GO**：
+1. 审查报告中的理由
+2. 考虑提到的替代方案
+3. 归档以备将来参考
+
+---
+
+## 错误处理
+
+**如果 REQUEST.md 不存在**：
+- 操作：停止并通知用户
+- 消息："功能请求文件 `rpi/{feature-slug}/REQUEST.md` 未找到。请先创建功能文件夹和 REQUEST.md（步骤 1：在 Plan Mode 中描述）。"
+
+**如果功能描述过于模糊**：
+- 操作：requirement-parser 将识别澄清问题
+- 消息："需要更多信息。请回答："
+- 后续：等待回答，然后继续
+
+**如果 Agent 失败或超时**：
+- 操作：重试一次
+- 后续：如果重试失败，询问用户是否继续使用不完整的研究
 
 ---
 
 ## 注意事项
 
-- **When to Use**: After Step 1 (Describe) creates the feature folder
-- **Critical Gate**: This prevents wasted effort on non-viable features
-- **Part of RPI Workflow**: Step 2 of 4 (Describe → Research → Plan → Implement)
+- **何时使用**：在步骤 1（描述）创建功能文件夹之后
+- **关键门禁**：这防止在不可行的功能上浪费精力
+- **属于 RPI 工作流**：4 步中的第 2 步（描述 → 研究 → 规划 → 实施）
 
 ---
 
-## Post-Completion Action
+## 完成后操作
 
-**IMPORTANT**: After completing the research workflow, ALWAYS prompt the user to compact the conversation:
+**重要**：完成研究工作流后，始终提示用户压缩对话：
 
-> **Context Management**: This research workflow consumed significant context. To free up space for the next steps, please run:
+> **上下文管理**：此研究工作流消耗了大量上下文。要为后续步骤释放空间，请运行：
 >
 > ```
 > /compact
 > ```
 >
-> This will summarize the conversation and preserve important findings while reducing token usage for subsequent commands.
+> 这将总结对话并保留重要发现，同时减少后续命令的 token 使用量。

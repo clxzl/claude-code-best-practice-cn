@@ -1,162 +1,162 @@
-# Why Harness is Important
+# 为什么 Harness 很重要
 
-Why Claude Code's features are not "just prompts in disguise" — and why the harness is what actually separates toy output from production-grade engineering work.
+为什么 Claude Code 的功能不是"伪装的提示词" — 以及为什么 harness 才是真正将玩具级输出与生产级工程工作区分开来的关键。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Executive Summary
+## 执行摘要
 
-A common reduction among experienced Claude Code users is: *"skills, commands, subagents, hooks — they all eventually become prompts to the model, so a strong prompt alone is equivalent."*
+在经验丰富的 Claude Code 用户中，一种常见的简化说法是：*"Skills、Commands、Subagents、Hooks — 它们最终都会变成给模型的提示词，所以一个强大的提示词本身就等价了。"*
 
-At the layer of the model's final inference call, this is technically true. The model only ever sees tokens.
+在模型最终推理调用的层面上，这在技术上是对的。模型只看到 token。
 
-At every other layer — the one where real software engineering happens — **this reduction collapses.** The harness is not a prompt delivery system. It is a **prompt construction system, a deterministic execution system, and a context architecture system** — and those capabilities cannot be replaced by stronger wording.
+在其他每一层 — 真正的软件工程发生的那一层 — **这种简化就崩塌了。** Harness 不是提示词传递系统。它是一个**提示词构建系统、确定性执行系统和上下文架构系统** — 这些能力无法用更强的措辞来替代。
 
-This report explains where the reduction is right, where it fails, and why confusing "what the model sees" with "what the system does" leads practitioners away from the features that give Claude Code its actual leverage.
-
----
-
-## The Reduction That Sounds Right
-
-For a **single-shot atomic task** — "write me a recursive Fibonacci function" — the harness contributes nothing to output quality. Hand the same tokens to the same model and you get the same distribution of outputs whether they arrived via a skill, a command, or a raw prompt.
-
-In this narrow regime, the reduction holds:
-
-> Output quality ≈ Prompt quality
-
-This is the regime where Claude Code offers little value over a plain chatbot. It is also the regime the reduction implicitly assumes — and precisely the regime real engineering work is not in.
+本报告解释了这种简化在哪里是对的，在哪里会失败，以及为什么将"模型看到什么"与"系统做什么"混淆会让从业者远离那些赋予 Claude Code 真正杠杆力的功能。
 
 ---
 
-## Where the Reduction Breaks Down
+## 听起来有道理的简化
 
-Ten architectural capabilities of the harness operate at layers where prompts have no access.
+对于**单次原子任务** — "给我写一个递归斐波那契函数" — harness 对输出质量没有任何贡献。把相同的 token 交给同一个模型，无论它们是通过 Skill、Command 还是原始提示词到达的，你都会得到相同的输出分布。
 
-| # | Capability | What it does | Why a prompt can't replicate |
+在这个狭窄的范围内，简化是成立的：
+
+> 输出质量 ≈ 提示词质量
+
+这是 Claude Code 相比普通聊天机器人几乎没有额外价值的范围。这也是简化隐含假设的范围 — 而恰恰真实的工程工作不在这个范围内。
+
+---
+
+## 简化在哪里失效
+
+Harness 的十项架构能力在提示词无法触及的层面上运作。
+
+| # | 能力 | 作用 | 为什么提示词无法复制 |
 |---|------------|--------------|-------------------------------|
-| 1 | **Context isolation** | Subagents run in separate context windows | A prompt fills one window. N parallel subagents give ~N× effective context. |
-| 2 | **Harness-enforced tool restrictions** | `allowed-tools` / `disallowedTools` block tools before the model can use them | Prompt instructions are advisory; the model can ignore them. Deny rules cannot be ignored. |
-| 3 | **Lazy-loaded rules & memory** | `paths:` frontmatter and descendant `CLAUDE.md` files load only when Claude touches matching paths | A prompt is static — it cannot conditionally load based on which files are being read at runtime. |
-| 4 | **Hooks: deterministic code execution** | Shell commands run at lifecycle events (PreToolUse, PostToolUse, Stop, etc.) and can **block** tool calls | A prompt cannot intercept its own tool calls. Hooks execute even if the model doesn't "want" them to. |
-| 5 | **Model routing** | `model: haiku` or `model: opus` routes a call to a different model endpoint | No token in the prompt can change which model answers. |
-| 6 | **Parallelism** | Multiple subagents execute concurrently | A prompt is sequential. The harness schedules and collects results from parallel processes. |
-| 7 | **Cross-session persistence** | Memory system and settings hierarchy persist across conversations | A prompt dies when the session ends. |
-| 8 | **Modular system prompt** | The CLI loads 110+ system prompt fragments conditionally based on features activated | A user cannot hand-author or swap in the CLI's internal prompt fragments. |
-| 9 | **Skill preloading** | `skills:` field injects a skill's full content into a subagent's starting context | The user cannot pre-stuff another agent's context — only the harness loader can. |
-| 10 | **Permission classification** | `auto` permission mode uses a background classifier to pre-approve or block tool calls | A prompt cannot add a pre-execution safety layer to itself. |
+| 1 | **上下文隔离** | Subagent 在独立的上下文窗口中运行 | 提示词填充一个窗口。N 个并行 Subagent 提供约 N 倍的有效上下文。 |
+| 2 | **Harness 强制的工具限制** | `allowed-tools` / `disallowedTools` 在模型使用之前就阻止工具 | 提示词指令是建议性的；模型可以忽略它们。拒绝规则不能被忽略。 |
+| 3 | **延迟加载的规则和记忆** | `paths:` frontmatter 和后代 `CLAUDE.md` 文件仅在 Claude 触及匹配路径时加载 | 提示词是静态的 — 它无法根据运行时正在读取的文件条件性加载。 |
+| 4 | **Hooks：确定性代码执行** | Shell 命令在生命周期事件（PreToolUse、PostToolUse、Stop 等）运行，并且可以**阻止**工具调用 | 提示词无法拦截自己的工具调用。即使模型不"想"运行，Hooks 也会执行。 |
+| 5 | **模型路由** | `model: haiku` 或 `model: opus` 将调用路由到不同的模型端点 | 提示词中没有任何 token 可以改变哪个模型来回答。 |
+| 6 | **并行性** | 多个 Subagent 并发执行 | 提示词是顺序的。Harness 调度并收集并行进程的结果。 |
+| 7 | **跨会话持久性** | 记忆系统和设置层次结构跨对话持久化 | 提示词在会话结束时消亡。 |
+| 8 | **模块化系统提示词** | CLI 根据激活的功能条件性加载 110+ 个系统提示词片段 | 用户无法手写或替换 CLI 的内部提示词片段。 |
+| 9 | **Skill 预加载** | `skills:` 字段将 Skill 的完整内容注入 Subagent 的起始上下文 | 用户无法预先填充另一个 Agent 的上下文 — 只有 harness 加载器可以。 |
+| 10 | **权限分类** | `auto` 权限模式使用后台分类器预先批准或阻止工具调用 | 提示词无法为自己添加预执行安全层。 |
 
-Each row is a dimension where "strong wording" is categorically not a substitute.
+每一行都是一个"强措辞"在类别上无法替代的维度。
 
 ---
 
-## The Two Uses of the Word "Prompt"
+## "Prompt"一词的两种用法
 
-The reduction trades on an equivocation. The word *prompt* is used to mean two very different things:
+这种简化利用了歧义。*Prompt* 这个词被用来表示两种非常不同的含义：
 
-| Meaning | Who controls it | Size |
+| 含义 | 谁控制它 | 大小 |
 |---------|-----------------|------|
-| (a) What the user typed | The user | ~6–60 tokens |
-| (b) What the model sees at inference | The harness | ~5,000–50,000+ tokens |
+| (a) 用户输入的内容 | 用户 | ~6-60 个 token |
+| (b) 模型在推理时看到的内容 | Harness | ~5,000-50,000+ 个 token |
 
-In a chatbot, (a) and (b) are the same thing.
-In Claude Code, they are radically different.
+在聊天机器人中，(a) 和 (b) 是同一回事。
+在 Claude Code 中，它们截然不同。
 
-The harness's job is precisely to make (b) much richer than (a):
+Harness 的工作恰恰是让 (b) 比 (a) 丰富得多：
 
 ```
-User types: "write a recursive flatten function"   ← (a) ~6 tokens
+用户输入："写一个递归 flatten 函数"          ← (a) ~6 个 token
 
-What the model actually sees at inference:         ← (b) ~15,000 tokens
-  ├── CLAUDE.md (project conventions)
-  ├── Matching .claude/rules/*.md (loaded via paths: frontmatter)
-  ├── Modular system prompt fragments
-  ├── Tool definitions
-  ├── Environment context (cwd, git status, platform)
-  ├── Prior turn history
-  ├── Files read by the model via Read/Grep tools
-  └── User's 6-token request
+模型在推理时实际看到的内容：                   ← (b) ~15,000 个 token
+  ├── CLAUDE.md（项目规范）
+  ├── 匹配的 .claude/rules/*.md（通过 paths: frontmatter 加载）
+  ├── 模块化系统提示词片段
+  ├── 工具定义
+  ├── 环境上下文（cwd、git 状态、平台）
+  ├── 之前轮次的历史
+  ├── 模型通过 Read/Grep 工具读取的文件
+  └── 用户的 6 token 请求
 ```
 
-**Output quality is a function of (b), not (a).** The harness constructs (b). A "strong prompt alone" cannot reproduce (b) because most of it isn't written by the user.
+**输出质量是 (b) 的函数，而非 (a)。** Harness 构建 (b)。一个"强大的提示词本身"无法重现 (b)，因为大部分内容不是用户写的。
 
 ---
 
-## Even for Output Quality, the Harness Is Doing Work
+## 即使对于输出质量，Harness 也在发挥作用
 
-Consider the same prompt — "write a recursive flatten function" — in three environments:
+考虑相同的提示词 — "写一个递归 flatten 函数" — 在三种环境中：
 
-| Environment | What the model sees | Typical result |
+| 环境 | 模型看到的内容 | 典型结果 |
 |-------------|---------------------|----------------|
-| Chatbot, no tools | The sentence | Textbook recursion, generic style |
-| Claude Code, no reading | Sentence + CLAUDE.md | Matches declared project conventions |
-| Claude Code, agentic loop | Sentence + CLAUDE.md + read adjacent files + run tests | Matches actual codebase patterns, passes tests, handles edge cases the existing code handles |
+| 聊天机器人，无工具 | 这句话 | 教科书递归，通用风格 |
+| Claude Code，无读取 | 这句话 + CLAUDE.md | 匹配声明的项目规范 |
+| Claude Code，Agent 循环 | 这句话 + CLAUDE.md + 读取相邻文件 + 运行测试 | 匹配实际代码库模式，通过测试，处理现有代码处理的边界情况 |
 
-Same model. Same user prompt. **Three different output qualities.** The difference is the harness — specifically, the effective context it assembles and the iteration loop it enables.
+同一个模型。同一个用户提示词。**三种不同的输出质量。** 差异在于 harness — 具体来说，是它组装的有效上下文和它启用的迭代循环。
 
-For non-trivial tasks, output quality is a function of:
+对于非平凡的任务，输出质量是以下因素的函数：
 
 ```
-Output quality = f(effective context, model capability, iteration loop)
+输出质量 = f(有效上下文, 模型能力, 迭代循环)
 ```
 
-The user controls a sliver of *effective context* (their typed prompt). The harness controls the rest — and the iteration loop entirely.
+用户控制有效上下文的一小部分（他们输入的提示词）。Harness 控制其余部分 — 以及整个迭代循环。
 
 ---
 
-## What the Reduction Gets Right (And What It Gets Wrong)
+## 简化正确的部分（和错误的部分）
 
-| Claim | Verdict |
+| 说法 | 结论 |
 |-------|---------|
-| "At inference, the model only sees tokens." | ✅ True |
-| "Skills, commands, and subagent prompts all contribute tokens to some context." | ✅ True |
-| "For an atomic task in a vacuum, prompt quality dominates output quality." | ✅ True |
-| "Therefore a strong prompt is equivalent to using features." | ❌ False |
-| "Therefore the harness doesn't matter for output quality." | ❌ False on real engineering tasks |
+| "在推理时，模型只看到 token。" | ✅ 正确 |
+| "Skills、Commands 和 Subagent 提示词都向某些上下文贡献 token。" | ✅ 正确 |
+| "对于真空中的原子任务，提示词质量主导输出质量。" | ✅ 正确 |
+| "因此强大的提示词等同于使用功能。" | ❌ 错误 |
+| "因此 harness 对输出质量不重要。" | ❌ 对于真实工程任务是错误的 |
 
-The first three statements are accurate observations. The leap to the fourth is where the reasoning fails: it conflates the model with the system that wraps it, and conflates atomic tasks with real engineering work.
+前三项是准确的观察。第四项的跳跃是推理失败的地方：它将模型与包裹它的系统混为一谈，将原子任务与真实的工程工作混为一谈。
 
 ---
 
-## The Correct Mental Model
+## 正确的心智模型
 
-> **Prompts control what the model is asked to do.**
-> **The harness controls what the system does at layers the model cannot reach** — before tokens arrive, after tokens are produced, across sessions, across contexts, and across processes.
+> **提示词控制模型被要求做什么。**
+> **Harness 控制系统在模型无法触及的层面上做什么** — 在 token 到达之前、在 token 产生之后、跨会话、跨上下文、跨进程。
 
-Features are not prompts with extra steps. They are **harness-level primitives** — deterministic execution, context architecture, and infrastructure routing — that operate at layers where the model has no voice.
+功能不是多了几步的提示词。它们是 **harness 层原语** — 确定性执行、上下文架构和基础设施路由 — 在模型没有发言权的层面上运作。
 
-A useful analogy:
+一个有用的类比：
 
-| Layer | Chatbot | Claude Code |
+| 层面 | 聊天机器人 | Claude Code |
 |-------|---------|-------------|
-| Recipe | The user's message | The user's message + harness-assembled context |
-| Kitchen | None — just a student | Tools, hooks, memory, parallel workers, lifecycle events |
+| 食谱 | 用户的消息 | 用户的消息 + harness 组装的上下文 |
+| 厨房 | 没有 — 只是一个学生 | 工具、Hooks、记忆、并行工作者、生命周期事件 |
 
-You can write the world's best recipe. Without a kitchen, you cannot cook at scale.
-
----
-
-## Takeaways for Practitioners
-
-1. **For atomic questions, prompt quality is ~everything.** The harness is irrelevant. Use a chatbot if that's all you need.
-2. **For real codebase work, the harness is doing silent heavy lifting.** The effective prompt at inference is mostly harness-constructed, not user-typed.
-3. **Use features for what prompts categorically cannot do:** determinism (hooks), isolation (subagents), lazy loading (rules with `paths:`), persistence (memory), routing (per-agent `model:`), and parallelism.
-4. **A strong prompt is necessary but not sufficient.** Features give you determinism, isolation, and composition that prompts cannot. The two are complementary, not substitutes.
+你可以写出世界上最好的食谱。没有厨房，你就无法大规模烹饪。
 
 ---
 
-## Sources
+## 从业者的要点
 
-- [Agents vs Commands vs Skills](claude-agent-command-skill.md) — shows context isolation, model override, and tool restrictions per feature
-- [Claude Agent SDK vs CLI System Prompts](claude-agent-sdk-vs-cli-system-prompts.md) — documents the 110+ modular system prompt fragments
-- [Claude Agent Memory](claude-agent-memory.md) — cross-session persistence via `memory:` scopes
-- [Claude Memory Best Practice](../best-practice/claude-memory.md) — lazy-loaded descendant `CLAUDE.md` files
-- [Claude Subagents Best Practice](../best-practice/claude-subagents.md) — frontmatter reference for harness-enforced capabilities
-- [Claude Settings Best Practice](../best-practice/claude-settings.md) — permission rule evaluation and `auto` mode classifier
-- [Orchestration Workflow](../orchestration-workflow/orchestration-workflow.md) — concrete demonstration that the reduction fails
+1. **对于原子问题，提示词质量约等于一切。** Harness 无关紧要。如果你只需要这些，就用聊天机器人。
+2. **对于真实的代码库工作，Harness 在默默地承担重任。** 推理时的有效提示词主要是 harness 构建的，而非用户输入的。
+3. **将功能用于提示词在类别上无法做到的事情：** 确定性（Hooks）、隔离（Subagent）、延迟加载（带 `paths:` 的规则）、持久性（记忆）、路由（每个 Agent 的 `model:`）和并行性。
+4. **强大的提示词是必要但不充分的。** 功能给你提供了提示词无法提供的确定性、隔离和组合能力。两者是互补的，而非替代品。
+
+---
+
+## 参考来源
+
+- [Agent vs Command vs Skill](claude-agent-command-skill.md) — 展示了每种功能的上下文隔离、模型覆盖和工具限制
+- [Claude Agent SDK vs CLI System Prompts](claude-agent-sdk-vs-cli-system-prompts.md) — 记录了 110+ 个模块化系统提示词片段
+- [Claude Agent Memory](claude-agent-memory.md) — 通过 `memory:` 范围的跨会话持久性
+- [Claude Memory 最佳实践](../best-practice/claude-memory.md) — 延迟加载的后代 `CLAUDE.md` 文件
+- [Claude Subagents 最佳实践](../best-practice/claude-subagents.md) — harness 强制能力的 frontmatter 参考
+- [Claude Settings 最佳实践](../best-practice/claude-settings.md) — 权限规则评估和 `auto` 模式分类器
+- [编排工作流](../orchestration-workflow/orchestration-workflow.md) — 简化失败的具体演示

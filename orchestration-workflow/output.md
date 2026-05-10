@@ -1,13 +1,13 @@
-# Weather Result
+# 天气结果
 
-## Temperature
+## 温度
 26.2°C
 
-## Location
+## 位置
 Dubai, UAE
 
-## Unit
-Celsius
+## 单位
+摄氏度
 
-## SVG Card
-![Weather Card](weather.svg)
+## SVG 卡片
+![天气卡片](weather.svg)
