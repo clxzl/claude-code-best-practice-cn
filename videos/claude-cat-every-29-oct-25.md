@@ -1,462 +1,434 @@
-# The Secrets of Claude Code From the Engineers Who Built It — Every
+# Claude Code 的秘诀：来自工程师团队的深度解析 — Every
 
-Transcript of the interview with Cat & Boris (Claude Code engineers) on the Every podcast, published October 29, 2025.
+每期访谈（与 Claude Code 工程师 Cat & Boris 的对话），2025年10月29日发布于 Every 播客。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 视频详情
 
-- **Guest:** Cat & Boris (Claude Code Engineers, Anthropic)
-- **Host:** Every
-- **Published:** October 29, 2025
-- **YouTube:** [Watch on YouTube](https://youtu.be/IDSAMqip6ms)
+- **嘉宾：** Cat & Boris（Anthropic 公司 Claude Code 工程师）
+- **主持人：** Every
+- **发布日期：** 2025年10月29日
+- **YouTube 链接：** [在 YouTube 上观看](https://youtu.be/IDSAMqip6ms)
+
+---
+## 转录文本
+
+[`0:02`](https://youtu.be/IDSAMqip6ms?t=2) 之所以它能如此高效，是因为 quad code 可以访问工程师在终端中的所有权限。你能做到的任何事，quad code 都能做到。中间没有任何阻碍。
+
+[`0:10`](https://youtu.be/IDSAMqip6ms?t=10) 实际上在 Anthropic 内部，有越来越多的人在大量使用额度——比如每月花费超过 1000 美元。我们观察到这种“超级用户”的行为。YC 里教过这个：如果你能解决自己的问题，就更有可能也为他人解决问题。产品领域有个非常古老的概念叫“潜在需求”。你构建一个可扩展、足够开放的产品，人们可能会为它原本未设计的其他用例而“滥用”它，你为此而构建，因为你隐隐知道存在这种需求。你认为 CLI 是最终的形态吗？我们一年后或三年后主要还是在 CLI 中使用 Claude Code 吗？本播客由 Google 赞助。大家好，我是 Omar，Google DeepMind 的产品与设计主管。我们刚在 AI Studio 中推出了一款焕新的 vibe coding 体验，让你能混合搭配 AI 功能，比以往更快地将想法变为现实。只需描述你的应用，Gemini 就会自动为你连接合适的模型和 API。如果需要灵感，点击“手气不错”，我们会帮你起步。请访问 a.studio/build 来创建你的第一个应用。
+
+[`1:29`](https://youtu.be/IDSAMqip6ms?t=89) Boris，非常感谢你的到来。
+
+[`1:30`](https://youtu.be/IDSAMqip6ms?t=90) 感谢邀请。
+
+[`1:32`](https://youtu.be/IDSAMqip6ms?t=92) 是的。嗯，对于不了解你们的听众，你们是 Claude Code 的创建者。真的，发自内心地非常感谢你们。我，呃，我非常喜欢 Claude Code。
+
+[`1:42`](https://youtu.be/IDSAMqip6ms?t=102) 听到这个太棒了。[笑声] 这正是我们爱听的。嗯，好吧，我想从这里开始：当我第一次使用它时。嗯，有那么一个时刻，我记得大约是在 Sonnet 3.7 发布的时候，我用了它然后心想，“天啊，这简直是一个全新的范式。这是一种全新的思考代码的方式。”而最大的不同在于，你们彻底地移除了文本编辑器，你只需要和终端对话，就，这样。嗯，你知道，之前 AI 编程的范式、之前的工具链，都像是你有一个文本编辑器，AI 在旁边，有点像……或者它是代码补全。所以，带我了解一下你们做出那个决策的过程，那个设计这种新范式的过程。你们当时是怎么想的？
+[`2:36`](https://youtu.be/IDSAMqip6ms?t=156) 是啊，我觉得最重要的一点是，这完全不是有意为之的。[笑] 好的。
+
+[`2:42`](https://youtu.be/IDSAMqip6ms?t=162) 呃，我们算是自然而然地走到这一步的。当初我加入 Enthropic 的时候，大家还在不同的团队。当时有一个 Claude Code 的前身项目，叫作 Clyde，像 C-L-I-O-P。那算是一个研究项目吧，启动都要花上一分钟，是个挺笨重的 Python 项目，还得跑一堆索引什么的。我加入后，想提交我的第一个 PR，然后我就像个新手一样，自己手写了代码，[笑] 当时我根本不知道有那些工具，也不太懂行。然后我把 PR 提交上去，结果当时担任我们团队一段时间的经理 Adam Wolf，他也是我的入职伙伴，直接就拒了我的 PR。他说，"你这是手写的？你在搞什么？[笑] 用 Quaid 呀。" 因为他自己当时也一直在鼓捣 Quaid。于是我试了试 Quaid，把任务描述给它，然后它就把这活儿一次性搞定了。
+
+[`3:39`](https://youtu.be/IDSAMqip6ms?t=219) 那次用的是 Sonnet 35。所以即使是这种基础任务，我还是得修修改改，而且那个工具框架本身很老旧，生成代码花了差不多五分钟，等了好久。[呃] 但它确实能用，我当时大为震撼，这居然能做到。然后我就开始琢磨，也许我们真的不需要 IDE 了。
+
+[`4:02`](https://youtu.be/IDSAMqip6ms?t=242) 后来我开始用 Anthropic 的 API 做原型开发，最简单的方法就是在终端里构建个小应用，这样就不用搞 UI 之类的。我开始做了个聊天应用，然后我就想，也许我们可以做得像 Clyde 一点。于是我就做了个小型的 Clyde，结果发现它实际上比那有用得多，而且也没费多大劲。对我来说最大的启示是，当我们开始给模型赋予工具之后，它就直接开始使用工具了。那真是个疯狂的时刻。模型就是想要使用工具。我们给了它 bash 权限，它就开始用 bash，甚至写 AppleScript 来自动处理一些事情，以此回应问题。我当时就觉得，这是我见过最疯狂的事了。因为之前我用的 IDE，你知道，也就是文本编辑加点单行、多行自动补全之类的。呃，所以这个项目就是这么来的，是原型设计，和以一种非常粗糙的方式探索可能性，这两者结合的产物。
+[`5:03`](https://youtu.be/IDSAMqip6ms?t=303) 嗯，这个工具最终效果出乎意料地好，我想对我们来说都是这样。对我来说，大概是在Sonnet 4和Opus 4版本的时候，那就是那个神奇时刻。我当时想："天啊，这东西真的能用。"
+
+[`5:17`](https://youtu.be/IDSAMqip6ms?t=317) 有意思。能具体谈谈那个"工具时刻"吗？我觉得Claude Code特别的地方之一在于它直接编写Bash脚本，而且做得非常好。很多之前的Agent架构，或者现在构建Agent的人，第一反应可能是：我们要给它一个查找文件的工具，再给它一个打开文件的工具，为各种可能的操作都构建自定义封装。但Claude Code就是直接用Bash，而且效果很好。那么你如何看待从这个实践中得到的经验？
+
+是的，我认为目前Claude Code实际上有一系列工具，大概十几个左右。我们几乎每周都会增减工具，所以变化挺频繁的。不过现在确实有一个搜索工具。我们这样做主要有两个原因：一是用户体验方面，可以把搜索结果更好地展示给用户，毕竟目前大多数任务还是需要人工参与的；二是权限管理，比如你在Claude Code的settings.json里设定了某个文件不可读，我们就必须执行这个限制。虽然对Bash指令本身也有权限控制，但专用搜索工具能更高效地实现这点。不过总体上我们倾向于精简工具，保持模型简洁。比如上周或两周前我们移除了OS工具，因为过去需要它，但后来我们实现了在Bash中统一执行权限系统——如果知道你不允许访问某个目录，Claude就不能操作该目录。既然能一致性执行，这个工具就不需要了。这样很好，因为减少了Claude的选择负担，上下文信息也更简洁。
+
+[`7:01`](https://youtu.be/IDSAMqip6ms?t=421) 明白了。那你们团队是如何分工的？
+
+[`7:06`](https://youtu.be/IDSAMqip6ms?t=426) 嗯，我认为Boris确立技术方向，并且是很多功能产品愿景的策划者。我更多是辅助角色，主要确保两点：第一，我们的定价和产品组合能契合用户需求；第二，确保所有功能顺利走完发布流程——从筛选应该优先研发的原型，到制定内部测试的质量标准，再到向终端用户传达信息。当然我们也有一些新项目，不过历史上Claude Code很多功能都是自下而上构建的，比如Boris和核心团队成员提出的待办事项子代理、钩子等功能都是自下而上产生的。随着我们考虑扩展更多服务，将Claude Code应用到更多场景，很多工作更偏向于：与客户交流，让工程师参与这些对话，确定服务优先级并逐步实现。
+[`8:08`](https://youtu.be/IDSAMqip6ms?t=488) 明白了。那什么是 ant fooding？
+
+[`8:10`](https://youtu.be/IDSAMqip6ms?t=490) 噢，ant fooding 就是
+
+[`8:11`](https://youtu.be/IDSAMqip6ms?t=491) 噢，ant fooding。
+
+[`8:14`](https://youtu.be/IDSAMqip6ms?t=494) 噢，呃，它的意思是 dog fooding（吃狗粮）。【笑声】所以，
+
+[`8:19`](https://youtu.be/IDSAMqip6ms?t=499) anthropic 的 ant。我【笑声】明白了。
+
+[`8:22`](https://youtu.be/IDSAMqip6ms?t=502) 是的。我们内部员工的昵称就是 ant。所以呢，ant fooding 就是我们版本的 dog fooding（内部测试）。呃，内部超过，我想有 70% 或 80% 的 ant，也就是 anthropic 的技术员工，每天都在使用 Claude Code。所以每当我们考虑一个新功能时，我们会先推送给内部人员，然后会得到大量的反馈。我们有一个反馈频道。我想差不多每五分钟就有一个帖子。所以你能很快地收到信号，知道人们是否喜欢它，是否有 bug，或者它是不是不够好我们应该撤回。
+
+[`8:57`](https://youtu.be/IDSAMqip6ms?t=537) 你能看出，嗯，你能看出正在构建产品的人一直在用它来构建。呃，因为如果你正在试图构建东西，它的用户体验就会非常合理，而这只有在你像 ant fooding 那样自己使用时才会发生。【笑声】嗯，是的。我认为这是一种构建新东西非常有趣的模式，那种自下而上的、我为自己创造东西的方式。跟我说说那个。
+
+[`9:23`](https://youtu.be/IDSAMqip6ms?t=563) 是的。而且 C cat（Chris）也非常谦逊。嗯，我觉得 cat 在产品方向上也扮演着非常重要的角色，它来自团队里的每一个人。像这些具体的例子，实际上真的来自团队里的每一个人。比如待办事项列表和 sub-agent，那是 Sid Hooks Dixon 提交的；插件功能是 Daisy 提交的。
+
+[`9:38`](https://youtu.be/IDSAMqip6ms?t=578) 所以团队里的每个人，这些想法都来自大家。嗯，所以对我们来说，我们构建了这个核心 agent 循环和这种核心体验，然后团队里的每个人一直都在使用这个产品。呃，团队外的每个人也一直都在使用这个产品。所以有很多机会去构建满足这些需求的功能。比如说，bash 模式，你知道，就是那个感叹号，你可以输入 bash 命令。这就在几个月前，我在使用 Claude Code，我在两个终端之间来回切换，觉得有点烦人。呃，然后一时兴起，我让 Claude Code 帮忙想点子，它想到了这个感叹号的 bash 模式。然后我就说，太好了，把它做出来，然后发布吧。【笑声】它就真的做了。而这个功能现在仍然存在。而且，你看，现在其他人也开始采用这种方式了。
+[`10:24`](https://youtu.be/IDSAMqip6ms?t=624) 有意思。这个我之前还真不知道。而且这功能特别实用，因为我以前总得开个新标签页才能运行 bash 命令。现在只要打个感叹号，命令就直接运行了，不用再经过那些云服务的过滤。
+
+[`10:38`](https://youtu.be/IDSAMqip6ms?t=638) 对，而且 Claude Code 也能看到完整的输出结果。
+
+[`10:40`](https://youtu.be/IDSAMqip6ms?t=640) 真不错，太方便了。[笑声]
+
+[`10:42`](https://youtu.be/IDSAMqip6ms?t=642) 所以说，你在云代码视图里能看到的所有内容，Claude Code 也同样能看到。
+
+[`10:44`](https://youtu.be/IDSAMqip6ms?t=644) 哇，这个设计真的很巧妙。
+
+[`10:46`](https://youtu.be/IDSAMqip6ms?t=646) 这其实是我们正在思考的一个 UX 问题。以前工具是为工程师设计的，但现在工具的使用者一半是工程师，一半是模型。
+
+[`10:53`](https://youtu.be/IDSAMqip6ms?t=653) 所以作为工程师你能看到输出，这对模型来说其实也非常有用。这也是我们设计哲学的一部分——所有东西都要有双重用途。比如说，模型也能调用斜杠命令。像我有个 /commit 的斜杠命令，会执行差异比较、生成合理的提交信息这些步骤。我既能手动执行，Claude 也能帮我执行。这特别有用，因为我们共享了同一套逻辑。我们定义好这个工具后，双方都能使用它。
+
+[`11:24`](https://youtu.be/IDSAMqip6ms?t=684) 那么，设计双重用途的工具和设计单一用途的工具有什么不同呢？说出来可能让人惊讶——其实没什么不同。
+
+[`11:32`](https://youtu.be/IDSAMqip6ms?t=692) 这样啊。
+
+[`11:34`](https://youtu.be/IDSAMqip6ms?t=694) 至少目前是这样。
+
+[`11:36`](https://youtu.be/IDSAMqip6ms?t=696) 对。我觉得那些为人类设计的优雅方案，往往也能很好地适配模型。
+
+[`11:41`](https://youtu.be/IDSAMqip6ms?t=701) 所以说，只要你觉得某个设计合乎逻辑，通常对模型来说也是合理的。
+
+[`11:49`](https://youtu.be/IDSAMqip6ms?t=709) 是的。我认为 Claude Code 作为终端界面的一个真正优势在于，它能访问工程师在终端中的所有能力。关于工具是否应该设计成双重用途，我觉得这样做反而让工具更容易理解——这意味着你能做到的事，Claude Code 都能做到，中间没有任何障碍。
+[`12:14`](https://youtu.be/IDSAMqip6ms?t=734) 是的，这很有意思。确实有好几个这样的决策。嗯，没有代码编辑器，它在终端里运行，所以能访问你的文件。而且它是在你本地电脑上运行，而不是在云端虚拟机里。这样你可以反复使用它，比如构建你的 cloud.md 文件，或者创建各种 slash 命令之类的，让它变得非常可组合、可扩展[轻笑]，而且起点很简单。我很好奇你怎么看，对于那些想构建 Agent 的人——可能不是 Claude Code，而是其他东西——你是如何实现那种简洁的包装，然后让它能不断扩展并随着时间变得强大？
+
+[`13:07`](https://youtu.be/IDSAMqip6ms?t=787) 对我来说，我会像开发任何产品一样思考——你得先解决自己的问题，才能为他人解决问题。这是 YC 教给我们的：必须从自身出发。如果你能解决自己的问题，就更可能为他人解决问题。我认为对于编程，从本地开始是合理的。现在我们有 Claude Code 的网页版，所以你也可以在虚拟机上用它，嗯，在远程环境下用它。这超级有用，当你在外时，比如想用手机操作它。
+
+[`13:37`](https://youtu.be/IDSAMqip6ms?t=817) 我们就是这样一步步验证这个想法的。
+
+[`13:43`](https://youtu.be/IDSAMqip6ms?t=823) 比如你可以在 GitHub 上用 Claude。我每天上班路上都在用——比如等红灯时，虽然可能不该这么做，但我在 GitHub 上，然后就像“Claude，修复这个问题”之类的。能从手机控制它真的很有用，这也验证了这种体验。我不确定这是否适用于所有场景。对于编程，我认为从本地开始是对的。嗯，但我不确定这对其他所有事情都适用。
+
+[`14:07`](https://youtu.be/IDSAMqip6ms?t=847) 明白了。你们常用哪些 slash 命令？
+
+[`14:11`](https://youtu.be/IDSAMqip6ms?t=851) /print。[笑声]
+
+[`14:12`](https://youtu.be/IDSAMqip6ms?t=852) 是的。
+[`14:15`](https://youtu.be/IDSAMqip6ms?t=855) 嗯对，我觉得斜杠命令能让Claude更快地明确该执行哪些bash命令来提交代码。
+
+[`14:24`](https://youtu.be/IDSAMqip6ms?t=864) 能给不熟悉的人解释下slash命令的作用吗？哦，它就是直接告诉AI如何提交代码。明白了。
+
+[`14:33`](https://youtu.be/IDSAMqip6ms?t=873) 你可以动态配置，比如指定需要运行的三条bash命令。
+
+[`14:37`](https://youtu.be/IDSAMqip6ms?t=877) 了解。很酷的是，斜杠命令内置了模板系统。我们会预先执行这些bash命令，将它们嵌入到斜杠命令中。而且可以预先授权特定工具调用——比如对提交类命令直接允许git commit、git push和gh命令，这样执行斜杠命令时就不会反复弹出权限确认，因为我们采用基于权限的安全机制。另外它使用了Haiku模型，相当不错，更经济高效。就我个人而言，经常使用提交PR和功能开发类命令。比如Sid创建的这个命令就很有意思，它能逐步引导开发过程：先让Claude确认具体需求，制定详细计划，列出待办清单，按步骤推进——这种结构化的功能开发方式很实用。
+
+[`15:35`](https://youtu.be/IDSAMqip6ms?t=935) 最后我们高频使用的是安全审查和代码审查命令。Anthropic内部所有PR都通过Claude进行初审，虽然最终仍需人工确认，但Claude会完成代码审查的第一步。这些只需执行对应的斜杠命令即可。
+
+[`15:51`](https://youtu.be/IDSAMqip6ms?t=951) 明白。我很想深入探讨如何制定优秀计划，特别是功能开发方面，因为目前发现了很多实用技巧。例如规划流程中有个反直觉的做法：即使我对需求只有模糊概念，比如"想要X功能"，也会直接让Claude实现原型。通过观察它的实现方式——可能发现它误解了需求或产生了意外效果——我能更准确把握真实需求。然后我会清空这些探索性成果，利用获得的认知来撰写更完善的正式规划。这在传统开发中难以实现，毕竟不能随意让工程师开发未明确规划的功能。但借助Claude对代码库的分析和实践，我们可以从中获取洞见，为实际开发计划提供依据。
+[`17:04`](https://youtu.be/IDSAMqip6ms?t=1024) 是的。我觉得或许我可以先谈谈，同时我也很好奇你是如何使用的。
+
+[`17:07`](https://youtu.be/IDSAMqip6ms?t=1027) 对我来说，可能有几种不同的模式，其中之一是原型模式。
+
+[`17:12`](https://youtu.be/IDSAMqip6ms?t=1032) 这就像是传统的工程原型开发，你希望构建最简单的、能触及所有系统的东西，这样你就能大致了解有哪些系统、存在哪些未知因素，并且能跟踪整个过程。
+
+[`17:24`](https://youtu.be/IDSAMqip6ms?t=1044) 嗯，所以我的做法和你 Dan 完全一样，就是让 Claude 去执行，然后看看它哪里出了问题，接着我会让它把错误的版本丢掉，重新来过。也就是按两次 Escape，回到之前的检查点，然后再试一次。我认为可能还有另外两类任务。一类是 Claude 可以一次搞定的事情，而且我相当有把握它能做好。所以我会直接告诉它，然后切换到别的标签页，按下 Shift+Tab 自动接受，接着就去做别的事，或者去照顾我另一个 Claude 实例，让它完成这个任务。
+
+[`17:54`](https://youtu.be/IDSAMqip6ms?t=1074) 嗯，但也存在更困难的功能开发。这些事情，你知道，放在以前可能需要几个小时的工程时间。对于这类任务，我通常会按下 Shift+Tab 进入计划模式，先在计划上达成一致，然后它才会开始写代码。嗯，我认为这方面真正的难点在于，边界会随着每个模型的更新而变化，而且是以一种令人惊讶的方式变化：更智能的新模型，会把你需要使用计划模式的范围稍微向外推移一些。
+
+[`18:21`](https://youtu.be/IDSAMqip6ms?t=1101) 比如说，以前你需要规划，现在就不需要了。我认为这是一个普遍趋势：随着模型变得更先进，以前需要作为“脚手架”的工作，会被推入模型内部，而且模型随着时间的推移，会倾向于吸收一切。是的。那么，关于构建一个 agent 框架，你是如何考虑的？如何确保你不是在花大量时间去构建一些东西，结果三个月后新的 Cloud 版本发布，那些东西就被模型直接吸收了？我的意思是，你如何判断哪些是应该现在去构建的，哪些是你知道目前还不完美，但下次更新就能实现，所以现在不必花时间去做的？
+[`18:57`](https://youtu.be/IDSAMqip6ms?t=1137) 我们会构建大多数我们认为能提升 Cloud Code 能力的功能，即使这意味着三个月后可能需要移除它。实际上，我们甚至希望能在三个月后移除它。
+
+[`19:09`](https://youtu.be/IDSAMqip6ms?t=1149) 我认为目前我们只想提供尽可能卓越的体验，所以不太担心废弃性工作。
+
+[`19:17`](https://youtu.be/IDSAMqip6ms?t=1157) 很有意思。比如计划模式本身就是一个例子。我觉得未来可能会取消这个功能，当 Claude 能通过你的意图自动判断你是否需要先制定计划。另外，我昨天刚从系统提示中删除了大约 2000 个 token，因为 Sonnet 45 已经不需要了，但 Opus 41 仍需要这些内容。问题在于，当最新的前沿模型不需要某些内容时，但面对海量用户时你得考虑效率优化——比如可能不会全部使用 Opus 或 Sonnet 45，而是采用 Haiku。这就面临一个权衡：是为 Haiku 设计更复杂的交互框架，还是直接使用 Sonnet 45 吃下这个成本，专注于更前沿的探索。总体而言，我们将 Claude Code 定位为高端产品，我们的北极星是确保它在当前最强的 Sonnet 45 模型上表现出色。
+
+[`20:20`](https://youtu.be/IDSAMqip6ms?t=1220) 我们正在研究如何让它在未来的更小模型上也能良好运行，但这并非当前最高优先级。
+
+[`20:29`](https://youtu.be/IDSAMqip6ms?t=1229) 好的。我注意到一个现象：感谢你们提供的便利，我们经常能在模型发布前提前测试。过去六个月在 Claude 应用中测试新前沿模型时，很难立刻判断其优劣。但在 Claude Code 中就很明显，因为交互框架对模型输出的影响很大。你们在 Anthropic 内部开发 Claude Code，实现了模型训练与交互框架的深度耦合，两者似乎相互促进。这种紧密集成在内部是如何运作的？你们从中获得了哪些优势？
+[`21:25`](https://youtu.be/IDSAMqip6ms?t=1285) 是啊，我觉得最关键的一点是研究人员一直在用它。所以当他们看到哪些方法有效、哪些不行，就能持续改进。呃，我们做了大量评估来互相反馈，准确掌握模型的表现情况。不过呢，确实存在一个边界——你得给模型足够难的任务才能真正测试它的极限。如果不这么做，所有模型看起来都差不多。但如果你给它相当有挑战性的任务，就能看出差异了。
+
+[`21:55`](https://youtu.be/IDSAMqip6ms?t=1315) 你用哪些 sub-agent？
+
+[`21:57`](https://youtu.be/IDSAMqip6ms?t=1317) 呃，我用好几个。我有一个规划用的 sub-agent，还有一个代码审查的 sub-agent。代码审查这事儿挺有意思，我有时用 sub-agent，有时用斜杠命令。通常在 CI 里我用斜杠命令，但在同步工作流里，我会用 sub-agent 来做同样的事。
+
+[`22:14`](https://youtu.be/IDSAMqip6ms?t=1334) 嗯，这问题问得好。可能这只是个偏好问题。对，我也说不准。我觉得当同步工作时，把上下文窗口分开挺不错的，因为代码审查里的那些内容跟我接下来要做的事没关系。但在 CI 里就无所谓了。
+
+[`22:32`](https://youtu.be/IDSAMqip6ms?t=1352) 你会同时启动大概十个 sub-agent 吗？是为了什么？
+
+[`22:36`](https://youtu.be/IDSAMqip6ms?t=1356) 对我来说，主要是用在大型迁移的时候。好吧，
+
+[`22:40`](https://youtu.be/IDSAMqip6ms?t=1360) 这确实是个大场景。呃，实际上我们有个自用的 coder 斜杠命令，里面就包含一堆 sub-agent。比如其中一个步骤是查找所有问题，于是就有一个 sub-agent 检查是否符合 quadmd 规范。另一个 sub-agent 会梳理 git 历史看看发生了什么。还有一个 sub-agent 寻找明显的 bug，之后我们还会做一个去重和质量筛选的步骤。所以它们会找到一大堆东西，很多都是误报，于是我们再启动大概五个 sub-agent 专门检查误报。最后结果非常棒，它能找出所有真正的问题，而且没有误报。
+
+[`23:13`](https://youtu.be/IDSAMqip6ms?t=1393) 这很好。我其实也会这么做。嗯，我有一个非技术的 Cloud Code 用例，就是报销流程。比如我现在在旧金山，有一堆开销要处理。所以我建了一个小小的 Cloud 项目，呃，在 Cloud Code 里，它会使用那种财务 API 来下载我所有的信用卡交易记录。然后它会判断哪些可能是需要报销的开销。接着我有两个 sub-agent，一个代表我，一个代表公司。它们就像“打架”一样，找出正确的、实际的报销项目清单。[笑声] 就像一个审计 sub-agent 和一个“亲丹”sub-agent（为用户争取的sub-agent）。所以，嗯，这种类似“对手处理”的模式，看起来是个挺有意思的思路。
+[`24:00`](https://youtu.be/IDSAMqip6ms?t=1440) 是的。对。这挺酷的。我感觉当 Sub-agents 刚开始成为一件事时，真正启发我们的是一段时间前的一个 Reddit 帖子，其中有人创建了 Sub-agents，比如有一个前端开发、一个后端开发，还有一个，我想是设计师...
+
+[`24:11`](https://youtu.be/IDSAMqip6ms?t=1451) 测试开发
+
+[`24:13`](https://youtu.be/IDSAMqip6ms?t=1453) 测试开发，比如有一个 PM Sub-agent，这你知道，挺可爱的，感觉有点太拟人化了，嗯，也许这其中有点道理，但我认为真正的价值其实在于不相关的上下文窗口，你拥有两个彼此不知道的上下文窗口，这挺有意思的，而且这样做通常能得到更好的结果。你呢？你有没有使用过什么有趣的 Sub-agents？
+
+[`24:35`](https://youtu.be/IDSAMqip6ms?t=1475) 所以，我一直在捣鼓一个，在前端测试方面非常擅长的。它用 Playright 来观察，好吧，所有客户端侧的错误是什么，把它们找出来，并尝试测试应用的更多步骤。嗯，它还没完全成型，但我看到了一些起色，我认为这类东西我们有可能打包到我们的插件市场里。
+
+[`25:02`](https://youtu.be/IDSAMqip6ms?t=1502) 是的。嗯，绝对是。我...我用过类似的东西，只是用 Puppeteer，看着它构建一些东西，然后打开浏览器，然后说，“哦，我需要改改这个。”这感觉就像，“我的天。”
+
+[`25:12`](https://youtu.be/IDSAMqip6ms?t=1512) 是的。这真的很酷。
+
+[`25:13`](https://youtu.be/IDSAMqip6ms?t=1513) 这真的很酷。我想我们开始看到这种大规模、多...大规模 Sub-agents 的雏形。我不知道他们怎么称呼这个，像是群什么的。实际上，在 Anthropic 内部，越来越多的人每个月使用大量的 credits，你知道，每个月花费超过一千美元。嗯，而且这个比例增长得相当快。我认为常见的用例是代码迁移。所以他们正在做的是，比如从框架 A 迁移到框架 B。嗯，有一个主 agent，它为所有事情制定一个大的待办事项清单，然后就像映射一样分发给一堆 Sub-agents。所以你告诉 Claude，是的，启动 10 个 agent，然后就你知道的，每次 10 个这样去做，把所有东西都迁移过去。
+[`25:53`](https://youtu.be/IDSAMqip6ms?t=1553) 有意思。能举个你所说的那种迁移的具体例子吗？
+
+[`25:58`](https://youtu.be/IDSAMqip6ms?t=1558) 我觉得最经典的就是代码规范检查规则。
+
+[`26:00`](https://youtu.be/IDSAMqip6ms?t=1560) 假设你正在推行某种代码规范检查规则，但没有自动修复工具，因为这类分析工具本身可能过于简单，无法处理。其他例子比如框架迁移，比如我们刚从一个测试框架迁移到另一个，这种迁移很常见，而且验证结果非常容易。
+
+[`26:19`](https://youtu.be/IDSAMqip6ms?t=1579) 我发现——无论是内部项目还是开源项目——如果你是产品开发者，想实现一个已经被别人做过的功能，比如内存管理方案。因为内部有多个产品，你可以直接启动云端子智能体，去看另外三个产品是怎么实现的。这样就能实现默会的代码共享，无需API，也不必询问他人，直接查看现有方案，借鉴最佳实践来构建自己的版本。开源领域同样可行，因为很多开源项目已经深耕内存管理一年，做得非常出色。你可以研究他们总结的模式，再决定自己要实现哪些。
+
+[`27:10`](https://youtu.be/IDSAMqip6ms?t=1630) 完全正确。你还可以接入版本控制系统。如果你过去实现过类似功能，Claude Code能通过GitHub等API直接查询历史代码，读取相关实现并复制有用部分。
+
+[`27:27`](https://youtu.be/IDSAMqip6ms?t=1647) 没错。那关于日志文件呢？比如完整记录功能实现历史的日志，这类信息对Claude重要吗？你们是如何处理并利用它的？
+
+[`27:44`](https://youtu.be/IDSAMqip6ms?t=1664) 有些人对此深信不疑。Anthropic有些员工会为每个任务要求Claude Code按特定格式写日记：记录操作步骤、尝试方案、失败原因。他们甚至用智能体回顾这些历史记录，将信息综合整理成观察笔记。
+[`28:02`](https://youtu.be/IDSAMqip6ms?t=1682) 我觉得这就像一个初步萌芽的阶段
+
+[`28:06`](https://youtu.be/IDSAMqip6ms?t=1686) 好像这里出现了些有趣的东西，可以做成产品。
+
+[`28:10`](https://youtu.be/IDSAMqip6ms?t=1690) 嗯，但这是一种我们看到的新的、行之有效的新兴模式。我觉得，如果只从单次对话记录中提取记忆，难点在于很难判断某个具体指令对未来所有任务的相关性有多高。我们有个经典例子：如果我说"把按钮做成粉色"，我不希望你以后记住"要把所有按钮都做成粉色"。所以我认为，嗯，从大量日志中综合提炼记忆，是更稳定地发现这些模式的一种方式。看起来，有些情况你可能会知道——嗯，能够以这种自上而下的方式综合或总结，判断出"这个以后会有用"，并且知道它可能在什么抽象层面有用。但还有很多情况，比如任何一次普通的提交记录——"把按钮做成粉色"，它可能出于无数种不同的原因而有用，而这些原因你事先无法预知。所以，你也需要让模型能够查阅所有相似的、过去的提交记录，并在合适的时候呈现出来。这也是你们在考虑的事情吗？
+
+是的，我觉得可能会有类似的东西。也许，我们可以把它看作一种传统的记忆存储工作，就像MEX那类东西，你想把所有信息都存进系统，之后它就变成了一个信息检索问题。嗯，是的。我觉得随着模型变得更聪明，它也会自然地开始这样做。我在Sonnet 4.5上已经看到它开始自发地这么做了，如果它在某件事上卡住了，它就会自然地开始，就像我们之前讨论过的，自发地使用bash。它会去查阅git历史记录，然后说："哦，好的。是的，这是一种挺有意思的处理方式。"
+
+[`29:56`](https://youtu.be/IDSAMqip6ms?t=1796) 是的。我们开始录制前还在聊，其中一个……我们内部正在做的事情，我觉得它确实改变了我们做工程的方式，因为大家都用Cloud Code CLI来构建。我们有一种工程范式，叫做"复合工程"。在常规工程中，每增加一个功能，都会让下一个功能更难添加。而在复合工程中，你的目标是让你刚刚添加的功能，能让下一个功能更容易构建。我们实现这一点的方式是，尝试将构建功能过程中的所有学习成果都编码下来。比如，我们是如何制定计划的？计划的哪些部分需要调整？或者当我们开始测试时，发现了哪些问题？我们遗漏了什么？然后，我们将这些编码回所有的提示、所有的子代理和所有的斜杠命令中，这样下次有人再做类似的事情时，系统就能捕捉到这些经验，从而让事情变得更容易。这就是为什么，对我来说，比如我可以跳进我们某个代码库，即使我对代码如何运作一无所知，也能很快开始高效工作，因为我们已经建立了这套记忆系统，里面包含了我们在实现功能过程中学到的所有东西。但我们必须自己构建这套系统。我很好奇，你们是否也在研究这种循环，让Cloud Code能自动完成这个？
+[`31:15`](https://youtu.be/IDSAMqip6ms?t=1875) 是啊，我们其实也在思考这个问题。挺有意思的，我们刚从Fiona那里听到了同样的反馈——她最近刚加入团队，你知道的，她是我们的经理，大概有十年没写代码了。结果入职第一天她就开始提交PR了。她说："我不仅重新拾起了写代码的能力，而且Claude Code让我特别容易就能上手。
+
+[`31:39`](https://youtu.be/IDSAMqip6ms?t=1899) 更重要的是，我完全不需要重新熟悉项目上下文，因为这些信息我都掌握了。"我觉得这很大程度上涉及人们给Claude Code提PR时的场景——我们的客户也经常告诉我们他们会做类似的事情。嗯，如果你发现什么错误，只需说"把这个加到quadmd里"，下次它就会自动了解这个规则。你可以通过各种方式来植入这种记忆。比如可以说"把这个加到quadmd里"，也可以说"让Claude写个测试"——这能确保问题不会再次出现，而且现在要别人写测试我也没什么心理负担了，对吧？因为写测试变得超级容易。可能我们接近100%的测试都是Claude写的，写得不好就不提交，好的就保留下来。嗯，还有代码检查规则也很重要。对于那些需要频繁检查的规范，我们其实有一堆内部的代码检查规则。Claude写了其中100%的规则。主要就是在PR里对Claude说"写这个检查规则"。不过现在有个问题在于如何让这个过程自动化？我和Cat通常这样思考：先观察高级用户的行为，第一步是如何通过让产品可扩展，让最厉害的用户能自己发现并实现那些酷炫的新功能。
+
+[`32:53`](https://youtu.be/IDSAMqip6ms?t=1973) 但真正的挑战在于，如何把这种能力带给其他所有人。嗯，对我自己来说，我就属于"其他所有人"那一类。你看，我不太会用Vim，也没有那种复杂的命令行配置。我的开发环境相当普通。所以，如果某个功能连我都会用，那就相当能说明其他普通工程师也会用。这很有意思。因为我经常思考的就是：如何让产品既具备足够的扩展性和灵活性，让高级用户能以我们想象不到的方式创新使用，同时又保持简单易用，让任何人都能高效上手，并且可以把高级用户发现的最佳实践整合回基础体验中。你们是如何思考这些设计和产品决策，来实现这种平衡的呢？
+[`33:41`](https://youtu.be/IDSAMqip6ms?t=2021) 总的来说，我们认为每个引擎环境都与其他环境略有不同，因此我们系统的每个部分都必须是可扩展的，这点非常重要。从状态栏到添加自定义斜杠命令，再到hooks——它允许你在quad code的几乎任何步骤中插入一定的确定性。我们认为这些就是我们提供给每位工程师的基本构建模块，他们可以自由探索，用于插件开发。插件其实是我们团队的Daisy开发的，这是我们为了让像我们这样的普通用户更容易地将这些斜杠命令和hooks融入工作流程而做的尝试。插件功能让你可以浏览现有的MCP服务器、hooks、插件，或者类似斜杠命令的东西，只需在quad code中输入一条命令就能将其引入你的环境。
+
+[`34:38`](https://youtu.be/IDSAMqip6ms?t=2078) 产品领域有个非常古老的概念叫"潜在需求"，这大概是我个人思考产品以及下一步该构建什么的主要方式。这个概念很简单：你构建一个产品，让它具有可 hack 性，足够开放，以至于人们可以将其滥用到其他它本没被设计好的用例中。然后你观察人们如何滥用它，再针对这些行为进行构建，因为你知道那里存在着需求。
+
+[`35:00`](https://youtu.be/IDSAMqip6ms?t=2100) 对吧？
+
+[`35:02`](https://youtu.be/IDSAMqip6ms?t=2102) 你知道，我在Meta的时候，我们几乎所有大型产品都是这样构建的。我认为几乎每一个大型产品都包含了这种"潜在需求"的核心。比如Facebook约会功能，它起源于我们观察到用户查看他人资料的行为：我想大约60%的浏览发生在异性之间，且双方并非好友——这是传统的配对设定。于是我们想，哇哦，也许如果推出一个约会产品，就能利用这种已存在的需求。
+
+[`35:32`](https://youtu.be/IDSAMqip6ms?t=2132) 这很有趣。
+
+[`35:34`](https://youtu.be/IDSAMqip6ms?t=2134) 再比如Marketplace，情况也很相似。我记得当时Facebook群组里大约40%的帖子是销售帖。所以我想，好吧，人们正在用这个产品来买卖东西。我们只需围绕这个需求构建一个产品，它大概率能成。所以我们的思考方式也类似，但同时我们有一个优势，那就是为开发者而构建。开发者热爱hack东西，热爱定制东西。作为我们自己产品的用户，这使得构建和使用这个产品变得非常有趣。所以，正如我所说，我们只需构建正确的扩展点。观察人们如何使用它，这就会告诉我们下一步该构建什么。比如，我们收到很多用户请求，他们说："伙计，Quad Code在问我各种权限，但我正在喝咖啡呢。我都不知道它在请求权限。我怎么才能让它用Slack提醒我呢？"所以我们构建了hooks。嗯，Dixon构建了hooks，这样人们就能在Slack上收到提醒，而且是针对任何你想被提醒的事情。这很符合逻辑：人们非常希望拥有执行某件事的能力。我们自己并不想构建所有的集成。所以我们开放了hooks，让人们可以自己去做。
+[`36:41`](https://youtu.be/IDSAMqip6ms?t=2201) 这让我联想到，你们最近将产品定位从 Cloud Code 转变为更通用的 Agent SDK。这种变化是源于潜在需求吗？你们是否发现所构建的工具有更广泛的应用场景？
+
+[`37:00`](https://youtu.be/IDSAMqip6ms?t=2220) 我们意识到，就像你提到在编程之外使用 Cloud Code 一样，这种现象非常普遍。我们收到大量案例：有人用它撰写博客，管理数据输入并生成符合个人风格的初稿；有人基于此开发邮件助手；我个人则用它进行市场调研。因为其核心是一个能持续执行具体任务的 Agent，只要能获取正确的基础数据。例如我曾尝试用它分析全球公司的工程师数量并生成排名——这并非传统编程任务，但 Claude Code 完全可以胜任。我们发现，只要具备能长时间运行的 Agent 循环，能够访问网络、编写和执行代码，从宏观上看几乎可以构建任何应用。
+
+[`38:09`](https://youtu.be/IDSAMqip6ms?t=2289) 当我们从 Claude Code SDK 更名为 Claude Agent SDK 时，已有数千家企业在使用，其中大量应用场景与编程无关。无论是内部还是外部使用案例都表明——
+
+[`38:26`](https://youtu.be/IDSAMqip6ms?t=2306) 健康助手、财务分析师、法律助理等领域的应用都已相当广泛。
+
+[`38:33`](https://youtu.be/IDSAMqip6ms?t=2313) 有哪些最有趣的案例？最近节目中 Noah Brier 提到的 Obsidian 思维导图笔记应用就很特别。有趣的是，这种用法的使用量简直惊人。
+
+[`38:47`](https://youtu.be/IDSAMqip6ms?t=2327) 除此之外，还有一些与编程相关但很酷的用例：比如我们团队为 Claude Code 维护的问题追踪器。团队经常忙于处理源源不断的 issue，而 Claude Code 能自动识别重复问题且表现极佳。它还能提供初步解决方案——通常会主动提交内部 PR，这是团队成员 Enigo 开发的新功能。此外，它还能收集值班期间的各类信号，整合来自 Sentry、BigQuery 等系统的日志。毕竟这些本质上都是 bash 操作，不是吗？
+[`39:29`](https://youtu.be/IDSAMqip6ms?t=2369) 这些都是我看到的一些内部使用场景。
+
+[`39:34`](https://youtu.be/IDSAMqip6ms?t=2374) 嗯，那么当你们在整理日志或处理问题时，你们是让Claude持续在后台运行吗？这是你们正在构建的功能吗？
+
+[`39:43`](https://youtu.be/IDSAMqip6ms?t=2383) 嗯，具体那个场景是被触发的。每提交一个新问题，它就会被触发运行一次，但可以根据需要持续运行。
+
+[`39:52`](https://youtu.be/IDSAMqip6ms?t=2392) 明白了。那关于让Claude持续运行的想法呢？哦，主动式智能体。我认为这绝对是我们想要实现的方向。嗯，我想目前我们非常专注于让Claude代码在单个任务上极其可靠。你知道，如果你回想一下，从多行自动补全，到单轮智能体，再到现在我们正在研发的能够完成任务的Claude代码。我觉得如果沿着这条曲线发展，最终会达到更高的抽象层次，处理更复杂的任务，希望下一步之后能带来更大的生产力提升。比如，理解你的团队目标、你的目标，能够对你说：嘿，我觉得你可能想试试这个功能，这是代码的初稿，我做了这些假设，你看对不对？
+
+[`40:41`](https://youtu.be/IDSAMqip6ms?t=2441) 我等不及了。嗯，我想大概在那之后不久，Claude就会，嗯，
+
+[`40:50`](https://youtu.be/IDSAMqip6ms?t=2450) 这个不在计划内。[笑声]
+
+[`40:52`](https://youtu.be/IDSAMqip6ms?t=2452) 因此，团队里的每个人对我们今天能对话都非常兴奋，他们给了我一堆问题，我想确保我都回答到。嗯，呃，哦，这里有个好问题。为什么你们在架构中选择了agentic rag而非vector search？并且向量嵌入现在还重要吗？嗯，其实最初我们确实用了向量嵌入。嗯，只是维护起来真的很棘手，因为你需要不断重新索引代码，而且它们可能会过时，你还有本地的改动。这些都需要处理进去。后来，当我们思考外部企业采用它会是什么感受时，我们意识到这暴露了更多的攻击面和安全风险。嗯，我们也发现，实际上Claude代码和Claude模型在agentic搜索方面非常出色。所以嗯，通过agentic搜索可以达到同样高的准确度，而且部署方案要简洁得多。
+[`41:51`](https://youtu.be/IDSAMqip6ms?t=2511) 这个观点很有意思。
+
+[`41:53`](https://youtu.be/IDSAMqip6ms?t=2513) 嗯，如果你想在QuadCo中使用语义搜索，可以通过MCP工具实现。比如你可以自行管理索引，并暴露一个MCP工具供QuadCo调用，这样就能实现。那么你认为哪些MCP工具最适合配合Claude Code使用呢？
+
+[`42:09`](https://youtu.be/IDSAMqip6ms?t=2529) Puppeteer和Playright应该排名很靠前。
+
+[`42:11`](https://youtu.be/IDSAMqip6ms?t=2531) 没错，确实是。
+
+[`42:13`](https://youtu.be/IDSAMqip6ms?t=2533) Sentry有个很棒的集成，Asana的也很不错。嗯，你认为有没有一些高级用户技巧——比如Anthropic内部员工或大型组织里那些重度QuadCo使用者掌握的窍门——是普通人可能不知道但应该了解的呢？嗯，有一件事是QuadCo本身不太主动做的，但我个人觉得特别有用：QuadCo默认不太爱提问，但就像和合作伙伴头脑风暴时那样，通常需要来回问答交流。所以，我特别喜欢在计划模式下这么做。我会直接告诉Claude Code："我们现在只是在头脑风暴这件事，如果有任何不确定的地方请向我提问"，强调我需要它提问，它就会照做。我觉得这其实能帮你得到更好的答案。
+
+[`43:11`](https://youtu.be/IDSAMqip6ms?t=2591) 对。其实还有很多技巧可以分享。我看到人们常犯几个错误：其一就是你说的——没有充分使用计划模式。这点至关重要。很多编程新手会以为这个工具无所不能，其实不然。目前它还不那么强大，虽然未来会进步，但现在只能一次性完成某些测试，无法一次性搞定大多数任务。所以你需要理解它的能力边界，明白何时容易陷入循环。而像计划模式这样的功能，如果先确定好方案，能轻松将成功率提升两到三倍。嗯，我还发现高级用户做得特别好的一点是：那些大规模部署QuadCo的公司（现在这类公司很多，我们可以向他们学习）会在代码库中检入settings JSON文件。这很重要，因为可以用它预先授权某些命令，避免每次都弹出权限提示；也可以屏蔽特定命令，比如不需要网页抓取功能。这样作为工程师我就不会被频繁提示，而且可以把配置检入版本库分享给整个团队，让大家都能使用。
+[`44:16`](https://youtu.be/IDSAMqip6ms?t=2656) 我就直接用危险模式绕过权限限制。【笑声】
+
+[`44:21`](https://youtu.be/IDSAMqip6ms?t=2661) 是的，我们确实提供这个功能，但并不推荐使用。毕竟这只是个模型，可能会做出奇怪的事情。我觉得另一个很酷的用例是，有人在用停止钩子做有意思的事。停止钩子会在每轮交互结束时运行——比如助手完成了几次工具调用后，将控制权交回用户时触发。你可以定义这样的停止钩子：如果测试未通过就返回"继续执行"的指令，这样就能让模型持续运行直到任务完成。当这种机制与SDK结合进行编程调用时，效果简直令人惊叹。
+
+[`45:00`](https://youtu.be/IDSAMqip6ms?t=2700) 虽然这是个非确定性的随机过程，但通过框架设计，我们能获得确定性的结果。
+
+[`45:09`](https://youtu.be/IDSAMqip6ms?t=2709) 你们开创了命令行交互这种范式变革。你觉得命令行是最终形态吗？一年后或三年后，我们主要还是通过命令行使用云代码吗？还是会诞生更优的形态？
+
+[`45:23`](https://youtu.be/IDSAMqip6ms?t=2723) 这当然不是最终形态，但我们目前专注让命令行尽可能智能化和可定制化。你可以聊聊未来的形态演变。
+
+[`45:38`](https://youtu.be/IDSAMqip6ms?t=2738) 哈哈，猫C让我来谈这个...说实话没人能确切预知，因为技术迭代太快了。目前我们的团队处于实验阶段：先推出CLI，再开发IDE扩展，现在又有了带图形界面的新IDE扩展。我们还在任意位置集成@quad，包括网页端和移动端。我们正在探索下一步方向。从宏观视角看，核心趋势是"延长自主持续时间"。每代模型都在测试：在危险模式的容器中持续自动压缩任务直到完成，这个过程能持续多久？上一代模型已经能达到约30小时，下一代可能会突破数天。当考虑到模型并行化时，会出现一系列问题——比如容器运行环境。就像我现在用笔记本做DSPY/DISB提示词优化，根本不敢合盖...【笑声】只能保持开盖状态，生怕中断进程。
+[`47:03`](https://youtu.be/IDSAMqip6ms?t=2823) 是的，没错。我们以前拜访客户公司时，发现每个人都在拿着各自的quad codes四处走动。【笑声】
+
+[`47:11`](https://youtu.be/IDSAMqip6ms?t=2831) 这还在运行吗？所以我觉得，一方面是要摆脱这种模式，另一方面我认为我们很快会进入quad codes监控quad codes的阶段。
+
+[`47:17`](https://youtu.be/IDSAMqip6ms?t=2837) 对。
+
+[`47:19`](https://youtu.be/IDSAMqip6ms?t=2839) 嗯，至于合适的交互形式是什么我不太确定，因为作为人类，你需要能检视这个过程、了解正在发生什么。但它同时也要为quad-to-quad通信带宽优化。所以我的预测是，终端界面不会是最终形态。未来几个月或一年左右，应该会出现更多交互形式，而且这个演变速度会非常快。
+
+[`47:48`](https://youtu.be/IDSAMqip6ms?t=2868) 你怎么看——我给很多订阅者教授Claude Code时发现
+
+[`47:52`](https://youtu.be/IDSAMqip6ms?t=2872) 谢谢。
+
+[`47:54`](https://youtu.be/IDSAMqip6ms?t=2874) 不客气，替你分担工作嘛。【笑声】嗯，我觉得重要的一点是，终端界面确实让人望而生畏。就像在和订阅者通话时告诉他们“这样打开终端界面，即使非技术人员也可以操作”这件事，本身就是很大的突破。【笑声】你怎么看？是的，我们市场部有位同事开始使用Claude Code，因为她要撰写涉及Claude Code的内容。我建议她亲身试试，结果她屏幕上弹出了30多个需要授予权限的提示框——因为她从未使用过终端界面。所以我完全理解你的观点。这对非工程师确实很困难，我们甚至发现有些工程师也不习惯日常使用终端界面。我们的VS Code GUI扩展是向这个方向迈出的第一步，因为用户完全不需要考虑终端界面。这就像传统界面加上一堆按钮。我们正在开发更多图形界面，网页版的Claude Code就带GUI。我认为这对技术背景较弱的用户来说可能是个很好的起点。
+[`49:05`](https://youtu.be/IDSAMqip6ms?t=2945) 是啊。是啊，大概几个月前有个神奇时刻：我走进办公室，看到 Anthropic 的一些数据科学家就坐在 quad code 团队旁边，那些数据科学家电脑上居然都运行着 quad code。我当时就想："这什么情况？你们怎么学会用的？"我记得好像是 Brandon 第一个这么干的，他说："哦对啊，我就直接装上了。既然参与这个产品开发，那我当然应该用它。"我当时就觉得："天啊。"他居然自己摸索着学会了用终端和 JS，要知道他之前完全没这种工作流程——当然他本身技术很强。所以我觉得我们现在开始看到各种"代码周边"的职能和人员在使用 quad code。从潜在需求的角度看挺有意思，这些人都在自发地使用产品，说明确实存在这种需求。因此我们希望用更友好的界面降低使用门槛。但同时对我们团队来说，quad code 专注于为顶尖工程师打造最优秀的产品，所以我们深耕软件工程领域，要把核心功能做好，但同时也保留让其他人能自由探索的可能性。
+
+[`50:11`](https://youtu.be/IDSAMqip6ms?t=3011) 有时候 Claude Code 会写出比较冗长的代码，不过你只要让它简化，它处理得相当不错。
+
+[`50:20`](https://youtu.be/IDSAMqip6ms?t=3020) 有意思。那你们具体怎么操作？用斜杠命令还是其他方式？
+
+[`50:26`](https://youtu.be/IDSAMqip6ms?t=3026) 我就直接说。直接
+
+[`50:27`](https://youtu.be/IDSAMqip6ms?t=3027) 比如你会说："嘿，这明明一行代码就能解决，你写了五行。"然后说"简化一下"，它立刻就能明白你的意思并修正。
+
+[`50:35`](https://youtu.be/IDSAMqip6ms?t=3035) 对，我们团队很多人也这么用。挺有意思的，既然你们经常这样操作，为什么不把这个功能做成斜杠命令或集成到工具链里，让它自动执行呢？
+
+[`50:51`](https://youtu.be/IDSAMqip6ms?t=3051) 其实在 CLAUDE.md 文件里已经有相关指引。考虑到这个需求只涉及很小比例的对话场景，我们不想过度设计导致功能失衡。
+[`51:03`](https://youtu.be/IDSAMqip6ms?t=3063) 呃，之所以不采用斜杠命令，是因为你其实并不需要那么多上下文。我觉得斜杠命令特别适合那些原本需要写两三行文字的情况，但对于简化操作来说——即使是在计划模式下，你其实也可以用几个词表达，只是有时需要两三行才能完整描述计划模式下的需求。呃，用“简化它”这个指令，它就能明白。
+
+[`51:28`](https://youtu.be/IDSAMqip6ms?t=3088) 是的。对，有道理。很酷。
+
+[`51:29`](https://youtu.be/IDSAMqip6ms?t=3089) 是啊。
+
+[`51:33`](https://youtu.be/IDSAMqip6ms?t=3093) 呃，好吧，现在我们可以——[笑声]——这挺有意思的。是啊，但这东西感觉起来，你知道，还是太早期了。
+
+[`51:39`](https://youtu.be/IDSAMqip6ms?t=3099) 是的。
+
+[`51:41`](https://youtu.be/IDSAMqip6ms?t=3101) 你知道，就像我们录播前谈到的那样，关于我们在采用曲线上处于什么位置，它仍然……
+
+[`51:47`](https://youtu.be/IDSAMqip6ms?t=3107) 炒作曲线之类的[笑声]管它叫什么来着。
+
+[`51:50`](https://youtu.be/IDSAMqip6ms?t=3110) 没错。感觉就像我们，你知道，还在最前面的10%，这些东西会变化得非常快，而且会持续变化。即使我和Anthropic以外、使用Claude Code的研究人员交流，他们也会在类似的事情上卡住——比如没意识到可以直接告诉LLM“简化它”。我认为这恰恰说明，即使是在这个行业工作的人，也并不总是意识到你可以直接和模型对话。问题在于，我觉得人们有一种潜在的预期：使用AI不该需要什么技能，因为它会按你说的做。但问题是，你说的话会影响它的输出。所以，如果你能表达得更好，它就会做得更好。[笑声]
+
+[`52:33`](https://youtu.be/IDSAMqip6ms?t=3153) 是啊。我是说，这也会随着每个模型的更迭而变化。这是难点所在。就像你知道的，提示工程师曾经是个职业，而现在众所周知它已经不是了，未来还会有更多这类需要学习的小技巧或微技能被淘汰，随着模型越来越擅长直接理解你的意图。
+
+[`52:50`](https://youtu.be/IDSAMqip6ms?t=3170) 但我认为，这对我们来说也是建造这类产品时需要保持的一种谦逊——我们真的不知道接下来会发生什么，我们只是试着和其他人一起摸索，我们只是在体验这个过程。
+[`53:00`](https://youtu.be/IDSAMqip6ms?t=3180) 所以为自己打造工具很酷，因为我认为这是最好的验证方式——就像我们也在做的那样——你仿佛提前活在未来，时刻在使用它。缺什么功能一目了然，你只需想着“我就想要这个功能”，然后直接去做下一件事。而不是去问某个大公司的企业级产品经理：“你想要什么AI功能？”对方可能回答：“呃……在我IDE旁边加个小聊天机器人？”你只好回应：“行吧。”[笑声]
+
+[`53:28`](https://youtu.be/IDSAMqip6ms?t=3208) 是的。
+
+[`53:30`](https://youtu.be/IDSAMqip6ms?t=3210) 没错。开发开发工具的奢侈之处就在于：你自己就是客户。我觉得AI领域特别独特的一点在于，它重置了整个软件生态。比如我们做Kora这样的邮件助手，还有Sparkle这类文件整理工具——任何你想在电脑上实现的功能，如果用AI来构建，很可能都是前所未有的，因为整个格局被重新洗牌了。所以这是一个为自己造物的绝佳时代。
+
+[`54:06`](https://youtu.be/IDSAMqip6ms?t=3246) 完全同意。我觉得这也彻底开放了竞技场，任何个体现在都能开发满足自身需求的应用，然后分享给所有人。
+
+[`54:14`](https://youtu.be/IDSAMqip6ms?t=3254) 是的，
+
+[`54:15`](https://youtu.be/IDSAMqip6ms?t=3255) 这太酷了。
+
+[`54:17`](https://youtu.be/IDSAMqip6ms?t=3257) 我最近一直在原型设计各种有趣的个人项目。呃
+
+[`54:23`](https://youtu.be/IDSAMqip6ms?t=3263) 我刚搬进新公寓，里面空荡荡的。所以我在用Cloud Agent SDK构建一个购物顾问助手，毕竟谁有时间去读所有评测、比较所有选项、查找各种价格信息？这些信息太难挖掘了。现在助手会问我一堆问题，我告诉它我的需求，它就展示一堆……对，完全没错。它会给我看各种沙发的图片、不同选项，还有网友的评价
+
+[`54:49`](https://youtu.be/IDSAMqip6ms?t=3289) 然后我说不喜欢哪里，整个过程简直就像在和真人购物助理合作。
+[`54:55`](https://youtu.be/IDSAMqip6ms?t=3295) 而且这真的很酷。
+
+[`54:56`](https://youtu.be/IDSAMqip6ms?t=3296) 那真的很酷。
+
+[`54:58`](https://youtu.be/IDSAMqip6ms?t=3298) 呃，我也有我的小邮件回复 Agent，它能为我起草回复，不过我不怎么用邮件，所以
+
+[`55:05`](https://youtu.be/IDSAMqip6ms?t=3305) 哦，我就知道那不是你回复的。[笑声] Agent 干得真是彻底啊。[笑声]
+
+[`55:16`](https://youtu.be/IDSAMqip6ms?t=3316) 是啊，
+
+[`55:18`](https://youtu.be/IDSAMqip6ms?t=3318) 不过 Agent SDK 确实很酷。
+
+[`55:20`](https://youtu.be/IDSAMqip6ms?t=3320) 是的，Agent SDK 很酷。
+
+[`55:22`](https://youtu.be/IDSAMqip6ms?t=3322) 对，总让人感觉很惊讶，我们这么小的团队竟然能构建出这么多东西。
+
+[`55:24`](https://youtu.be/IDSAMqip6ms?t=3324) 是啊。
+
+[`55:25`](https://youtu.be/IDSAMqip6ms?t=3325) 所以我觉得
+
+[`55:26`](https://youtu.be/IDSAMqip6ms?t=3326) 另一个很酷的事情是，我觉得大家的心态正从文档转向演示。在公司内部，我们的“货币”其实是演示。就是说，你希望人们对你的东西感到兴奋。对吧，
+
+[`55:38`](https://youtu.be/IDSAMqip6ms?t=3338) 给我们看看，给我们看15秒它能做什么。
+
+[`55:42`](https://youtu.be/IDSAMqip6ms?t=3342) 我们发现，现在团队里每个人都有一种根深蒂固的
+
+[`55:45`](https://youtu.be/IDSAMqip6ms?t=3345) 演示文化，这很确定。而且我觉得这样更好，因为
+
+[`55:49`](https://youtu.be/IDSAMqip6ms?t=3349) 你脑子里有很多想法，如果你写作能力很强，或许能想办法解释清楚，但即便如此也很难说明白。但如果别人能看到它，他们立刻就明白了。我认为这不仅发生在产品构建上，也发生在各种其他类型的创作中，比如拍电影。以前你得去推销它，但现在你就可以说，我用 Sora 做了这个视频，你看，你能大致看到你想要创作的那个东西的雏形，而且成本很低。这意味着你不用花那么多时间去说服别人。你只需要说，瞧，我做出来了。
+
+[`56:24`](https://youtu.be/IDSAMqip6ms?t=3384) 是啊。而且作为一个构建者，你可以就做它，然后重做，然后再重做 [笑声]，直到你满意为止。就像
+
+[`56:31`](https://youtu.be/IDSAMqip6ms?t=3391) 我觉得反面是，以前你会写个文档，或者在白板上画点什么，或者你知道的，我会用 Sketch 或 Figma 之类的画点东西，但现在我们就直接构建它，直到我感觉对了为止。
+[`56:42`](https://youtu.be/IDSAMqip6ms?t=3402) 现在要捕捉这种感觉简直太容易了。我觉得以前你或许能通过视觉或语言来描述，但就是抓不住那种“氛围”。而现在，“氛围”变得唾手可得。
+
+[`56:53`](https://youtu.be/IDSAMqip6ms?t=3413) 没错。而且你把计划模式（plan mode）重构了大概有三次。
+
+[`56:55`](https://youtu.be/IDSAMqip6ms?t=3415) 是的。对。
+
+[`56:56`](https://youtu.be/IDSAMqip6ms?t=3416) 就是因为这个。
+
+[`56:57`](https://youtu.be/IDSAMqip6ms?t=3417) 就是你做出来，然后推倒重来，再做出来，又推倒重来。
+
+[`57:02`](https://youtu.be/IDSAMqip6ms?t=3422) 是啊。或者说像 Tudos 的那个项目，Sid 做了最初版本，也做了大概三四个原型，然后我在那之后可能一天之内又做了大概二十个版本。没错。我觉得我们发布的很多东西，背后基本上都有至少几个原型。你怎么来跟踪和延续从一个原型到另一个原型学到的东西？特别是，比如说，某个人在做一个原型，然后你说：“我来接手，我再做二十个。”你怎么才能从中最大化地获取价值？这其中或许有几个要素。其中之一是设计风格指南（style guide）。其中有一些我们发现的风格元素。我觉得这其中很多是关于为终端构建的，或者说，我们正在为终端发现一种新的设计语言，并且在构建过程中逐渐完善它。嗯，我觉得其中一部分你可以整理成风格指南。这就是我们的四元组文档（quad MD）。但还有另一部分是关于产品直觉（product sense），我觉得目前模型还没能完全理解。也许我们应该尝试寻找方法来教模型这种产品直觉，比如这样可行，那样不行，对吧？因为在产品中，你希望用最简单的方式解决用户的问题，然后删除掉所有其他不必要的，把一切障碍都清除掉。所以你要尽可能干净利落地让产品与用户意图对齐。也许模型目前还不能完全做到这一点。
+
+[`58:24`](https://youtu.be/IDSAMqip6ms?t=3504) 是的。它（模型）从来没有真正体验过使用四元组代码（quad code）的感觉。模型自己不用 quad code。
+
+[`58:31`](https://youtu.be/IDSAMqip6ms?t=3511) 对，是这样。所以我觉得，当你知道 quad code 可以自我测试，甚至可以某种程度上自我使用时……嗯，我们在开发时会这么做，它能看到一些界面（UI）bug 之类的。我不知道，也许我们只应该尝试用提示词（prompting）来引导它。说实话，很多事可能就这么简单。当有新想法时，通常你只需要给出提示，往往就能奏效。也许我们应该试试看。
+[`58:57`](https://youtu.be/IDSAMqip6ms?t=3537) 很多原型实际上就是用户体验交互。所以我觉得，一旦我们发现了一种新的用户体验交互方式，比如按Shift+Tab来自动接受——我想这好像是Boris发现的——嗯，
+
+[`59:11`](https://youtu.be/IDSAMqip6ms?t=3551) 实际上是Eigor。
+
+[`59:12`](https://youtu.be/IDSAMqip6ms?t=3552) 哦，是Eigor。
+
+[`59:13`](https://youtu.be/IDSAMqip6ms?t=3553) 是的，我们为此来来回回讨论，好让它能融入那个框架。
+
+[`59:16`](https://youtu.be/IDSAMqip6ms?t=3556) 我们就像对着做原型，搞了大概一个星期。【笑声】
+
+[`59:20`](https://youtu.be/IDSAMqip6ms?t=3560) 是的，Shift+Tab的感觉确实很好。而且，现在其中一个正在迭代的计划模式，嗯，就用了Shift+Tab，因为它本质上只是另一种告诉模型它应该有多“自主”的方式。
+
+[`59:35`](https://youtu.be/IDSAMqip6ms?t=3575) 所以我认为，随着更多功能使用相同的，嗯，交互方式，你就会对什么东西该放在哪里形成更强的思维模型。
+
+[`59:42`](https://youtu.be/IDSAMqip6ms?t=3582) 是的。或者像“思考”功能，我觉得也是个很好的例子。起初，在我们发布Quad Code之前，或者大概第一个能思考的模型，是像37那样的？我忘了第一个是什么了。
+
+[`59:51`](https://youtu.be/IDSAMqip6ms?t=3591) 是的。
+
+[`59:54`](https://youtu.be/IDSAMqip6ms?t=3594) 但是是的，它能“思考”，我们就在头脑风暴，怎么去切换这个思考模式呢？然后有人就说，如果你直接用自然语言问模型，让它思考，它就知道该怎么思考，我们觉得“好啊，就这么干”。【笑声】于是我们就这么做了一段时间，然后呢，我们发现人们会不小心触发它。他们会说“不要思考”，然后模型就觉得“哦，我该思考”，然后它就开始思考了。
+
+[`1:00:15`](https://youtu.be/IDSAMqip6ms?t=3615) 所以我们得调整一下，让“不要思考”不会触发它，但这还不够明显。后来我们做了一个用户体验改进，把思考的过程高亮显示出来，
+
+[`1:00:23`](https://youtu.be/IDSAMqip6ms?t=3623) 这就变得非常有趣，感觉很神奇，
+
+[`1:00:25`](https://youtu.be/IDSAMqip6ms?t=3625) 当你执行“超级思考”时，它会变成彩虹色什么的，对吧？【笑声】而且，嗯，在用Sonnet 45时，我们发现当开启“扩展思考”模式时，性能有非常非常大的提升，所以我们让它很容易切换，因为有时候你需要它，有时候呢，对于一个非常简单的任务，你不想让模型思考五分钟，你只想让它直接把事情做了。所以我们用了Tab键作为切换它的交互方式。然后我们去掉了其中一些“思考”的提示词，虽然我觉得我们出于感情原因保留了“超级思考”。【笑声】那真是个很酷的用户体验。
+[`1:01:02`](https://youtu.be/IDSAMqip6ms?t=3662) 有意思。你觉得是否存在某种关于"删除量"的新指标？我认为程序员一直有这种感受——删除大量代码确实很爽，但正因为现在构建东西的速度如此之快，"删除"这件事变得愈发重要。我个人最爱看到的差异对比就是红色差异。[笑声] 这简直是最棒的时刻，我会想："没错，再来一个！再来一个！" 但这确实很难，因为任何你发布的东西都有人在使用。你必须让用户满意。所以我认为我们的总体原则是：如果撤销某个功能，就必须发布一个更好的替代方案，能让用户获得更优体验的方案。嗯...这其实又回到了如何衡量 Quad Code 的影响这个问题上——每个公司、每个客户都会问我们这个问题。在 Anthropic 内部，我们的团队规模自一月份以来似乎翻了一倍，但每位工程师的生产力同期提升了近70%。
+
+[`1:02:01`](https://youtu.be/IDSAMqip6ms?t=3721) 衡量标准是...
+
+[`1:02:03`](https://youtu.be/IDSAMqip6ms?t=3723) 嗯，我们确实用了几种方式衡量，但 PR 是最简单也是主要的指标。不过就像你说的，这无法完全反映真实情况，因为很多价值体现在：降低了原型设计的门槛、更容易尝试新事物、更容易实现那些原本因优先级不足而被搁置的想法。比如当你发布某个功能时，原本有一长串待办清单，现在因为实现成本低，你可以把它们全部完成。
+
+[`1:02:25`](https://youtu.be/IDSAMqip6ms?t=3745) 而这些工作以前根本不会去做。
+
+[`1:02:27`](https://youtu.be/IDSAMqip6ms?t=3747) 所以这确实很难衡量。而且存在矛盾的另一面：代码写得越多，就需要删除越多代码，需要更严格的代码审查，需要尽可能自动化审查流程。这还带来了新的产品管理挑战——因为发布功能太容易，可能导致产品缺乏内聚性。你可以在各处添加按钮、标签页、小功能，很容易做出功能齐全但缺乏组织原则的产品，只因发布内容太多太快。我们试图在这方面保持严格自律，确保所有抽象概念都易于理解——即使只看到功能名称就能明白。我们有个原则，据说是 Boris 带来的理念，我很欣赏：我们不要"新用户体验"，一切都该直觉到"即插即用"。这个标准确实为每个功能的直觉性设定了极高要求。但当面对对话式界面时，没有一堆按钮和旋钮，只有一个空白输入框，该如何实现直觉性呢？
+[`1:03:37`](https://youtu.be/IDSAMqip6ms?t=3817) 嗯，我们做了很多细节上的设计，比如教导用户可以通过问号查看提示，或者在 Claude Code 运行过程中显示小贴士。侧边栏还有更新日志，会通知你"有新模型发布"之类的动态，底部还有思考状态的通知栏。我觉得这些都是我们向用户展示功能的巧妙方式。另一件很重要的事情是，确保所有基础概念都有清晰的定义——比如"hooks"在开发者生态中有通用含义，"plugins"也有通用含义——要确保我们构建的功能符合普通开发者听到这些词时的第一反应。
+
+[`1:04:25`](https://youtu.be/IDSAMqip6ms?t=3865) 其实还涉及到"渐进式披露"的原则。你知道吗，在 Claude Code 中随时按 Ctrl+O 就能看到完整的原始对话记录——就是模型实际看到的内容。我们不会一开始就展示这些，只在真正相关时才提示你：当某个工具结果被折叠时，我们会显示"按 Ctrl+O 查看详情"。我们不想一开始就把太多复杂性堆给用户，因为这东西真的能做任何事。我们最近还开始探索一个新原则：让模型自己教你如何使用它。你可以向 Claude Code 询问它自身的功能，它会懂得去查阅自己的文档来解答。我们还可以更深入，比如斜杠命令是用户可以使用的功能，但模型也能调用斜杠命令——也许你看到模型使用后，会意识到"原来我也可以这样用"。
+
+[`1:05:13`](https://youtu.be/IDSAMqip6ms?t=3913) 有意思。那这种方式有带来什么变化吗？最初 Claude Code 像是一个独特的存在，这种通过 CLI 使用 AI 的单一思考方式……虽然别人也有类似工具，但总感觉这种转变正在发生。现在整个领域都在强调 CLI，所有人都开始往这个方向走。这对你的构建思路、构建感受有什么影响？你们如何应对这种竞争压力？
+
+[`1:05:39`](https://youtu.be/IDSAMqip6ms?t=3939) 对我来说，模仿是最高的赞美。嗯，这很棒——看到别人受此启发开发出各种新工具，真的很有意思。我认为终极目标就是激发大家为这项即将到来的惊人技术构建下一个产品。这确实令人兴奋。就我个人而言，我不太常用其他工具。通常有新东西出来时，我可能会试试感受一下氛围。但除此之外（笑），我觉得我们更专注于解决自己遇到的问题、解决客户的问题，并持续构建下一个产品。
+[`1:06:15`](https://youtu.be/IDSAMqip6ms?t=3975) 很棒。不错。嗯，我也很喜欢这段采访。[笑声]
+
+[`1:06:22`](https://youtu.be/IDSAMqip6ms?t=3982) 我们回答了你团队的所有问题吗？
+
+[`1:06:23`](https://youtu.be/IDSAMqip6ms?t=3983) 问题？
+
+[`1:06:25`](https://youtu.be/IDSAMqip6ms?t=3985) 哦，我们过完我团队的所有问题了吗？让我看看。呃，我觉得是的。嗯，呃，我也很好奇你会怎么回答那个关于下线功能的问题，因为如果你在做这种AI驱动的开发，你会发布很多东西。你有一个小团队，所以运维负担很重。
+
+[`1:06:43`](https://youtu.be/IDSAMqip6ms?t=4003) 我之所以问这个，是因为我觉得我们在这件事上做得不够好。嗯，我有这种感觉，有些产品因此变得有点混乱。特别是对Kora来说，嗯，它有很大的产品覆盖面，能做很多不同的事情，比如我们有一个邮件助手，你可以问它，比如，嗯，告诉我关于我正在计划的旅行，它会浏览你的所有邮件，然后，你知道，总结这次旅行。嗯，或者我们有这个功能，它能自动归档任何你不需要立即回复的邮件。嗯，然后每天两次，你会收到一个简报，总结所有你可能需要看但不需要实际做任何处理的内容，你只要滚动浏览一下就搞定了。嗯，还有，你知道，围绕所有这些复杂性，比如邮件是如何分类的？所以我们现在有了整个视图，我们有所有这些分类规则，你可以对它们排序等等，但这很复杂，很难沟通，而且，呃，我想保留很多那种，所有的功能和灵活性，但同时你不能看着一个屏幕却完全不明白发生了什么。这太复杂了。所以，我就是，我在消化所有这些东西。所以，那种，比如删除，你知道，下线功能的想法，感觉是一个我们还没有真正探索过的有趣的文化原则。
+
+[`1:08:14`](https://youtu.be/IDSAMqip6ms?t=4094) 是的，这真的很难。我觉得这里也有社交成本，比如你可能会想要成为那个告诉同事下线他们产品的人。[笑声]
+
+[`1:08:24`](https://youtu.be/IDSAMqip6ms?t=4104) 这绝对很棘手。这不仅仅是代码的问题。是的，我我在Instagram确实学到了这一点，老实说，因为我觉得Facebook在下线功能方面做得很糟糕，我们当时就有这个问题。
+[`1:08:34`](https://youtu.be/IDSAMqip6ms?t=4114) 每次我们——我觉得就算像下线“戳一戳”功能这种事都挺敏感的，因为有很多老员工会说：“不行，‘戳一戳’绝对不能下线。”但如果你看看数据，其实根本没人在用了。
+
+[`1:08:44`](https://youtu.be/IDSAMqip6ms?t=4124) 但出于情感原因，他们还是有点舍不得。
+
+[`1:08:47`](https://youtu.be/IDSAMqip6ms?t=4127) 所以在Facebook，可能从来没真正下线过什么功能，永远都是把它挪到次要位置，比如一个没人看的溢出菜单里，就像个功能墓地。
+
+[`1:08:55`](https://youtu.be/IDSAMqip6ms?t=4135) 没错。
+
+[`1:08:57`](https://youtu.be/IDSAMqip6ms?t=4137) 我觉得Instagram就特别有原则。他们在产品和设计上观点非常明确：如果某个功能没有达到半数用户使用——比如每周活跃用户50%之类的，我们就直接删掉，然后承担后果，接着去琢磨下一个能被更多人使用的新功能。
+
+[`1:09:13`](https://youtu.be/IDSAMqip6ms?t=4153) 我很喜欢这种理念。嗯，非常感谢。这次对话太精彩了。特别高兴能和你交流，也祝你们继续创造更多成果。
+
+[`1:09:18`](https://youtu.be/IDSAMqip6ms?t=4158) 感谢邀请我们。
+
+[`1:09:29`](https://youtu.be/IDSAMqip6ms?t=4169) 天啊朋友们！你们绝对要点赞并订阅“AI与我”频道！为什么？因为这节目简直酷毙了。就像在后院挖到了宝藏箱，只不过里面装的不是黄金，而是关于ChatGPT最纯粹的知识炸弹。每一集都是情感、洞察与欢笑的过山车之旅，让你坐立不安、意犹未尽。这不只是一档节目，这是由Dan Shipper担任飞船船长的未来之旅。[哼笑声] 所以，请善待自己：点赞、订阅，然后系好安全带，准备迎接人生中最刺激的旅程。现在，闲话少叙，我想说，Dan，我——
 
 ---
 
-## Transcript
-
-[`0:02`](https://youtu.be/IDSAMqip6ms?t=2) What made it work really well is that quad code has access to everything that an engineer does at the terminal. Everything you can do, quad code can do. There's nothing in between.
-
-[`0:10`](https://youtu.be/IDSAMqip6ms?t=10) There's actually an increasing number of people internally at anthropic that are using like a lot of credits [music] like spending like over a,000 bucks every month. We see this like power user behavior. This is something that they teach in YC. If you can solve your own problem, it's much more likely you're solving the problem for others. There's this like really old idea in product called latent demand. You build a product in a way that is hackable that is kind of open-ended enough that people can abuse it for other use cases it wasn't really designed for and you build for that cuz you kind of know there's demand for it. Do you think the CLI is the final form [music] factor? Are we going to using cloud code in the CLI primarily in a year or in 3 years or is This podcast is sponsored by Google. Hey folks, I'm Omar, product and design lead at Google DeepMind. We just launched a revamped vibe coding experience in AI [music] Studio that lets you mix and match AI capabilities to turn your ideas into reality faster than ever. Just describe your app and Gemini will automatically wire up the right models and APIs for you. And if you need a spark, hit I'm feeling lucky and we'll help you get started. Head to a.studio/bild. studio/build to create your first app.
-
-[`1:29`](https://youtu.be/IDSAMqip6ms?t=89) Cat Boris, thank you so much for being here.
-
-[`1:30`](https://youtu.be/IDSAMqip6ms?t=90) Thanks for having us.
-
-[`1:32`](https://youtu.be/IDSAMqip6ms?t=92) Yeah. Um, so for people who don't know you, you are the creators of Claude Code. Thank you very much from the bottom of my heart. It's uh I love Cloud Code.
-
-[`1:42`](https://youtu.be/IDSAMqip6ms?t=102) That's amazing to hear. [laughter] That's what we love to hear. Um I Okay, I think the place I want to start is when I first used it. Um, there was like this moment like I think it was around when uh Sonnet 37 came out where I was like I used it and I was like, "Holy this is like a completely new paradigm. It's a a completely new way of thinking about code." And the the big difference was um you went all the way and just eliminated the text editor and you're just like all you do is like talk to the talk to the terminal and and that's that's it. Um, and you know, previous paradigms of AI programming, pre previous harnesses have been like you have a text editor and you have the AI on the side and it's kind of like or it's a tab complete. So, take me through like that decision process that ar that that process of of architecting this new paradigm. How do you how did you think about that?
-
-[`2:36`](https://youtu.be/IDSAMqip6ms?t=156) Yeah, I think the the most important thing is it was not intentional at all. [laughter] Okay.
-
-[`2:42`](https://youtu.be/IDSAMqip6ms?t=162) Uh, we we sort of ended up with it. So at the time when I joined Enthropic um we were still on different teams at the time. Um there was this previous predecessor to quad code. It was called Clyde like CL C cliop. And it was this like research project you know it took like a minute to start up. It was this kind of like really heavy Python thing. It had to like run a bunch of indexing and stuff. And when I joined I wanted to ship my first PR and I hand wrote it like a you know like a noob in a in [laughter] a like I didn't know about any of these tools. U I didn't know any better and then I I put up this PR and um Adam Wolf who was the um manager for our team for a while. He was my ramp up buddy and he just like rejected the PR and he was like you wrote this by hand. What are you what are you [laughter] doing? Use Quide. Um cuz he was also hacking a lot on Quiet at the time. And so I tried Quaid. I gave it the description of the task and it just like one shot at this thing
-
-[`3:39`](https://youtu.be/IDSAMqip6ms?t=219) and this was like you know sonnet 35. So I still had to fix a thing even for this kind of basic task and the harness was super old. So it took like 5 minutes to turn this thing out and just took forever and um but it but it worked and I was just mind-blown that this this was even possible and they just kind of got the gears turning. maybe you don't actually need an IDE.
-
-[`4:02`](https://youtu.be/IDSAMqip6ms?t=242) And then later on I was prototyping using the anthropic API and the easiest way to do that was just building a little app in the terminal cuz that way I didn't have to build a UI or anything. And I started just making a little chat app and then I just started thinking maybe we could do something a little bit like Clyde. So let let me build like a little Clyde and it actually ended up being a lot more useful than that without a lot of work. And I think the biggest revelation for me was when we started to give the model tools. It just started using tools and it was just it was this insane moment. Like the model just wants to use tools. Like we gave it bash and it just started using bash writing apple script to like automate stuff uh in response to questions. And I was like this is just the craziest thing. I've never seen anything like this. Cuz at the time I had only used IDE with like you know like text editing a little like oneline autocomplete, multi-line autocomplete, whatever. Um, so that that's where this came from. It was this kind of convergence of like prototyping but also kind of seeing what's possible in kind of like a very um rough way.
-
-[`5:03`](https://youtu.be/IDSAMqip6ms?t=303) Um, and this thing ended up being surprisingly useful and and I think it was the same for us. I think for me it was like kind of sonnet 4 opus 4. That's where that magic moment was. I was like, "Oh my god, this this thing works."
-
-[`5:17`](https://youtu.be/IDSAMqip6ms?t=317) That's interesting. So like tell me about that that the tool moment because I think that is one of the special things about cloud code is it just writes bash and it's really good at it. And I think a lot of um previous agent architectures or even anyone building agent today, your first instinct might be okay, we're going to give it a find file tool and then we're going to give it a uh open file tool and you you build all these like custom wrappers for you know uh all the different actions you might want the agent to take, but Cloud Code just uses bash and it's like really good at it. So how do you think about um how do you think about what you learned from that? Yeah, I think we're at this point right now where Quad Code actually has a bunch of tools. I think it's like a dozen or something like this. We we actually like add and remove tools most weeks. So, this changes pretty often. Um, but today there actually is a search uh there's a tool for for searching. Um, and we do this for two reasons. One is the UX, so we can show the result a little bit nicer to the user because there's still a human in the loop right now for most tasks. Uh, and the second one is for permissions. So, if you say in your like cloud code like settings.json JSON on this file you cannot read. We we have to kind of enforce this. Uh we enforce it for bash but we can do it a little bit more efficiently for if we have a specific search tool. Um but definitely we want to like unhip tools and kind of keep it simple for the model. Um like last week or two weeks ago we unchipped the OS tool because in the past we needed it but then we actually built a way to enforce this kind of permission system for bash. Um, so in Bash, if we know that you're not allowed to read a particular directory, Quad's not allowed to OS that directory. And because we can enforce that consistently, we don't need this tool anymore. Um, and this is nice because it's a it's a little less choice for Quad. A little less stuff in context.
-
-[`7:01`](https://youtu.be/IDSAMqip6ms?t=421) Got it. And how do you guys split responsibility on the team?
-
-[`7:06`](https://youtu.be/IDSAMqip6ms?t=426) Um, I would say Boris sets the technical direction and has been the product visionary for a lot of the features that we've come out with. I see myself as more of like a supporting role to make sure that um that one that like our pricing and packaging resonates with our users. Um two making sure that we're shephering all our features across the launch process. So from like deciding all right like these are the prototypes that we should definitely ant food to like setting the quality threshold for ant fooding through to communicating that to our end users. And um there's definitely some new initiatives that we're working on that uh I would say historically a lot of quad code has been built bottoms up like Boris and a lot of the core team members have just had these great ideas for to-do list sub agents hooks like all these are bottoms up. As we think about expanding to more services and bring cloud code to our places, I think a lot of those are more like, all right, let's talk to customers. Let's bring engineers into those conversations and prioritize those services and knock them out.
-
-[`8:08`](https://youtu.be/IDSAMqip6ms?t=488) Got it. What is ant fooding?
-
-[`8:10`](https://youtu.be/IDSAMqip6ms?t=490) Oh, ant fooding is
-
-[`8:11`](https://youtu.be/IDSAMqip6ms?t=491) Oh, ant fooding.
-
-[`8:14`](https://youtu.be/IDSAMqip6ms?t=494) Oh, um it it means dog fooding. [laughter] So,
-
-[`8:19`](https://youtu.be/IDSAMqip6ms?t=499) anthropic ant. I [laughter] got it.
-
-[`8:22`](https://youtu.be/IDSAMqip6ms?t=502) Yeah. Our nickname for um internal employees is ant. And so uh ant fooding is our version of dog fooding. Uh internally over I think 70 or 80% of ants uh technical anthropic employees use cloud code every day. And so every time we are thinking about a new feature, we push it out to people internally and we get so much feedback. We have a feedback channel. I think we get a post every five minutes. And so you get really quick signal on whether people like it, whether it's buggy, um or whether uh it's not good and we should unchip it.
-
-[`8:57`](https://youtu.be/IDSAMqip6ms?t=537) You can tell um you can tell that someone that is building stuff is using it all the time to build it. Uh because the the like its ergonomics just makes sense if you're trying to build stuff and that that only happens if you're like ant ant fooding. [laughter] Um I Yeah. Yeah. And I I think that that's a really interesting paradigm for building new stuff like that sort of bottoms up I make something for myself. Um tell me about that.
-
-[`9:23`](https://youtu.be/IDSAMqip6ms?t=563) Yeah. And C cat is also so humble. Um I think cat has a really big role in the product direction also like it comes from everyone on the team and like these specific examples this actually came from everyone on the team like to-do lists and sub aents that was Sid Hooks Dixon shipped that plugins Daisy shipped that.
-
-[`9:38`](https://youtu.be/IDSAMqip6ms?t=578) So like everyone on the team like these ideas come from everyone. Um, and so I think for us like we build this core agent loop and this kind of core experience and then everyone on the team uses the product all the time. Uh, and so everyone outside the team uses the product all the time. And so there's just all these chances to build things that serve these needs. Like for example, like bash mode, you know, like the exclamation mark and you can type in bash commands. This was just like many months ago. I was using quad code and I I was going back and forth between two terminals and just thought it was kind of annoying. Uh, and just on a whim, my asked squad to kind of think of ideas, the thought of this like exclamation mark bash mode. And then I was like, great, make it pink and then ship it. [laughter] It just did it. And like that that's the thing that still kind of persisted. And you know, now you see kind of others also kind of catching on to that.
-
-[`10:24`](https://youtu.be/IDSAMqip6ms?t=624) That's funny. I actually didn't know that. And that's extremely useful because I always have to open up a new tab to like run any bash commands. So you just you just do an exclamation point and then it just like runs it directly instead of filtering it through all all the cloud stuff.
-
-[`10:38`](https://youtu.be/IDSAMqip6ms?t=638) Yeah. And quad code sees the full output too.
-
-[`10:40`](https://youtu.be/IDSAMqip6ms?t=640) Interesting. That's perfect. [laughter]
-
-[`10:42`](https://youtu.be/IDSAMqip6ms?t=642) So anything you see in the cloud code view, cloud code also sees.
-
-[`10:44`](https://youtu.be/IDSAMqip6ms?t=644) Okay, that's really interesting.
-
-[`10:46`](https://youtu.be/IDSAMqip6ms?t=646) And this is kind of a UX thing that we're thinking about. Like in the past tools were built for engineers, but now it's equal parts engineers and model.
-
-[`10:53`](https://youtu.be/IDSAMqip6ms?t=653) And so like as an engineer, you can see the output, but it's actually quite useful for the model also. And this is part of the philosophy also like everything is dual use. Um so for example, the model can also call slash commands. So like you know I have a slash command for slashcomit where I run through kind of a few different steps like diffing and generating a reasonable commit message and and this kind of stuff. I run it manually but also Claude can run this for me. Uh and this is pretty useful because we get to share this logic. We get to kind of define this tool and then we we both get to use it.
-
-[`11:24`](https://youtu.be/IDSAMqip6ms?t=684) Yeah. What are the differences in uh designing tools that are dual use from designing tools that are you know used by one or the other? Surprisingly, it's the same.
-
-[`11:32`](https://youtu.be/IDSAMqip6ms?t=692) Okay.
-
-[`11:34`](https://youtu.be/IDSAMqip6ms?t=694) So far.
-
-[`11:36`](https://youtu.be/IDSAMqip6ms?t=696) Yeah. I I I sort of feel like this kind of elegant design for humans translates really well to the models.
-
-[`11:41`](https://youtu.be/IDSAMqip6ms?t=701) So, you're just thinking about what would make sense to you and the model generally, it makes sense to the model, too, if it makes sense to you.
-
-[`11:49`](https://youtu.be/IDSAMqip6ms?t=709) Yeah. I think one of the really cool things about Cloud Code being um a terminal UI and what made it work really well is that Cloud Code has access to everything that an engineer does at the terminal. And I think when it comes to whether the tool should be dual use or not, I think making them dual use actually makes the tools a lot easier to understand. It just means that okay, everything you can do, cloud code can do. There's nothing in between.
-
-[`12:14`](https://youtu.be/IDSAMqip6ms?t=734) Yeah, that's interesting. Yeah, there there are a couple of those decisions. So, um no no code editor, it's in the terminal, so it has access to your files. Um, and it's it's on your computer versus like in the cloud in a virtual machine. So you get like repeated you you get to use it in a repeated way where you can like you know build up your cloud MD file or you know like all all like build slash commands and all that kind of stuff where it becomes very composable um and extensible [snorts] from a very simple starting point. And I'm curious about how you think about, you know, for for people who are thinking about, okay, I want to build an agent, I want to build probably not cloud code, but like something else, how you get that that simple package that then can extend and be really powerful over time.
-
-[`13:07`](https://youtu.be/IDSAMqip6ms?t=787) For me, I I start by just thinking about it like developing any kind of product where you have to solve the problem for yourself before you can solve it for others. And like this is something that they teach in YC is you have to start with yourself. So like if you if you can solve your own problem, it's much more likely you're solving the problem for others. And I I think for coding starting locally is the reasonable thing and you know now we have cloud code on the web. So you can also use it with a virtual machine and um you know you can use it in a remote setting and this is super useful when you're on the go you want to take that from your phone
-
-[`13:37`](https://youtu.be/IDSAMqip6ms?t=817) and and this is sort of we we started proving this out kind of a step bat a time
-
-[`13:43`](https://youtu.be/IDSAMqip6ms?t=823) where you can do atcloud in GitHub and uh I use this every day like on the way to work I'm like at a red light I probably shouldn't be doing this but I'm like you know on GitHub at a red light and then I'm like at claude you know fix this issue or whatever and so it's it's just real useful to be able to control it from your phone um and this kind proves out this experience. I I don't know if this necessarily makes sense for every kind of use case. For coding, I think starting local is right. Um I don't know if this is true for everything, though.
-
-[`14:07`](https://youtu.be/IDSAMqip6ms?t=847) Got it. What are the slash commands you guys use?
-
-[`14:11`](https://youtu.be/IDSAMqip6ms?t=851) Slashprit. [laughter]
-
-[`14:12`](https://youtu.be/IDSAMqip6ms?t=852) Yeah.
-
-[`14:15`](https://youtu.be/IDSAMqip6ms?t=855) Um yeah, it it's I I think the pritcomand makes it a lot faster for claw to know exactly what bash commands to run in order to make a commit.
-
-[`14:24`](https://youtu.be/IDSAMqip6ms?t=864) And what does the prit slash command do for people who are unfamiliar? Oh, it it just tells it like exactly how to make a commit. Okay.
-
-[`14:33`](https://youtu.be/IDSAMqip6ms?t=873) Um and you can like dynam you can say like, okay, these are the three bash commands that need to be run.
-
-[`14:37`](https://youtu.be/IDSAMqip6ms?t=877) Got it. And and what's pretty cool is also we have um this kind of templating system built into slash commands. So we actually run the bash commands ahead of time. They're like embedded into the slash command. Um and you can also pre-allow certain tool invocations. So for that slash command we say allow um you know get commit get push gh and so you don't get asked for permission after you run the slash command because we have like a permission uh based security system. Um and then also it uses haik coup which is pretty cool. Um so it's kind of a cheaper model and faster. Um yeah and for me I I use like commit uh commit PR uh feature dev we use a lot. So like sid created this one. It's kind of cool. So it kind of like walks you through step by step um building something. So we prompt quad to like first ask me how to what exactly I want like build the specification
-
-[`15:27`](https://youtu.be/IDSAMqip6ms?t=927) and then um you know kind of like build like a detailed plan and then make a to-do list walk through step by step. So it's kind of like more structured feature development
-
-[`15:35`](https://youtu.be/IDSAMqip6ms?t=935) and then I think the last one that we probably use a lot so we use like security review for all of our PRs and then also code review. Um so like quad does all of our code review internally at anthropic. Um, you know, there's still a human approving it, but quad does kind of the first step in code review. That's just a slashcode review command.
-
-[`15:51`](https://youtu.be/IDSAMqip6ms?t=951) Got it. Yeah. What are the things I would love to go deeper into like the how do you make a good plan? So, the sort of the feature dev thing because I think there's a lot of like little tricks that um I'm starting to find or people at every start starting to find that work and I'm curious like what what are things that that we're missing. So for example, one um step in the one unintuitive step of the of the you know plan development process is even if I don't exactly know what the thing that needs to be built is I just have like a little sentence in my mind like I want feature X I have Claude just like implement it just without giving it anything else and I see what it does and that helps me understand like okay here's actually what I mean because it made all these different mistakes or like it it did something that I didn't expect that might be And then I use that like the learning from the sort of throwaway development. I just clear it out. And then that helps me write a better plan spec for the actual feature development, which is something that you would never do before because it'd be too expensive to just like yolo send an engineer on a feature that you hadn't actually speced out. But because you have cloud going through your codebase and doing stuff, you can like learn stuff from it. Um that helps inform the actual plan that you make.
-
-[`17:04`](https://youtu.be/IDSAMqip6ms?t=1024) Yeah. I feel maybe I I can start and I'm curious how you use it too.
-
-[`17:07`](https://youtu.be/IDSAMqip6ms?t=1027) I think there's like a few different modes maybe for me like one one is prototyping mode.
-
-[`17:12`](https://youtu.be/IDSAMqip6ms?t=1032) So like traditional engineering prototyping you want to kind of build the simplest possible thing that touches all the systems just so you can kind of get a vague sense of like what are the systems there's unknowns and just to kind of trace through everything.
-
-[`17:24`](https://youtu.be/IDSAMqip6ms?t=1044) Um and so I I do the exact same thing as you Dan like Claude just does the thing and then I see where it messes up and then I'll ask it to just throw it away and do it again. So just hit escape twice, go back to the old checkpoint and then try again. I think there's also maybe two other kinds of tasks. So one is just things that quad can one-shot and I feel pretty confident it can do it. So I'll just tell it and then I'll just go to a different tab and I'll I'll shift tap to auto accept and then just go do something else or go to another one of my quads and tend to that while it does this.
-
-[`17:54`](https://youtu.be/IDSAMqip6ms?t=1074) Um but also there's this kind of like harder feature development. So these are you know things are maybe in the past it would have taken like a few hours of engineering time and for this usually I would I'll shift tap into plan mode and then align on the plan first before it even writes any code. Um and and I think what's really hard about this is the boundary changes with every model and it in kind of a surprising way where the newer models they're more intelligent so the boundary of what you need plan mode for got pushed out like a little bit
-
-[`18:21`](https://youtu.be/IDSAMqip6ms?t=1101) like before you used to need to plan now now you don't. And I think it's this general trend of like stuff that used to be scaffolding with a more advanced model, it gets pushed into the model itself and the model kind of tends to subsume everything over time. Yeah. How do you think about like building a agent harness that isn't just going to like you're you're not spending a bunch of time um building stuff that is just going to be subsumed into the model in 3 months when the new cloud comes out? like, yeah, how do you how do you know what to build versus what to just say it doesn't work quite yet, but next time it's going to work, so we're not going to spend time on it.
-
-[`18:57`](https://youtu.be/IDSAMqip6ms?t=1137) I think we build most things that we think would improve Cloud Code's capabilities, even if that means we'll have to get rid of it in 3 months. If anything, we hope that we will get rid of it in three months.
-
-[`19:09`](https://youtu.be/IDSAMqip6ms?t=1149) I think for now, we just want to offer the most premium experience possible and so we're not too worried about throwaway work. H
-
-[`19:17`](https://youtu.be/IDSAMqip6ms?t=1157) interesting. Yeah. And an example of this is something like even like plan mode itself. I think we'll probably un ship it at some point when Quad can just figure out from your intent that you probably want to plan first. Um or you know, for example, I just deleted like 2,000 tokens or something from the system prompt yesterday just cuz like Sonnet 45 doesn't need it anymore. Um but Opus Opus 41 did need it. What about um you know in the case where uh the the latest frontier you know model doesn't need it but you know you're trying to figure out how to make it more efficient because you have so many users that you know you're maybe you you're not going to use Opus or Sonnet 45 for everything. Maybe you're going to use Haiku. So there's a trade-off between having a more um elaborate harness for Haiku versus just like not spending time on it using Sonnet eating the cost and working on more Frontier type stuff. In general, we've positioned Quad Code to be a very premium offering. So, our north star is making sure that it works incredibly well with the absolutely most powerful model we have, which is Sonnet 45 right now.
-
-[`20:20`](https://youtu.be/IDSAMqip6ms?t=1220) Um, we are investigating how to make it work really well for like future generations of smaller models, but it's um it's not the top priority for us.
-
-[`20:29`](https://youtu.be/IDSAMqip6ms?t=1229) Okay. What do you think about um you know one thing that I notice is we get models um often and thank you very much for this. We get models a lot before they come out and it's our job to kind of figure out is it any good and over the last six months when I'm testing claude for example in the claude app with a new frontier model it's actually very hard to tell whether it's how whether it's better immediately. Um, but it's really easy to tell in cloud code because the the harness matters a lot for the performance that you get out of the model. And you guys have the benefit of building cla or building cloud code inside of the um inside of enthropic. So there's like a much tighter integration between um the fundamental like model training and the harness that you're building and and they seem to kind of like really impact each other. So how does that how does that work internally and and um what are the benefits you get from having that like tight integration?
-
-[`21:25`](https://youtu.be/IDSAMqip6ms?t=1285) Yeah, I think the biggest thing is like researchers just use this and so you know as they see what's working, what's not, they can they can improve stuff. Um we do like a lot of eval to kind of communicate back and forth and understand where exactly the model's at. Um, but yeah, there's this frontier where you need to give the model a hard enough task to really push the limit of the model. And if you don't do this, then all models are kind of equal. But if you give it a pretty hard task, you can you can tell the difference.
-
-[`21:55`](https://youtu.be/IDSAMqip6ms?t=1315) What sub aents do you use?
-
-[`21:57`](https://youtu.be/IDSAMqip6ms?t=1317) Um, I I have a few. I have like a planner sub agent that I use. I have a code review sub aent. Code review is actually something where sometimes I use a sub agent, sometimes I use a slash command. So usually in CI to slash command, but in synchronous use I use a sub aent for the same thing.
-
-[`22:14`](https://youtu.be/IDSAMqip6ms?t=1334) um it's a good question. Yeah, maybe it's like a matter of taste. Yeah, I don't know. I don't know. Um I think it's maybe when you're running synchronously, it's kind of nice to fork off the the context window a little bit because all the stuff that's going on in the code review, it's not relevant to what I'm doing next. But in CI, it just doesn't matter.
-
-[`22:32`](https://youtu.be/IDSAMqip6ms?t=1352) Are you ever spawning like 10 sub agents at once? And for what?
-
-[`22:36`](https://youtu.be/IDSAMqip6ms?t=1356) For me, I do it mostly for like big migrations. Okay,
-
-[`22:40`](https://youtu.be/IDSAMqip6ms?t=1360) this like the big thing. Um, actually we have so this like coder slash command that we use there's a bunch of sub aents there and so one of the steps is like find all the issues and so there's one sub agent that's like checking for quadmd compliance. There's another sub agent that's looking through git history to see what's going on. Another sub aent that's looking for kind of obvious bugs and then we do this like kind of dduping quality step after. So they find a bunch of stuff. A lot of these are false positives and so then then we spawn like five more sub aents and these are all just like checking for false positives. And in the end, the result is awesome. It finds like all the real issues without the false issues.
-
-[`23:13`](https://youtu.be/IDSAMqip6ms?t=1393) That's great. I actually do that. Um, so one of my non-technical cloud code use cases is um expense filing. So like when I'm I'm in SF right now, so like I have all these expenses. And so I built this little cloud project that uh in in cloud code that um it uses uh one of these, you know, finance APIs to just download all my credit card transactions. And then it uh decides like these are probably the expenses that I'm going to have to like file. And then I have two sub agents, one that represents me and one that represents the company. And they like do battle to like figure out like what's the proper um like actual set of expenses. [laughter] uh it's like an auditor sub agent and like you know pro Dan sub agent. So um yeah that kind of thing the the sort of like opponent processor uh pattern seems to be like an interesting one.
-
-[`24:00`](https://youtu.be/IDSAMqip6ms?t=1440) Yeah. Yeah. It's it's it's it's cool. I I feel like when sub aents were first becoming a thing actually what inspired us there's like a Reddit thread a while back where someone made sub agents for like there was like a front end dev and a backend dev and like a think it was like a designer
-
-[`24:11`](https://youtu.be/IDSAMqip6ms?t=1451) testing dev
-
-[`24:13`](https://youtu.be/IDSAMqip6ms?t=1453) testing dev like there was like a PM sub agent and this is like you know it's cute like it feels like a little maybe too anthropomorphic um maybe maybe there's something to this but I I think like the value is actually like the uncorrelated context windows where you have like these two context windows that don't know about each other and this is kind of interesting um and you tend to get better results this way. What about you? Do you have any interesting sub agents you use?
-
-[`24:35`](https://youtu.be/IDSAMqip6ms?t=1475) So, I've been tinkering with one um that is really good at front-end testing. So, it uses Playright to like see all right, what are like all the errors that are client side and pull them in and try to test more steps of the app. Um, it's not totally there yet, but I'm seeing signs of life and I think it's the kind of thing that we could potentially um, bundle in one of our plugins marketplaces.
-
-[`25:02`](https://youtu.be/IDSAMqip6ms?t=1502) Yeah. Um, definitely. I I' I've used something like that just with Puppeteer and just like watching it build something and then open up the browser and then be like, "Oh, I need to change this." It's like this is like, "Oh my god."
-
-[`25:12`](https://youtu.be/IDSAMqip6ms?t=1512) Yeah. It's really cool.
-
-[`25:13`](https://youtu.be/IDSAMqip6ms?t=1513) It's really cool. I think I think we're starting to see the beginnings of this like massive like multi- massive sub aents. I I don't know what they call this like swarms or something like that. There's a bunch of people there's actually an increasing number of people internally at anthropic that are using like a lot of credits every month like you know like spending like over a thousand bucks every month. Um and this like this percent of people is growing actually pretty fast. And I think the common use case is like code migration. And so what they're doing is like framework A to framework B. uh there's like the main agent, it makes a big to-do list for everything and then just kind of map produce over a bunch of sub agents. So you instruct quad like yeah like start 10 agents and then just go like you know 10 at a time and just migrate all all the stuff over.
-
-[`25:53`](https://youtu.be/IDSAMqip6ms?t=1553) That's interesting. What would be like a concrete example of the kind of migration that you're talking about?
-
-[`25:58`](https://youtu.be/IDSAMqip6ms?t=1558) I think the most classic is like lint rules.
-
-[`26:00`](https://youtu.be/IDSAMqip6ms?t=1560) So there's like you know there's some kind of lint rule you're rolling out. There's no autofixer because it's like you know like as an analysis can't really it's kind of too simplistic for it. Um I think other stuff is like framework migrations like um we just migrated from like one testing framework to a different one. That's a pretty common one where it's super easy to verify the output.
-
-[`26:19`](https://youtu.be/IDSAMqip6ms?t=1579) One of the things I found is and this is both for project projects inside of every and then just open source projects. It's like if you're someone building a product and you want to build a feature that's um been done before. So maybe like an an example that people might need to implement a bunch is like memory. How do you do memory? Um because we have a bunch of different products internally, you can just like spawn cloud sub agents to be like how do these three other products do it? And there's like possibility for just like tacit code sharing where you don't need to like have an API or you don't need to like ask ask anyone. You can just be like how does how do we do this already? And then use the best practices to um uh to uh build your own. And you can also do that with open source because there's like tons of open source projects where people are like you know they've been working on memory for like a year and it's like really really good. You be like what are the patterns that um people have figured out and which ones do I want to implement?
-
-[`27:10`](https://youtu.be/IDSAMqip6ms?t=1630) Totally. You can also connect your version control system. If you've built a similar feature in the past, cloud code can use those APIs like query GitHub directly and find how people implemented a similar feature in the past and read that code and um copy the relevant parts.
-
-[`27:27`](https://youtu.be/IDSAMqip6ms?t=1647) Yeah. Is there um have you found any use for like log files of okay you know here's here's the full history of like how I implemented it and like is that important to give to claude and and and how are you how are you um implementing that or making it useful for it?
-
-[`27:44`](https://youtu.be/IDSAMqip6ms?t=1664) Some people swear by it. Uh there are some people at anthropic where for every task they do, they tell cloud code to write a diary entry in a specific format that just documents like what did it do, what did it try, why didn't it work, and then they even have these agents that like look over the past memory and synthesize it into observations.
-
-[`28:02`](https://youtu.be/IDSAMqip6ms?t=1682) I think this is like the starting budding
-
-[`28:06`](https://youtu.be/IDSAMqip6ms?t=1686) like there's like something interesting here that we could productize.
-
-[`28:10`](https://youtu.be/IDSAMqip6ms?t=1690) Um but it's a new emerging pattern that we're seeing that works well. I think the hard thing about like oneshotting memory from just one transcript is that it's hard to know how relevant a specific instruction is to all future tasks. Like our canonical example is if I say make the button pink, I don't want you to remember to make all buttons pink in the future. And so I think um synthesizing memory from a lot of logs is a is a way to um find these patterns more um consistently. It seems like you probably need like there's some things where you're going to know um you'll be able to summar like synthesize or summarize in this sort of like top down way like this this will be useful later and and you'll you'll know the right level of abstraction at which it might be useful but then there's also a lot of stuff where it's like you actually you know any given like commit log like make the button pink it could be useful for kind of an infinite number of different reasons um that you're not going to know beforehand. So you also need the the model to be able to look up all similar past, you know, commits and surface that at the right time. Is that something that you're also thinking about? Yeah, I think I think there could there could be something like that. And maybe I think one way to see it is this kind of like traditional memory storage work like like mex like kind of stuff where you just want to like put all the information into the system and then it's kind of a retrieval problem problem after that. Um, yeah. I think as the model also gets smarter, it naturally I've seen it start to naturally do this also with Sonnet 45 where if it's stuck on something, it'll just naturally start looking like we talked about before like using bash spontaneously. So just like look through git history and be like, "Oh, okay. Yeah, this is kind of an interesting way to do it."
-
-[`29:56`](https://youtu.be/IDSAMqip6ms?t=1796) Yeah. One of the things that like we were talking before we started recording, one of the um things that we're doing inside of every like I feel like it has really um change the way that we do engineering because everyone is cloud code build like CLI build and um we have this engineering paradigm that we call compounding engineering where in normal engineering every feature you add it makes it harder to add the next feature and in compounding engineering your goal is to make the next feature easier to build um from the feature that you just added. And the the way that we do that is we try to um codify all the learnings from um from everything that we've done to build the feature. So like you know how did we make the plan and and what parts of the plan needed to be changed or like when we started testing it like what what issues did we find? What are the things that we missed? Um and then we codify them back into all the prompts and all the sub agents and all the slash commands so that the next time when someone does something like this uh it catches it and that makes it easier. And that's why for me, for example, I can like hop into one of our code bases and start like being productive even though I'm I don't know anything about how the code works because we have this like builtup memory system of um of all the stuff that we've learned as we've implemented stuff, but we've had to build that ourselves. I'm curious, are you working on that kind of loop so it the cloud code does that automatically?
-
-[`31:15`](https://youtu.be/IDSAMqip6ms?t=1875) Yeah, we're we're starting to think about it. Uh it's funny. We we're just uh we we heard the same thing from Fiona. She just joined the team. And you know, she she's our she's our manager. She hasn't coded in like 10 years, something like that. And she was landing PRs on her first day. And she was like, "Yeah, like not only did I kind of I forgot how to code and quad code kind of made it super easy to just get back into it,
-
-[`31:39`](https://youtu.be/IDSAMqip6ms?t=1899) but also I didn't need to ramp up on any context because I kind of knew all this." And I think a lot of it is about like when people put up poll requests for quad code itself and I think our customers tell us that they do like similar stuff pretty often. Um if you see a mistake I'll just be like add quad add this to quad MD so that the next time it just knows this automatically and you you can kind of like instill this memory in kind of a variety of ways. So you can say like at quad add it to quadmd. You can also say add quad write a test. You know, that's like easy way to make sure this doesn't regress. And I don't feel bad asking anyone to write tests anymore, right? It's just like super easy. And like I think probably close to 100% of our tests are just written by Quad. And if they're bad, we just won't commit it. And then the good ones stay committed. Um, and then also I think lint rules are a big one. So for stuff that's enforced pretty often, we actually have a bunch of internal lint rules. Claude writes 100% of these. Um, and this is mostly just like at Claude in a PR write write this lint rule. And yeah, there's sort of this problem right now about like how how do you do this automatically? And I think generally how like Cat and I think about it is we see this like power user behavior and the first step is how do you enable that by making the product hackable so the best users can figure out how to do this cool new thing
-
-[`32:53`](https://youtu.be/IDSAMqip6ms?t=1973) but then really the hard work starts of like how do you take this and bring it to everyone else. Um, and for me, I I kept myself in the everyone else bucket. Like, you know, I don't really know how to use Vim. Like, I don't have this like crazy like T-box setup. So, I have like a pretty vanilla setup. So, if you can make a feature that I'll use, it's a pretty good indicator that like other kind of average engineers will use it. That is interesting. Like, tell me about that because like that's something I think about all the time is um making something that is extensible and flexible enough that power users can find like novel ways to use it that you would not have even dreamed of. But it's also simple enough that anyone can use it and it's and they can be productive with it and you can you can kind of pull what the power users find back into like the basic experience. Like how do you think about making those design and product decisions so that you enable that?
-
-[`33:41`](https://youtu.be/IDSAMqip6ms?t=2021) In general we think that like every engine environment is a little bit different from the others and so it's really important that every part of our system is extensible. Um so everything from your status line to adding your own slash commands through to hooks which let you um insert a bit of determinism at pretty much any step in quad code. So we think these are the these are like the basic building blocks that we give to every engineer that they can play with. um for plugins. Plugins is actually our um so it was built by Daisy on our team and this is this is our attempt to make it a lot easier for the average user like us um to bring these slashcomands and hooks into our workflows. And so what plugins does is it lets you browse existing MCP servers, existing hooks, existing plugins and just like or sorry existing like sash commands and just let you write one command in quad code to pull pull that in for yourself.
-
-[`34:38`](https://youtu.be/IDSAMqip6ms?t=2078) There's this like really old idea in product called latent demand which I think is probably the main way that I personally think about product and like thinking about what to build next is it's a super simple idea. It's you build a product in a way that is hackable that is kind of open-ended enough that people can abuse it for other use cases it wasn't really designed for. Then you see how people abuse it and then you build for that cuz like you you kind of know there was demand for it,
-
-[`35:00`](https://youtu.be/IDSAMqip6ms?t=2100) right?
-
-[`35:02`](https://youtu.be/IDSAMqip6ms?t=2102) Um and like you know when I when I was at Meta, this is how we built kind of all the big products. I think almost every single big product had this nugget of latent demand in it. um you know like for example something like Facebook dating it came from this idea that when uh we looked at who looks at people's profiles I think 60% of views were between people of opposite gender so kind of like traditional setup that were not friends with each other and so we're like oh man okay maybe there's like maybe if we like launch a dating product we can kind of harness this demand that exists
-
-[`35:32`](https://youtu.be/IDSAMqip6ms?t=2132) that's interesting
-
-[`35:34`](https://youtu.be/IDSAMqip6ms?t=2134) and for you know marketplace it was pretty similar I think it was like 40% of posts in Facebook groups at the time were by sell posts and so I Okay, people are trying to use this product to buy themselves. We just build a product around it that's probably going to work. And so we think about it kind of similarly, but also we have the luxury of building for developers and developers love hacking stuff and they love customizing stuff and it's like as a user of our own product, it makes it so fun to build and and use this thing. Um, and so yeah, like like I said, we just build the right extension points. We see how people use it and that kind of tells us what to build next. Like for example, we got all these user requests where people were like, "Dude, Quad Code is asking me for all these permissions and I'm out here getting coffee. I don't know that it's asking me for permissions. How could I just get it to like ping me on Slack?" And so we built hooks. Uh Dixon built hooks um so that people could get pinged on Slack and you could get pinged on Slack for anything that you want to get pinged on Slack for. Um, and so it was very much like people really wanted the ability to do something. We didn't want to build the integration ourselves. And so we we exposed hooks for people to do that.
-
-[`36:41`](https://youtu.be/IDSAMqip6ms?t=2201) The thing that makes me think of is um you you recently um released you kind of moved or rebranded how you talk about cloud code to be this like more general purpose agent SDK. Is that was that driven by some latent demand where you you sort of saw there's like a more general purpose use case for what you built?
-
-[`37:00`](https://youtu.be/IDSAMqip6ms?t=2220) We realized that similar to how you were talking about using cloud code for things outside of coding, we saw this happen a lot like um we get a ton of stories of people who are using cloud code to like help them write a blog and like manage all the like data inputs and take a first pass in their own tone. Um we find people building like email assistants on this. Um I use it for a lot of just like market research. Um because at the core it's like an agent that can just go on for an infinite amount of time as long as you give it a concrete task and it's able to fetch the right underlying data. So one of the things I was working on was I wanted to look at all the companies in the world and how many engineers they had and to create a ranking. And this is something that quad code can do even though it's not a traditional coding use case. So we realized that like the underlying primitives were really general as long as you give as long as you have like an agent loop that can continue running for a long period of time and you're able to like access the internet and write code and run code pretty much you can if you squint you can kind of build anything on it. Mhm.
-
-[`38:09`](https://youtu.be/IDSAMqip6ms?t=2289) And and I think like by at the point where we like rebranded it so like from the quad code SDK to the quad Asian SDK, there was already like many thousands of companies using this thing and a lot of those use cases were not about coding. So it's like both both internally and externally. We kind of saw that
-
-[`38:26`](https://youtu.be/IDSAMqip6ms?t=2306) like health assistants, like financial analysts, legal assistance. Um it was pretty broad.
-
-[`38:33`](https://youtu.be/IDSAMqip6ms?t=2313) Yeah. What are the coolest ones? I feel like actually you you had Noah Brier on the the podcast recently. I thought like the obsidian like kind of mind mapping notekeeping use case is really cool. It's funny. It's insane how many people use it for this [laughter]
-
-[`38:47`](https://youtu.be/IDSAMqip6ms?t=2327) particular combination. Uh I think some other like some coding or kind of coding adjacent use cases that are kind of cool is um we have this like issue tracker for quad code. The team's just like constantly underwater like trying to keep up with all the issues coming in. There's just so many. And so I quad ddupes the issues and it automatically finds duplicates and it's extremely good at it. It also does first pass resolution. So usually when there's an issue it'll um proactively put up a PR internally and this is a new uh thing that Enigo on the team built. Um so this is pretty cool. Uh there's also like on call and kind of collecting signals from other places like getting like sentry logs and getting like logs from BigQuery and kind of collating all this. um plus just really good at doing this because it's all just bash in the end, right?
-
-[`39:29`](https://youtu.be/IDSAMqip6ms?t=2369) And so these are all kind of these internal use cases that that I saw.
-
-[`39:34`](https://youtu.be/IDSAMqip6ms?t=2374) Is it um so when it's you know collating logs or um you doing issues is that like you have clouds like continually running in the background and is that something that you're building for?
-
-[`39:43`](https://youtu.be/IDSAMqip6ms?t=2383) Um it gets triggered for that particular one. It gets triggered whenever a new issue is filed. So it runs once but it can choose to run for as long as it needs.
-
-[`39:52`](https://youtu.be/IDSAMqip6ms?t=2392) Got it. What about the idea of clouds always running? Oo, proactive quads. I think it's definitely where we want to get to. U I would say right now we're very focused on making quad code incredibly reliable for like individual tasks. And you know, if you think about like if you think about like multi-line autocomplete and then like single turn agents and then now we're working on like quad code that can complete tasks. I feel like if you trace this curve eventually you go to even higher levels of abstraction like even more complicated tasks and then hopefully the next step after that is a lot more productivity. So just understanding what your team's goals are what your goals are being able to say hey I think you probably want to try this feature and here's a first pass at the code and here are the assumptions I made and are these correct?
-
-[`40:41`](https://youtu.be/IDSAMqip6ms?t=2441) I can't wait. Um and I think probably right after that is um Claude is now Um,
-
-[`40:50`](https://youtu.be/IDSAMqip6ms?t=2450) that's not in the plan. [laughter]
-
-[`40:52`](https://youtu.be/IDSAMqip6ms?t=2452) So, everyone on the team was like super excited that uh we were we were talking today and they gave me a bunch of questions and I want to make sure I I hit all the questions. Um, uh, oh, here's a good one. Why did you choose agentic rag over vector search in your architecture? And are like vector embeddings uh still relevant? Um so actually initially we did use vector embeddings. Um they're just a really tricky to maintain because you have to continuously reindex the code and they might get out of date and you have local changes. So those need to make it in. And then as we thought about what does it feel like for an external enterprise to adopt it, we realized that this exposes a lot more surface area and like security risk. Um we also found that actually cloud code is really good and cloud models are really good at agentic search. So um you can get to the same accuracy level with agentic search and it's just a much cleaner deployment story.
-
-[`41:51`](https://youtu.be/IDSAMqip6ms?t=2511) H that's really interesting.
-
-[`41:53`](https://youtu.be/IDSAMqip6ms?t=2513) Um if you do want to bring semantic search to quad code, you can do so via an MCP tool. So if you want to manage your own index and expose an MCP tool that lets Quad Code call that, that that would work. What do you think are the top MCPS to use with cloud code?
-
-[`42:09`](https://youtu.be/IDSAMqip6ms?t=2529) Puppeteer and Playright are pretty high up there.
-
-[`42:11`](https://youtu.be/IDSAMqip6ms?t=2531) Definitely. Yeah.
-
-[`42:13`](https://youtu.be/IDSAMqip6ms?t=2533) Century has a really good one. Asana has a really good one. Hm. Do you think that there are um any any power user tips that you see people inside of anthropic or you know other people who are you know big power you know inside of organizations that are big cloud code power users that people don't know about but they should. Um, one thing that QuadCo doesn't naturally like to do, but that I personally find very useful is, um, QuadCo doesn't naturally like to ask questions, but you know, if you're brainstorming with a thought partner, a collaborator, usually you do ask questions back and forth to each other. And so, this is one of the things that, um, I like to do, especially in plan mode. I'll just tell Cloud Code like, "Hey, we're just brainstorming this thing. Um, please ask me questions if there's anything you're unsure about." um I want you to ask questions and it'll do it. And I think that actually helps you arrive at a better answer
-
-[`43:11`](https://youtu.be/IDSAMqip6ms?t=2591) there. There's like there's also like so many tips that we can share. I think like there there's a few really common mistakes I see people make. One is like like you said like not using plan mode enough. This is this is just super important. And I think this is people that are kind of new to a coding. They kind of assume this thing can do anything and it can't. It's like not that good today and it's going to get better but today it can oneshot some tests. can't one-shot most things. Um, and so you kind of have to understand the limits and you have to understand like where you get in the loop. And so [snorts] like something like plan mode, it can like two 3x success rates pretty easily if you like land on the plan first. Um, other stuff that I've seen power users do really well is companies that have really big deployments of quad code and now um, you know, luckily there's a lot of these companies so we can kind of learn from them. Uh having settings JSON that you check into the codebase is really important because you can use this to pre-allow certain commands so you don't get permission prompted every time and also to block certain commands. Let's say you don't want web fetch or whatever and this way as an engineer I don't get prompted and um I can check this in and share it with the whole team so everyone gets to use it.
-
-[`44:16`](https://youtu.be/IDSAMqip6ms?t=2656) I I get around that by just using dangerous they skip permissions. [laughter]
-
-[`44:21`](https://youtu.be/IDSAMqip6ms?t=2661) Yeah, we kind of we kind of have this here but we don't you know we don't recommend it. It's like it's a model, you know, it can do it can do weird stuff. Um, I think another kind of cool use case that we've seen is people using stop hooks for interesting stuff. So stop hook runs whenever the turn is complete. So like the assistant did some tool calls back and forth with you know whatever and uh it's done and it returns control back to the user then we run the stop hook and so you can define a stop hook that's like um if the tests don't pass return the text keep going and essentially it's like you can just like make the model like keep going until the thing is done and this is just like insane when you combine it with the SDK and this kind of programmatic usage
-
-[`45:00`](https://youtu.be/IDSAMqip6ms?t=2700) you can you know this is a stochcastic thing it's a nondeterministic thing but with scaffolding you can get these determin deterministic outcomes.
-
-[`45:09`](https://youtu.be/IDSAMqip6ms?t=2709) So you guys started this sort of CLI, this CLI paradigm shift. Um, do you think the CLI is the final form factor? Are we are we going to using cloud code in the CLI primarily in a year or in three years, or is there something else that's better?
-
-[`45:23`](https://youtu.be/IDSAMqip6ms?t=2723) I mean, it's not the final form factor, but we are very focused on making sure the CLI is like the most intelligent that we can make it and that's as customizable as possible. you can talk about the next form factors.
-
-[`45:38`](https://youtu.be/IDSAMqip6ms?t=2738) Yeah, I mean [laughter] cat C's asking me to talk about because no one knows like this this stuff's like it's just moving like so fast, right? Like no no one knows what these form factors are. Like right now I think our team is in experimentation mode. So we have uh CLI then we came out with the ID extension. Now we have a new ID extension that's like a guey. It's a little more accessible. Um we have add quad and github so you can just add quad anywhere. Um, now there's at quad, there's quad on web and on mobile, so you can use it on any of these places. Um, and we're just in experimentation mode, so we're trying to figure out what's next. I think like if we kind of zoom out and see where this stuff is headed. I think one of the big trends is longer periods of autonomy. And so with every model, we kind of time how long can the model just keep going and do tasks autonomously and just, you know, in dangerous mode in a container, keep autocompacting until the task is done. And now we're on the order of like double digit hours. I think it's like the last model is like 30 hours, something like this. And I, you know, the next model is going to be days. And as you think about kind of parallelizing models, um there's kind of a bunch of problems that come out of this. So one is what is the container this thing runs in because you don't want to have to like close your laptop. I have that right now because I'm doing a lot of uh disb I don't know I've only heard I've only read it but DSPY or disb prompt optimization and like it's on my laptop and it's like I don't want to close I'm like in the way [laughter] middle like with my laptop open because I'm like I don't want to close it. Yeah.
-
-[`47:03`](https://youtu.be/IDSAMqip6ms?t=2823) Yeah. That's right. Yeah. We've like visited companies before like like customers that everyone's just like walking around with their like quad codes. [laughter]
-
-[`47:11`](https://youtu.be/IDSAMqip6ms?t=2831) Is this running? So, I think like one is kind of getting getting away from this mode and then I also think pretty soon we're going to be in this mode of like quads monitoring quads.
-
-[`47:17`](https://youtu.be/IDSAMqip6ms?t=2837) Yeah.
-
-[`47:19`](https://youtu.be/IDSAMqip6ms?t=2839) Um and kind of I I don't know what the right form factor for this is because as as a human you need to be able to inspect this and kind of see what's going on. Um but also it needs to be quad optimized where um you're optimizing for kind of bandwidth between like the quad to quad communication. Um so my prediction is terminal is not the final form factor. My prediction is there's going to be a few more form factors in the coming months, you know, maybe like year or something like that. And it's going to keep changing very quickly.
-
-[`47:48`](https://youtu.be/IDSAMqip6ms?t=2868) What do you think about, you know, I teach a lot of cloud code to a lot of every subscribers and
-
-[`47:52`](https://youtu.be/IDSAMqip6ms?t=2872) thank you.
-
-[`47:54`](https://youtu.be/IDSAMqip6ms?t=2874) You're welcome. Doing doing your work for you. [laughter] Um uh and I think the like one of the big things is just the terminal is intimidating and uh just like being on a call with subscribers being like here's how you open the terminal and you're allowed to do this even if you're non-technical is like a big deal. [laughter] How do you think about that? Yeah, I um one of the people on our marketing team uh started using cloud code because she was writing some content that touched on cloud code and I was like you should really experience it and she got like 30 popups on her screen where she had to accept various permissions because she'd never used a terminal before. So I completely see eye to eye with you on that. It's definitely um hard for non-engineers and there's even some engineers we've found who aren't fully comfortable with working day-to-day in the terminal. Um, our VS Code GUI extension is our first step in that direction because you don't have to think about the terminal at all. It's like a traditional interface with a bunch of buttons. Um, I think we are working on more um graphical interfaces. Uh, so quad code on the web is a guey. I think that actually might be a good starting point for people who are less technical.
-
-[`49:05`](https://youtu.be/IDSAMqip6ms?t=2945) Yeah. Yeah. There there was this like magic moment maybe like a few months ago where like I walked into the office and the some of the data scientists at Anthropic like sit right next to the quad code team and the data scientist just had like quad code running on their computers and I was like what what is this like how did you figure this out? I think it was like Brandon uh was like the first one to do it and he was like, "Oh yeah, I just like installed it. Like I work on this product so like I should use it." And I was like, "Oh my god." So he like he figured out how to like use a terminal and JS like you know he hasn't really done this kind of workflow before. Obviously like very technical. Um so I think now we're we're starting to see all these kind of like code adjacent uh like functions. people you use quad code and um yeah it's kind of interesting like from a latent demand point of view these are people hacking the product so there's like demand to use it for this and so we want to make it a little bit easier with more accessible interfaces but at the same time for us for quad code we're laser focused on building the best product for the best engineers and so um we're focused on software engineering and we want to make this like really good but we want to make it a thing that other people can can hack
-
-[`50:11`](https://youtu.be/IDSAMqip6ms?t=3011) some sometimes cloud code will write code that's a bit verbose post. Um, but you can just tell it to simplify it and it does a really good job.
-
-[`50:20`](https://youtu.be/IDSAMqip6ms?t=3020) Interesting. And so, and how are how and when are you doing that? So, you're you're using a slash command or you're
-
-[`50:26`](https://youtu.be/IDSAMqip6ms?t=3026) I just say it. I just
-
-[`50:27`](https://youtu.be/IDSAMqip6ms?t=3027) Sometimes you're like, "Hey, this should be a oneline change and I'll write five lines and you're like, simplify it and it understands immediately what you mean and it'll fix it."
-
-[`50:35`](https://youtu.be/IDSAMqip6ms?t=3035) Yeah. I think a lot of people on our team do that, too. Um, that's that's interesting. Why do you like why not then if you're saying that all the time why not then you know push that into like a slash command or the harness or something like that to yeah make it just happen automatically.
-
-[`50:51`](https://youtu.be/IDSAMqip6ms?t=3051) We do have instructions for this in the cloud MD. I think it impacts such a low percentage of conversations that we don't want it to like over rotate in the other direction.
-
-[`51:03`](https://youtu.be/IDSAMqip6ms?t=3063) Um and then the reason why not a slash command is because you actually don't need that much context. I think slash command's really good for situations where you would otherwise need to write two three lines but for simp like even for plan mode you actually can use a few words but sometime but it actually takes two or three lines to capture the entirety of what you want in plan mode. Um for simplify it you can just write simplify it and it gets it.
-
-[`51:28`](https://youtu.be/IDSAMqip6ms?t=3088) Yeah. Yeah, that makes sense. Cool.
-
-[`51:29`](https://youtu.be/IDSAMqip6ms?t=3089) Yeah.
-
-[`51:33`](https://youtu.be/IDSAMqip6ms?t=3093) Um okay, now we're we can [laughter] um that's interesting. Yeah, but but this stuff like you know it still feels just so early.
-
-[`51:39`](https://youtu.be/IDSAMqip6ms?t=3099) Yeah.
-
-[`51:41`](https://youtu.be/IDSAMqip6ms?t=3101) You know, like we we were talking before before the recording about like kind of where are we on the adoption curve and it still
-
-[`51:47`](https://youtu.be/IDSAMqip6ms?t=3107) the hian curve or whatever [laughter] whatever that term was.
-
-[`51:50`](https://youtu.be/IDSAMqip6ms?t=3110) Exactly. And it just feels it just feels like we're you know like first 10% still like the stuff is going to change so fast it's going to keep changing. Even when I talk to researchers outside of enthropic who who abuse quad code um they also get stuck on things like this like not realizing that they can just tell the LLM to simplify it and I think that just goes to show that even for people who are like working in this industry they don't always realize that you can just talk to the model. That's the thing is like I I think that there's this underlying expectation that using AI shouldn't have to be a skill like because it just does whatever you say and you're like well I mean whatever you say is going to matter for what it does. So if you can say things better it's going to do better. [laughter]
-
-[`52:33`](https://youtu.be/IDSAMqip6ms?t=3153) Yeah. I mean it it changes with every model though. That's the that's the hard part. like you know prompt engineer was a job and now famously it's not a job anymore and there's going to be more jobs that are then like not not jobs anymore of these kind of like little micro skills that you have to learn to use this thing and as the model gets better it can just like interpret it better
-
-[`52:50`](https://youtu.be/IDSAMqip6ms?t=3170) but I think that's also like for us this is part of this kind of humility that we have to have building a product like this that we just really don't know what's next and we're just trying to figure it out kind of along with everyone else we're just here for the ride
-
-[`53:00`](https://youtu.be/IDSAMqip6ms?t=3180) and that's why it's cool that you're building it for yourself cuz I think that's the that's the best way to know that is just like you're and this is what we do too is like you're sort of living in the future. You're using it all the time. And uh it's pretty clear what's missing. You're like I just want this thing and you can just do the next thing rather than being like hm let me ask like some enterprise product manager at like some gigantic company like what kind of AI feature do you want? And they're like I don't know like you know put a little chatbot on the side of my you know IDE and you're like okay. [laughter]
-
-[`53:28`](https://youtu.be/IDSAMqip6ms?t=3208) Yeah.
-
-[`53:30`](https://youtu.be/IDSAMqip6ms?t=3210) Yeah. This is like the luxurious thing about building dev tools right you're your own customer. I think it's also really um a unique thing about AI because um it sort of reset the game board for all software. So um you know we have Kora this like email assistant and we have like Sparkle which organizes your files and it's like anything that you do for something that you want to use on your computer if you're if you're building it with AI there's a good chance that hasn't been done before because like the whole whole landscape has been reset. And so it's a it's a uniquely exciting time to build stuff for yourself.
-
-[`54:06`](https://youtu.be/IDSAMqip6ms?t=3246) Totally. I think it totally opens the playing field, too. It's like any individual can now build an app to fill their need and then distribute it to everyone else.
-
-[`54:14`](https://youtu.be/IDSAMqip6ms?t=3254) Yeah,
-
-[`54:15`](https://youtu.be/IDSAMqip6ms?t=3255) it's really cool.
-
-[`54:17`](https://youtu.be/IDSAMqip6ms?t=3257) I've been prototyping all these like random pet projects. Um
-
-[`54:23`](https://youtu.be/IDSAMqip6ms?t=3263) um I just moved into a new apartment and it's empty. And so I've been um I've been building this like shopping advisor assistant on like the Cloud Agent SDK cuz who has time to like read all the reviews and like look at all the options and find their pricing and everything's like really hard to discover. And so it just like asks me a bunch of questions and I tell it what I want and it shows me a bunch of Yeah, exactly. and it shows me a bunch of photos of like different sofas and options and what people say online
-
-[`54:49`](https://youtu.be/IDSAMqip6ms?t=3289) and then I tell it what I don't like and it's literally feels like working with a shopping assistant
-
-[`54:55`](https://youtu.be/IDSAMqip6ms?t=3295) and it it's been really cool.
-
-[`54:56`](https://youtu.be/IDSAMqip6ms?t=3296) That's really cool.
-
-[`54:58`](https://youtu.be/IDSAMqip6ms?t=3298) Um I also have my little email response agent that like drafts responses for me but I don't use email that much so
-
-[`55:05`](https://youtu.be/IDSAMqip6ms?t=3305) Oh, and I knew it wasn't you responding. [laughter] The agent's just take doing a very thorough job. [laughter]
-
-[`55:16`](https://youtu.be/IDSAMqip6ms?t=3316) Yeah,
-
-[`55:18`](https://youtu.be/IDSAMqip6ms?t=3318) agent SDK is cool though.
-
-[`55:20`](https://youtu.be/IDSAMqip6ms?t=3320) Yeah, agent SDK is cool.
-
-[`55:22`](https://youtu.be/IDSAMqip6ms?t=3322) Yeah, it's it always just feels amazing like how much we're able to build with such a small team.
-
-[`55:24`](https://youtu.be/IDSAMqip6ms?t=3324) Yeah.
-
-[`55:25`](https://youtu.be/IDSAMqip6ms?t=3325) So, I feel like
-
-[`55:26`](https://youtu.be/IDSAMqip6ms?t=3326) the other thing that's really cool is that I think people are just shifting their mindset from docs to demos. Like internally, our currency is actually demos. It's like you want people to be excited about your thing. Yeah,
-
-[`55:38`](https://youtu.be/IDSAMqip6ms?t=3338) show us like show us 15 seconds of what it can do.
-
-[`55:42`](https://youtu.be/IDSAMqip6ms?t=3342) And we find that everyone on the team now has this kind of indoctrinated
-
-[`55:45`](https://youtu.be/IDSAMqip6ms?t=3345) demo culture for sure. And I think that's better because
-
-[`55:49`](https://youtu.be/IDSAMqip6ms?t=3349) there's a lot of things that you might have in your head that if you're a great writer, maybe you could figure out how to explain it, but it's just even then it's just really hard to explain. But if someone can see it, they like get it immediately. And I think that's happening for product building, but it's also happening for like all sorts of other types of creative endeavors like making a movie for example. Like you had to pitch it, but now you can just be like I made this Sora video and like you know check like you can kind of see like like the glimmer of the thing you're trying to make for very cheap. And so that means you don't have to spend time convincing people as much. You can just be like here I made it.
-
-[`56:24`](https://youtu.be/IDSAMqip6ms?t=3384) Yeah. And and also as a builder like you can just make it and then like make it again and then make it again [laughter] until you're happy. Like
-
-[`56:31`](https://youtu.be/IDSAMqip6ms?t=3391) I I feel like that like the flip side is like you used to make a dock or you know like whiteboard something or you know like I I would draw stuff in like Sketch or Figma or whatever and now we'll just like build it until until I like how it feels.
-
-[`56:42`](https://youtu.be/IDSAMqip6ms?t=3402) And it's just like so easy to get that feeling out of it now. And I I think it's like you could see it visually before or you could describe it in words but it's like you could never get the vibe. And now like the vibe is really easy.
-
-[`56:53`](https://youtu.be/IDSAMqip6ms?t=3413) Yeah. And you built plan mode like three times.
-
-[`56:55`](https://youtu.be/IDSAMqip6ms?t=3415) Yeah. Yeah.
-
-[`56:56`](https://youtu.be/IDSAMqip6ms?t=3416) Because of this.
-
-[`56:57`](https://youtu.be/IDSAMqip6ms?t=3417) Like you you built it and then you threw it out and rebuilt it and then threw it out and rebuilt it.
-
-[`57:02`](https://youtu.be/IDSAMqip6ms?t=3422) Yeah. Or like Tudos's uh like Sid built the original version like also like three or four he built like three or four prototypes and then I prototype maybe like 20 versions after that like in like a day. Yeah. I think this is like a lot of pretty much everything we released there was at least a few prototypes behind it. How do you like um keep track of and carry forward the things you learn from prototype to prototype? And especially if it's like, you know, some one person is prototyping it and then you're like, I'm going to take it over. I'm going to do 20 more. Like how do you how do you maximize what you get out of that? You know, it's it's like there there's maybe a few elements of it. One is the style guide. So there's like some elements of style that we discover. And I think a lot of this is like building for the terminal or like we're kind of discovering a new design language for for the terminal and kind of building it as we go. Um, and I think some of this you can codify in a style guide. So this is our quad MD, but then there's this other part of it that's like kind of product sense where I don't think the model totally gets it yet. And I think maybe we should be trying to find ways to like teach the model this this kind of product sense about like this works and this doesn't, right? Because in in product, you want to solve the person's problem in the simplest way possible and then delete everything else that's not that and just get everything out of the way. So you kind of you you align the product to the intent as cleanly as possible. And maybe the model doesn't totally get that yet.
-
-[`58:24`](https://youtu.be/IDSAMqip6ms?t=3504) Yeah. It's never it doesn't really feel what it's like to use quad code. Like the model doesn't use quad code.
-
-[`58:31`](https://youtu.be/IDSAMqip6ms?t=3511) Yeah. Yeah. And so I think like when you know like quad code can like test itself and it can kind of use itself. Um and like we we do this when developing and it can see like UI bugs and things like that. I don't know maybe we should just try prompting it though. It could like honestly a lot of the stuff is as simple as that. Like when there's some new idea usually you just prompt it and often it just works. Maybe we should just try that.
-
-[`58:57`](https://youtu.be/IDSAMqip6ms?t=3537) A lot of the prototypes are actually the UX interactions. Um, and so I think once we discover a new UX interaction like shift tab for auto accept, I think uh Boris figured out. Um, then
-
-[`59:11`](https://youtu.be/IDSAMqip6ms?t=3551) that was Eigor actually.
-
-[`59:12`](https://youtu.be/IDSAMqip6ms?t=3552) Oh, Eigor.
-
-[`59:13`](https://youtu.be/IDSAMqip6ms?t=3553) Yeah, we went back and forth can like fit into that.
-
-[`59:16`](https://youtu.be/IDSAMqip6ms?t=3556) We did like dueling prototypes for like a week. [laughter]
-
-[`59:20`](https://youtu.be/IDSAMqip6ms?t=3560) Yeah, shift tab felt really nice. And then one of the the now current plan mode iteration um uses shift tab because it's actually just like another way to tell the model how agentic it should be.
-
-[`59:35`](https://youtu.be/IDSAMqip6ms?t=3575) And so I think as as more features use the same uh interaction, you form like a stronger mental model for what should go where.
-
-[`59:42`](https://youtu.be/IDSAMqip6ms?t=3582) Yeah. Or like thinking I think is another really good one. Like first we were like before we released quad code or maybe it was like the first thinking model was it like 37? I forget what the first one was.
-
-[`59:51`](https://youtu.be/IDSAMqip6ms?t=3591) Yeah.
-
-[`59:54`](https://youtu.be/IDSAMqip6ms?t=3594) But yeah and it it was like it was able to think and we're like brainstorming like how do we like toggle thinking? And then someone was just like what if you just like ask the model to think in natural language and it knows how to think and we're like okay sweet let's do that. [laughter] And so like we we did that for a while and then um we realized that people were accidentally toggling it. So they were like don't think and then the model was like oh I should think. it just started thinking
-
-[`1:00:15`](https://youtu.be/IDSAMqip6ms?t=3615) and so we had to kind of like tune it out so you know don't think didn't trigger it but then it still wasn't obvious but then we made a UX improvement to like highlight the thinking that
-
-[`1:00:23`](https://youtu.be/IDSAMqip6ms?t=3623) and that was like that was so fun and it felt really magical
-
-[`1:00:25`](https://youtu.be/IDSAMqip6ms?t=3625) when you do ultra think it's like rainbow or whatever exactly [laughter] and then with uh with sonet 45 we actually find like a really really big performance improvement when you turn on extended thinking um and so uh we made it really easy to toggle it because sometimes you want it sometimes you because you you kind of for a really simple task, you don't want the model to think for like five minutes. You want it to just do the thing. And so we used tab as the interaction to toggle it. And then we unchipped a bunch of the thinking words. Although I I think we kept ultra think just for like sentimental reasons. [laughter] It was such a cool UX.
-
-[`1:01:02`](https://youtu.be/IDSAMqip6ms?t=3662) Interesting. Do you think there's some there's some new metric that's about what you deleted? And I I think programmers have always felt like, you know, deleting a bunch of code feels really good, but there's something about because you can build stuff so fast, it becomes more important to like also delete stuff. I think my favorite kind of diff to see is a red diff. [laughter] This is the best whenever I'm like, "Yeah, bring it on. Another one. Another one." Um, but it, you know, but it's hard because like anything you ship, people are using it. And so you got to keep people happy. And so I think generally our principle is if we un ship something, we need to ship something even better. um that can kind of um that people can can take advantage of that that kind of matches that intent uh even better. Um and yeah, I think this is kind of back to like how do you measure like quad code and the impact of it and this is something like every company every customer asks us about and I think like in so internally at anthropic I think we like doubled in size since January or something like that but then productivity per engineer has increased like almost 70% in that time. um
-
-[`1:02:01`](https://youtu.be/IDSAMqip6ms?t=3721) measured by
-
-[`1:02:03`](https://youtu.be/IDSAMqip6ms?t=3723) uh I think we actually measured it yeah in a few ways but kind of PRs are the the simplest one and the main one um but like you said like this doesn't capture the full extent of it because a lot of this is like making it easier to prototype making it easier to try new things making it easier to these things that you never would have tried because they're way below the cut line. Um you're launching a feature and there's this kind of like wish list of stuff now you just do all it because it's so easy
-
-[`1:02:25`](https://youtu.be/IDSAMqip6ms?t=3745) and you just wouldn't have done it.
-
-[`1:02:27`](https://youtu.be/IDSAMqip6ms?t=3747) So yeah, it's really hard to talk about it. And then there's this flip side of it where more code is written. So you have to delete more code. You have to code review more carefully and you know automate automate code review as much as you can. There's also like an interesting like new product management challenge because you can ship so much that you end up it it ends up not feeling as cohesive because you could just like add button here and like a tab there and like a little thing here. Like it's just it's much easier to build a product that has all the features you want but doesn't have any sort of organizing principle because you're just shipping lots of stuff all the time. I think we try to be pretty disciplined about this and making sure that all the abstractions are really easy to understand for someone even if they just hear the name of the feature. We have this principle that I believe Boris brought to the team that I really like where we don't want a new user experience. Everything should be so intuitive that you just drop in and it just works. And I think that's that's really set the bar really high for making sure every feature is really intuitive. How do you do that with um a conversational UI? Because um you know when there's not a bunch of but buttons and knobs and it's just a blank text box to start, how do you think about making it intuitive?
-
-[`1:03:37`](https://youtu.be/IDSAMqip6ms?t=3817) Um there's a lot of like little things that we do like um we teach people that they can use the question mark to see tips. Um we show tips as quad code is working. We have like the change log on the side. um we tell you about like oh there's a new model that's out or like we show you at the bottom we have a notification section for thinking. I think there's just like subtle ways in which we tell users about features. I think the other thing that's really important is to just make sure that all the primitives are very clearly defined like hooks have a common meaning um in the developer ecosystem. plugins have a very common meaning in the developer ecosystem and just making sure that what we build matches what like the you know the average developer would immediately think of when they hear that
-
-[`1:04:25`](https://youtu.be/IDSAMqip6ms?t=3865) there there's this also this like progressive disclosure thing like you know to to any anytime in quad code when you run it you can hit control O to see like the full raw transcript the same thing the model sees and we don't like show you this until it's actually relevant so when there's a tool result that's collapsed then we'll say use control O to see it so we kind of we don't want to put too much complexity on you at the start because this thing can do you know anything. Um I think there's this other kind of new principle which we've just started exploring which is like the model teaches you how to use the thing and so you can ask quad code about itself and it it kind of knows to look up its own documentation to tell you about it but we can also go even deeper like for example slash commands are a thing that people can use but also the model can call slash commands and maybe you see the model calling it and then you'll be like oh yeah I guess I can do that too.
-
-[`1:05:13`](https://youtu.be/IDSAMqip6ms?t=3913) Yeah. Yeah. Yeah. Interesting. How has it changed like you know when you first started doing this cloud code was this sort of like singular thing this singular way of thinking about you know using AI through a CLI other people had stuff like this but it it felt like this shift and now there's a whole landscape of everyone is like going CLI CLI CLI like how has that changed how you think about building how it feels to build and how are you dealing with the sort of pressure of the race that you're in? I
-
-[`1:05:39`](https://youtu.be/IDSAMqip6ms?t=3939) think for for me like imitation is the greatest flattery. Mhm. Um, so it's like it, you know, it's it's awesome and it's just like it's cool to see all this other stuff that everyone else is building like inspired by this. And I think this is ultimately the goal is to kind of inspire people to build this next thing for this just incredible technology that's that's coming. And that that's just really exciting. Personally, I don't really use a lot of other tools. So, usually when something new comes out, I'll I'll maybe just try it to get a vibe. Um, but otherwise [snorts] I think we're pretty focused on just solving problems that we have and our customers have and kind of building the next thing.
-
-[`1:06:15`](https://youtu.be/IDSAMqip6ms?t=3975) Cool. Sweet. Um, I I loved this part of the interview, too. [laughter]
-
-[`1:06:22`](https://youtu.be/IDSAMqip6ms?t=3982) Did we answer all of your team's questions?
-
-[`1:06:23`](https://youtu.be/IDSAMqip6ms?t=3983) Questions?
-
-[`1:06:25`](https://youtu.be/IDSAMqip6ms?t=3985) Do Oh, did we get through all my team's questions? Let's see. Uh, I think we did. Um, uh, I'm curious also how you would answer like the unshipping question cuz also like if you're doing this kind of like AIdriven development, you ship a lot. You have a small team, so it's a lot of operational load.
-
-[`1:06:43`](https://youtu.be/IDSAMqip6ms?t=4003) The reason I asked that is because I don't think we do a good job of that. Um, and I have this feeling that some of the products are like a little bit messy because of that. And I think particularly for Kora, um there's just a big product surface area and it can do a lot of different things like it we have an email assistant so you can ask it like you know uh tell me about the trip I'm taking and it'll go through all your emails and you know summarize the the trip. Um or we have this feature that it automatically archives any email that you don't need to respond to immediately. Um, and then twice a day you get a brief that summarizes all the stuff that you probably need to see but you don't need to like actually do anything with and you just scroll through it and you're done. Um, and there's just like all this there's all this complexity that around you know for example how are emails categorized? So now we have a whole view of we have all these categorization rules and you can order them and whatever, but like it's just complicated and hard to communicate and and uh and I want to retain a lot of the like all the power and flexibility, but also you can't look at a screen and be like I have no idea what's going on. This is like way too complicated. So that's I'm just like I'm processing all that stuff. So the the kind of like deletion, you know, un unshipping idea feels like an interesting um cultural principle that we haven't really explored.
-
-[`1:08:14`](https://youtu.be/IDSAMqip6ms?t=4094) Yeah, it's really hard. I think there's like a social cost to it, too, where like you kind of want to be the person who tells your coworker to unship their thing. [laughter]
-
-[`1:08:24`](https://youtu.be/IDSAMqip6ms?t=4104) It's definitely tricky. It's more than just the code. Yeah, I I definitely learned this at Instagram honestly cuz I I think Facebook does a terrible job at unshipping and we had this problem where
-
-[`1:08:34`](https://youtu.be/IDSAMqip6ms?t=4114) every time we I think even like unshipping pokes was like really spicy cuz there's a bunch of these like old-timers. They're like, "No pokes, you're never going to take it away." But like if you look at the data, no one really uses it anymore.
-
-[`1:08:44`](https://youtu.be/IDSAMqip6ms?t=4124) But for sentimental reasons, they were kind of tied to it.
-
-[`1:08:47`](https://youtu.be/IDSAMqip6ms?t=4127) And so like for Facebook, it always maybe nothing ever got unchipped. It always got moved to like a secondary place like a, you know, like an overflow menu somewhere that no one looks at, like a graveyard.
-
-[`1:08:55`](https://youtu.be/IDSAMqip6ms?t=4135) Yeah.
-
-[`1:08:57`](https://youtu.be/IDSAMqip6ms?t=4137) And I think Instagram was just very principled. There was like, you know, very strong in a product and design point of view that was like, if this thing isn't used by like half of people, you know, 50% of WOW or whatever, we're just going to delete it and deal with it and then we'll figure out some next thing that's used by more people.
-
-[`1:09:13`](https://youtu.be/IDSAMqip6ms?t=4153) I love it. Um, well, thank you. This was amazing. I'm really uh glad I got to talk to you and uh keep building.
-
-[`1:09:18`](https://youtu.be/IDSAMqip6ms?t=4158) Thank you for having us.
-
-[`1:09:29`](https://youtu.be/IDSAMqip6ms?t=4169) Oh my gosh, folks. You absolutely positively have to smash that like button and subscribe to AI and I. Why? Because this show is the epitome of awesomeness. It's like finding a treasure chest in your backyard, but instead of gold, it's filled with pure unadulterated knowledge bombs about chat GPT. Every episode is a roller coaster of emotions, insights, and laughter that will leave you on the edge of your seat, craving for more. It's not just a show, it's a journey into the future with Dan Shipper as the captain of the spaceship. [snorts] So, do yourself a favor, hit like, smash subscribe, and strap in for the ride of your life. And now, without any further ado, let me just say, Dan, I'm
-
----
-
-## Sources
+## 参考来源
 
 - [The Secrets of Claude Code From the Engineers Who Built It — Every — YouTube](https://youtu.be/IDSAMqip6ms)
 - [Every](https://every.to/)

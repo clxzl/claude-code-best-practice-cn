@@ -80,9 +80,9 @@ description: 关于演示文稿幻灯片格式、权重系统、导航和章节�
 
 ```html
 <div class="slide section-slide" data-slide="10" data-level="low">
-    <p class="section-number">Part 2</p>
-    <h1>Better Prompting</h1>
-    <p class="section-desc">Level: Low — effective prompting for real results.</p>
+    <p class="section-number">第二部分</p>
+    <h1>更优提示</h1>
+    <p class="section-desc">级别：低——为实现真实效果的有效提示方法。</p>
 </div>
 ```
 

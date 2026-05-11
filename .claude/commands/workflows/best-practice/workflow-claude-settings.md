@@ -81,10 +81,10 @@ argument-hint: [要检查的版本数量，默认 10]
 **执行验证清单：** 对于 `changelog/best-practice/claude-settings/verification-checklist.md` 中的每条规则，使用 Agent 发现作为源数据在指定深度执行检查。在报告中包含一个**验证日志**部分，显示每条规则的结果：
 
 ```
-Verification Log:
-Rule # | Category              | Depth         | Result | Notes
-1      | Settings Keys         | field-level   | PASS   | All keys match
-2      | Permission Syntax     | content-match | FAIL   | New tool pattern added
+验证日志:
+规则编号 | 类别               | 深度          | 结果   | 备注
+1       | 设置项键名          | field-level   | 通过   | 所有键名匹配
+2       | 权限语法            | content-match | 失败   | 新增工具模式
 ...
 ```
 
@@ -116,16 +116,14 @@ Rule # | Category              | Depth         | Result | Notes
 
 最后以带优先级的**操作项**摘要表结束。每个项必须包含一个 `Status` 列，显示 `NEW`、`RECURRING (first seen: <date>)` 或 `RESOLVED`：
 
-```
-Priority Actions:
-#  | Type                  | Action                                    | Status
-1  | New Setting           | Add <key> to <section> table               | NEW
-2  | Changed Behavior      | Update <key> description                   | NEW
-3  | Deprecated Setting    | Remove <key> from table                    | RECURRING (first seen: 2026-03-05)
-4  | Permission Syntax     | Add new tool pattern syntax                | NEW
-5  | Env Variable          | Add <var> to environment variables table   | NEW
-7  | Example Update        | Update Quick Reference example             | NEW
-```
+优先行动项：
+# | 类型 | 操作 | 状态
+1 | 新增设置 | 将 `<key>` 添加到 `<section>` 表格 | NEW
+2 | 变更行为 | 更新 `<key>` 的描述 | NEW
+3 | 废弃设置 | 从表格中移除 `<key>` | RECURRING（首次出现：2026-03-05）
+4 | 权限语法 | 添加新的工具模式语法 | NEW
+5 | 环境变量 | 将 `<var>` 添加到环境变量表格 | NEW
+7 | 示例更新 | 更新快速参考示例 | NEW
 
 同时包含一个**上次运行以来已解决项**部分，列出之前运行中已不再是问题的项。
 
@@ -142,9 +140,9 @@ Priority Actions:
 
 ## [<YYYY-MM-DD HH:MM AM/PM PKT>] Claude Code v<VERSION>
 
-| # | Priority | Type | Action | Status |
+| # | 优先级 | 类型 | 操作 | 状态 |
 |---|----------|------|--------|--------|
-| 1 | HIGH/MED/LOW | <type> | <action description> | <status> |
+| 1 | HIGH/MED/LOW | <类型> | <操作描述> | <状态> |
 | ... | ... | ... | ... | ... |
 ```
 
@@ -187,11 +185,11 @@ Priority Actions:
 在报告中包含**超链接验证日志**：
 
 ```
-Hyperlink Validation Log:
-#  | Type     | Link                                          | Status | Notes
-1  | Local    | ../                                            | OK     |
-2  | External | https://code.claude.com/docs/en/settings       | OK     |
-3  | External | https://www.schemastore.org/claude-code-settings.json | BROKEN | 404
+超链接验证日志：
+#  | 类型     | 链接                                          | 状态 | 备注
+1  | 本地     | ../                                            | 正常 |
+2  | 外部     | https://code.claude.com/docs/en/settings       | 正常 |
+3  | 外部     | https://www.schemastore.org/claude-code-settings.json | 失效 | 404
 ...
 ```
 

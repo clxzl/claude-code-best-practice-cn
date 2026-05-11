@@ -1,40 +1,40 @@
-# Code Review & Test Time Compute — 技巧 from Boris Cherny
+# Code Review & 测试时计算 — 技巧 from Boris Cherny
 
-A summary of insights shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on March 10, 2026.
+Boris Cherny ([@bcherny](https://x.com/bcherny))，Claude Code 的创建者，于 2026 年 3 月 10 日分享的见解摘要。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## 1/ Introducing Code Review
+## 1/ 介绍 Code Review
 
-New in Claude Code: **Code Review**. A team of agents runs a deep review on every PR.
+Claude Code 新功能：**Code Review**。一组 agents 对每个 PR 进行深度审查。
 
-- Built for Anthropic's own team first — code output per engineer is up **200% this year**, and reviews were the bottleneck
-- Boris has been using it for a few weeks and found it catches many real bugs he would not have noticed otherwise
-- When a PR opens, Claude dispatches a team of agents to hunt for bugs
+- 首先为 Anthropic 自己的团队打造——每位工程师的代码产出今年提升了 **200%**，而审查是瓶颈
+- Boris 已经使用了几周，发现它能捕获许多他本不会注意到的真实 bug
+- 当 PR 打开时，Claude 会派出一组 agents 来搜寻 bug
 
-<a href="https://x.com/bcherny/status/2031089411820228645"><img src="assets/boris-10-mar-26/0.png" alt="Boris Cherny announcing Code Review" width="50%" /></a>
-
----
-
-## 2/ Test Time Compute & Multiple Context Windows
-
-Roughly, the more tokens you throw at a coding problem, the better the result. Boris calls this **test time compute**.
-
-- Using **separate context windows** makes the result even better — this is what makes subagents work, and why one agent can cause bugs and another (using the same exact model) can find them
-- Similar to engineering teams: if Boris causes a bug, his coworker reviewing the code might find it more reliably than he can
-- In the limit, agents will probably write perfect bug-free code — until then, **multiple uncorrelated context windows** tends to be a good approach
-
-<a href="https://x.com/bcherny/status/2031151689219321886"><img src="assets/boris-10-mar-26/1.png" alt="Boris Cherny on test time compute" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2031089411820228645"><img src="assets/boris-10-mar-26/0.png" alt="Boris Cherny宣布代码审查" width="50%" /></a>
 
 ---
 
-## Sources
+## 2/ 测试时计算 & 多上下文窗口
 
-- [Boris Cherny (@bcherny) on X — March 10, 2026](https://x.com/bcherny)
+大致来说，你投入编码问题的 token 越多，结果就越好。Boris 将此称为**测试时计算**。
+
+- 使用**独立的上下文窗口**可以让结果更好——这正是 Subagents 工作的原理，也是一个 agent 可能产生 bug 而另一个（使用完全相同的模型）可以发现 bug 的原因
+- 类似于工程团队：如果 Boris 产生了一个 bug，他的同事审查代码时可能比他自己更能可靠地发现它
+- 从极限来看，agents 最终可能会写出完美的无 bug 代码——在那之前，**多个不相关的上下文窗口**往往是一个好的方法
+
+<a href="https://x.com/bcherny/status/2031151689219321886"><img src="assets/boris-10-mar-26/1.png" alt="Boris Cherny 关于 test time compute" width="50%" /></a>
+
+---
+
+## 来源
+
+- [Boris Cherny (@bcherny) on X — 2026 年 3 月 10 日](https://x.com/bcherny)

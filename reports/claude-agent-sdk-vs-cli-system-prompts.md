@@ -1,102 +1,102 @@
-# Claude Agent SDK vs Claude CLI: System Prompts and Output Consistency
+# Claude Agent SDK vs Claude CLI：系统提示与输出一致性
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
-![SDK vs CLI System Prompts Diagram](assets/sdk-vs-cli-diagram.svg)
+![SDK vs CLI 系统提示图示](assets/sdk-vs-cli-diagram.svg)
 
 ---
 
-## Executive 摘要
+## 摘要
 
-When sending the same message (e.g., "What is the capital of Norway?") through the **Claude Agent SDK** versus the **Claude CLI (Claude Code)**, the system prompts accompanying these messages are fundamentally different. The CLI uses a **modular system prompt architecture** (~269 base tokens with additional context conditionally loaded based on features), while the SDK uses a minimal prompt by default. **There is no guarantee of identical output between the two**, even with matching configurations, due to the absence of a seed parameter and inherent non-determinism in Claude's architecture.
+当通过 **Claude Agent SDK** 和 **Claude CLI (Claude Code)** 发送相同的消息（例如，"挪威的首都是什么？"）时，附带的系统提示有根本性的不同。CLI 使用**模块化系统提示架构**（约 269 个基础 Token，并根据功能条件加载额外上下文），而 SDK 默认使用最小化提示。**两者之间无法保证输出完全一致**，即使配置匹配，因为 Claude 架构中不存在 seed 参数且存在固有的非确定性。
 
 ---
 
-## 1. System Prompt 比较
+## 1. 系统提示对比
 
 ### Claude CLI (Claude Code)
 
-The Claude CLI uses a **modular system prompt architecture** with a ~269-token base prompt, with additional context conditionally loaded:
+Claude CLI 使用**模块化系统提示架构**，基础提示约 269 个 Token，并条件加载额外上下文：
 
-| Component | Description | Loading |
-|-----------|-------------|---------|
-| **Base System Prompt** | Core instructions and behavior | Always (~269 tokens) |
-| **Tool Instructions** | 18+ builtin tools (Write, Read, Edit, Bash, TodoWrite, etc.) | Always |
-| **Coding 指南lines** | Code style, formatting rules, security practices | Always |
-| **Safety Rules** | Refusal rules, injection defense, harm prevention | Always |
-| **Response Style** | Tone, verbosity, explanation depth, emoji usage | Always |
-| **Environment Context** | Working directory, git status, platform info | Always |
-| **Project Context** | CLAUDE.md content, settings, hooks configuration | Conditional |
-| **Subagent Prompts** | Plan mode, Explore agent, Task agent | Conditional |
-| **Security Review** | Extended security instructions (~2,610 tokens) | Conditional |
+| 组件 | 描述 | 加载方式 |
+|------|------|---------|
+| **基础系统提示** | 核心指令和行为 | 始终加载（约 269 个 Token） |
+| **工具指令** | 18+ 内置工具（Write、Read、Edit、Bash、TodoWrite 等） | 始终加载 |
+| **编码指南** | 代码风格、格式化规则、安全实践 | 始终加载 |
+| **安全规则** | 拒绝规则、注入防御、伤害预防 | 始终加载 |
+| **响应风格** | 语气、详细程度、解释深度、表情符号使用 | 始终加载 |
+| **环境上下文** | 工作目录、Git 状态、平台信息 | 始终加载 |
+| **项目上下文** | CLAUDE.md 内容、设置、Hooks 配置 | 条件加载 |
+| **Subagent 提示** | 计划模式、探索 Agent、任务 Agent | 条件加载 |
+| **安全审查** | 扩展安全指令（约 2,610 个 Token） | 条件加载 |
 
-**Key Characteristics:**
-- **Modular architecture** with 110+ system prompt strings loaded conditionally
-- Base prompt is modest (~269 tokens), total varies by features activated
-- Includes extensive security and injection defense layers
-- Automatically loads CLAUDE.md files in the working directory
-- Session-persistent context in interactive mode
+**关键特征：**
+- **模块化架构**，110+ 个系统提示字符串条件加载
+- 基础提示适中（约 269 个 Token），总量随激活的功能变化
+- 包含广泛的安全和注入防御层
+- 自动加载工作目录中的 CLAUDE.md 文件
+- 交互模式下的会话持久化上下文
 
 ### Claude Agent SDK
 
-The Agent SDK uses a **minimal system prompt by default** containing:
+Agent SDK 默认使用**最小化系统提示**，包含：
 
-| Component | Description | Token Impact |
-|-----------|-------------|--------------|
-| **Essential Tool Instructions** | Only tools explicitly provided | Minimal |
-| **Basic Safety** | Minimal safety instructions | Minimal |
+| 组件 | 描述 | Token 影响 |
+|------|------|-----------|
+| **基本工具指令** | 仅显式提供的工具 | 极少 |
+| **基本安全** | 最少的安全指令 | 极少 |
 
-**Key Characteristics:**
-- No coding guidelines or style preferences by default
-- No project context unless explicitly configured
-- No extensive tool descriptions
-- Requires explicit configuration to match CLI behavior
+**关键特征：**
+- 默认无编码指南或风格偏好
+- 除非显式配置，否则无项目上下文
+- 无详细工具描述
+- 需要显式配置才能匹配 CLI 行为
 
 ---
 
-## 2. What Each Interface Sends
+## 2. 各接口发送的内容
 
-### 示例: "What is the capital of Norway?"
+### 示例："挪威的首都是什么？"
 
-#### Via Claude CLI
-
-```
-System Prompt: [modular, ~269+ base tokens]
-├── Base system prompt (~269 tokens)
-├── Tool instructions (Write, Read, Edit, Bash, Grep, Glob, etc.)
-├── Git safety protocols
-├── Code reference guidelines
-├── Professional objectivity instructions
-├── Security and injection defense rules
-├── Environment context (OS, directory, date)
-├── CLAUDE.md content (if present) [conditional]
-├── MCP tool descriptions (if configured) [conditional]
-├── Plan/Explore mode prompts [conditional]
-└── Session/conversation context
-
-User Message: "What is the capital of Norway?"
-```
-
-#### Via Claude Agent SDK (Default)
+#### 通过 Claude CLI
 
 ```
-System Prompt: [minimal]
-├── Essential tool instructions (if any tools provided)
-└── Basic operational context
+系统提示：[模块化，约 269+ 基础 Token]
+├── 基础系统提示（约 269 个 Token）
+├── 工具指令（Write、Read、Edit、Bash、Grep、Glob 等）
+├── Git 安全协议
+├── 代码引用指南
+├── 专业客观性指令
+├── 安全和注入防御规则
+├── 环境上下文（操作系统、目录、日期）
+├── CLAUDE.md 内容（如果存在）[条件加载]
+├── MCP 工具描述（如果已配置）[条件加载]
+├── 计划/探索模式提示 [条件加载]
+└── 会话/对话上下文
 
-User Message: "What is the capital of Norway?"
+用户消息："挪威的首都是什么？"
 ```
 
-#### Via Agent SDK (with `claude_code` preset)
+#### 通过 Claude Agent SDK（默认）
+
+```
+系统提示：[最小化]
+├── 基本工具指令（如果有提供工具）
+└── 基本操作上下文
+
+用户消息："挪威的首都是什么？"
+```
+
+#### 通过 Agent SDK（使用 `claude_code` 预设）
 
 ```typescript
 const response = await query({
-  prompt: "What is the capital of Norway?",
+  prompt: "挪威的首都是哪里？",
   options: {
     systemPrompt: {
       type: "preset",
@@ -107,102 +107,102 @@ const response = await query({
 ```
 
 ```
-System Prompt: [modular, matches CLI]
-├── Full Claude Code system prompt
-├── Tool instructions
-├── Coding guidelines
-└── Safety rules
+系统提示：[模块化，匹配 CLI]
+├── 完整的 Claude Code 系统提示
+├── 工具指令
+├── 编码指南
+└── 安全规则
 
-// NOTE: Still does NOT include CLAUDE.md unless settingSources is configured
+// 注意：除非配置了 settingSources，否则仍不包含 CLAUDE.md
 ```
 
 ---
 
-## 3. Customization Methods
+## 3. 自定义方法
 
-### Claude CLI Customization
+### Claude CLI 自定义
 
-| Method | Command | Effect |
-|--------|---------|--------|
-| **Append to prompt** | `claude -p "..." --append-system-prompt "..."` | Adds instructions while preserving defaults |
-| **Replace prompt** | `claude -p "..." --system-prompt "..."` | Completely replaces the system prompt |
-| **Project context** | CLAUDE.md file | Automatically loaded, persistent |
-| **Output styles** | `/output-style [name]` | Apply predefined response styles |
+| 方法 | 命令 | 效果 |
+|------|------|------|
+| **追加提示** | `claude -p "..." --append-system-prompt "..."` | 添加指令同时保留默认值 |
+| **替换提示** | `claude -p "..." --system-prompt "..."` | 完全替换系统提示 |
+| **项目上下文** | CLAUDE.md 文件 | 自动加载，持久化 |
+| **输出风格** | `/output-style [name]` | 应用预定义的响应风格 |
 
-### Agent SDK Customization
+### Agent SDK 自定义
 
-| Method | Configuration | Effect |
-|--------|---------------|--------|
-| **Custom prompt** | `systemPrompt: "..."` | Replaces default entirely (loses tools) |
-| **Preset with append** | `systemPrompt: { type: "preset", preset: "claude_code", append: "..." }` | Preserves CLI functionality + custom instructions |
-| **CLAUDE.md loading** | `settingSources: ["project"]` | Loads project-level instructions |
-| **Output styles** | `settingSources: ["user"]` or `settingSources: ["project"]` | Loads saved output styles |
+| 方法 | 配置 | 效果 |
+|------|------|------|
+| **自定义提示** | `systemPrompt: "..."` | 完全替换默认值（失去工具） |
+| **预设 + 追加** | `systemPrompt: { type: "preset", preset: "claude_code", append: "..." }` | 保留 CLI 功能 + 自定义指令 |
+| **加载 CLAUDE.md** | `settingSources: ["project"]` | 加载项目级指令 |
+| **输出风格** | `settingSources: ["user"]` 或 `settingSources: ["project"]` | 加载已保存的输出风格 |
 
-### 配置 比较 Table
+### 配置对比表
 
-| Feature | CLI Default | SDK Default | SDK with Preset |
-|---------|-------------|-------------|-----------------|
-| Tool instructions | ✅ Full | ❌ Minimal | ✅ Full |
-| Coding guidelines | ✅ Yes | ❌ No | ✅ Yes |
-| Safety rules | ✅ Yes | ❌ Basic | ✅ Yes |
-| CLAUDE.md auto-load | ✅ Yes | ❌ No | ❌ No* |
-| Project context | ✅ Automatic | ❌ No | ❌ No* |
+| 功能 | CLI 默认 | SDK 默认 | SDK 使用预设 |
+|------|---------|---------|-------------|
+| 工具指令 | ✅ 完整 | ❌ 最少 | ✅ 完整 |
+| 编码指南 | ✅ 有 | ❌ 无 | ✅ 有 |
+| 安全规则 | ✅ 有 | ❌ 基本 | ✅ 有 |
+| CLAUDE.md 自动加载 | ✅ 是 | ❌ 否 | ❌ 否* |
+| 项目上下文 | ✅ 自动 | ❌ 无 | ❌ 无* |
 
-*Requires explicit `settingSources: ["project"]` configuration
-
----
-
-## 4. Output Consistency Guarantees
-
-### Critical Finding: NO Determinism Guaranteed
-
-**The Claude Messages API does not provide a seed parameter for reproducibility.** This is a fundamental architectural limitation.
-
-### Factors Preventing Identical Output
-
-| Factor | Description | Controllable? |
-|--------|-------------|---------------|
-| **Different system prompts** | CLI vs SDK have different defaults | ✅ Yes (with configuration) |
-| **Floating-point arithmetic** | Parallel hardware quirks | ❌ No |
-| **MoE routing** | Mixture-of-Experts architecture variations | ❌ No |
-| **Batching/scheduling** | Cloud infrastructure differences | ❌ No |
-| **Numeric precision** | Inference engine variations | ❌ No |
-| **Model snapshots** | Version updates/changes | ❌ No |
-
-### Temperature and Sampling
-
-Even with `temperature=0.0` (greedy decoding):
-- Full determinism is **NOT guaranteed**
-- Minor variations can still occur due to infrastructure factors
-- Known bug: [Claude CLI produces non-deterministic output for identical inputs](https://github.com/anthropics/claude-code/issues/3370)
+*需要显式配置 `settingSources: ["project"]`
 
 ---
 
-## 5. Achieving Maximum Consistency
+## 4. 输出一致性保证
 
-To get the **closest possible** identical outputs between SDK and CLI:
+### 关键发现：不保证确定性
 
-### Agent SDK Configuration
+**Claude Messages API 不提供用于可重现性的 seed 参数。** 这是一个根本性的架构限制。
+
+### 阻止相同输出的因素
+
+| 因素 | 描述 | 可控？ |
+|------|------|--------|
+| **不同的系统提示** | CLI 和 SDK 默认值不同 | ✅ 是（通过配置） |
+| **浮点运算** | 并行硬件的特性 | ❌ 否 |
+| **MoE 路由** | Mixture-of-Experts 架构变化 | ❌ 否 |
+| **批处理/调度** | 云基础设施差异 | ❌ 否 |
+| **数值精度** | 推理引擎变化 | ❌ 否 |
+| **模型快照** | 版本更新/变更 | ❌ 否 |
+
+### Temperature 和采样
+
+即使设置 `temperature=0.0`（贪心解码）：
+- **不保证**完全确定性
+- 由于基础设施因素，仍可能出现微小差异
+- 已知问题：[Claude CLI 对相同输入产生非确定性输出](https://github.com/anthropics/claude-code/issues/3370)
+
+---
+
+## 5. 实现最大一致性
+
+要获得 SDK 和 CLI 之间**尽可能接近**的相同输出：
+
+### Agent SDK 配置
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-// Option 1: Use claude_code preset
+// 选项 1：使用 claude_code 预设
 const response = await client.messages.create({
   model: "claude-sonnet-4-20250514",
   max_tokens: 1024,
-  // Match CLI system prompt as closely as possible
+  // 尽可能匹配 CLI 系统提示
   system: "Your exact system prompt matching CLI",
   messages: [
     { role: "user", content: "What is the capital of Norway?" }
   ],
-  // Use greedy decoding for maximum consistency
+  // 使用贪心解码以获得最大一致性
   temperature: 0
 });
 
-// Option 2: With Agent SDK query function
+// 选项 2：使用 Agent SDK query 函数
 import { query } from "@anthropic-ai/agent-sdk";
 
 for await (const message of query({
@@ -214,57 +214,57 @@ for await (const message of query({
     },
     temperature: 0,
     model: "claude-sonnet-4-20250514",
-    // Load project context like CLI does
+    // 像 CLI 一样加载项目上下文
     settingSources: ["project"]
   }
 })) {
-  // Process response
+  // 处理响应
 }
 ```
 
-### CLI Configuration
+### CLI 配置
 
 ```bash
-# Match the SDK configuration as closely as possible
+# 尽可能匹配 SDK 配置
 claude -p "What is the capital of Norway?" \
   --model claude-sonnet-4-20250514 \
   --temperature 0
 ```
 
-### Still Not Guaranteed
+### 仍然无法保证
 
-Even with perfectly matching configurations:
-- Output may differ between runs
-- Output may differ between SDK and CLI
-- No seed parameter exists to force reproducibility
+即使配置完全匹配：
+- 不同次运行的输出可能不同
+- SDK 和 CLI 之间的输出可能不同
+- 不存在用于强制可重现性的 seed 参数
 
 ---
 
-## 6. Practical Implications
+## 6. 实际影响
 
-### When to Use Each Interface
+### 何时使用哪个接口
 
-| Use Case | Recommended Interface | Reason |
-|----------|----------------------|--------|
-| Interactive development | Claude CLI | Full tool suite, project context |
-| Programmatic integration | Agent SDK | Fine-grained control, embedding |
-| Consistent API responses | Agent SDK + custom prompt | More control over system prompt |
-| Batch processing | Agent SDK | Better for automation pipelines |
-| One-off tasks | Claude CLI | Faster setup, immediate context |
+| 使用场景 | 推荐接口 | 原因 |
+|----------|---------|------|
+| 交互式开发 | Claude CLI | 完整工具套件，项目上下文 |
+| 程序化集成 | Agent SDK | 细粒度控制，可嵌入 |
+| 一致的 API 响应 | Agent SDK + 自定义提示 | 对系统提示有更多控制 |
+| 批处理 | Agent SDK | 更适合自动化流水线 |
+| 一次性任务 | Claude CLI | 设置更快，即时上下文 |
 
-### 设计 Recommendations
+### 设计建议
 
-1. **Don't rely on bit-perfect reproducibility**
-   - Build applications robust to minor output variations
-   - Use structured outputs and validation
+1. **不要依赖逐位完全可重现性**
+   - 构建对微小输出变化具有鲁棒性的应用
+   - 使用结构化输出和验证
 
-2. **For production pipelines requiring consistency:**
-   - Cache results when possible
-   - Use structured outputs with JSON schema validation
-   - Combine with deterministic logic and validation
-   - Consider multiple generations with consensus
+2. **对于需要一致性的生产流水线：**
+   - 尽可能缓存结果
+   - 使用带有 JSON Schema 验证的结构化输出
+   - 结合确定性逻辑和验证
+   - 考虑多次生成取共识
 
-3. **For matching CLI behavior in SDK:**
+3. **在 SDK 中匹配 CLI 行为：**
    ```typescript
    systemPrompt: {
      type: "preset",
@@ -276,65 +276,65 @@ Even with perfectly matching configurations:
 
 ---
 
-## 7. System Prompt Token Impact
+## 7. 系统提示 Token 影响
 
-| Configuration | Architecture | Notes |
-|---------------|-------------|-------|
-| SDK (minimal) | Minimal default | Only essential tool instructions |
-| SDK (claude_code preset) | Modular (~269+ base) | Matches CLI, varies by features |
-| CLI (default) | Modular (~269+ base) | Additional context loaded conditionally |
-| CLI (with MCP tools) | Modular + MCP | MCP tool descriptions add significant tokens |
+| 配置 | 架构 | 说明 |
+|------|------|------|
+| SDK（最小化） | 最小化默认 | 仅基本工具指令 |
+| SDK（claude_code 预设） | 模块化（约 269+ 基础） | 匹配 CLI，随功能变化 |
+| CLI（默认） | 模块化（约 269+ 基础） | 条件加载额外上下文 |
+| CLI（带 MCP 工具） | 模块化 + MCP | MCP 工具描述增加显著 Token |
 
-**Note:** Claude Code uses a modular architecture with 110+ system prompt strings. The base prompt is ~269 tokens, with individual components ranging from 18 to 2,610 tokens depending on features activated.
+**注意：** Claude Code 使用模块化架构，包含 110+ 个系统提示字符串。基础提示约 269 个 Token，单个组件根据激活的功能从 18 到 2,610 个 Token 不等。
 
-**Implication:** The SDK's minimal default gives you more context for your actual task, but at the cost of Claude Code's full capabilities.
+**影响：** SDK 的最小化默认值为实际任务留出更多上下文，但代价是失去 Claude Code 的完整功能。
 
 ---
 
-## 8. 摘要 Table
+## 8. 摘要表
 
-| Aspect | Claude CLI | Agent SDK (Default) | Agent SDK (Preset) |
-|--------|------------|--------------------|--------------------|
-| **System prompt** | Modular (~269+ base) | Minimal | Modular (matches CLI) |
-| **Tools included** | 18+ builtin | Only if provided | 18+ builtin |
-| **CLAUDE.md auto-load** | Yes | No | No (needs config) |
-| **Coding guidelines** | Yes | No | Yes |
-| **Safety rules** | Full | Basic | Full |
-| **Temperature control** | Yes | Yes | Yes |
-| **Determinism guarantee** | No | No | No |
-| **Identical outputs?** | N/A | No (vs CLI) | Closer, but no |
+| 方面 | Claude CLI | Agent SDK（默认） | Agent SDK（预设） |
+|------|------------|------------------|------------------|
+| **系统提示** | 模块化（约 269+ 基础） | 最小化 | 模块化（匹配 CLI） |
+| **包含工具** | 18+ 内置 | 仅在提供时 | 18+ 内置 |
+| **CLAUDE.md 自动加载** | 是 | 否 | 否（需配置） |
+| **编码指南** | 是 | 否 | 是 |
+| **安全规则** | 完整 | 基本 | 完整 |
+| **Temperature 控制** | 是 | 是 | 是 |
+| **确定性保证** | 否 | 否 | 否 |
+| **输出相同？** | 不适用 | 否（与 CLI 比较） | 更接近，但不是 |
 
 ---
 
 ## 9. 结论
 
-**Q: What system prompts accompany the same message in SDK vs CLI?**
+**问：SDK 和 CLI 中同一消息伴随什么系统提示？**
 
-The CLI uses a **modular system prompt architecture** with a ~269-token base prompt and 110+ conditionally-loaded components (tool instructions, coding guidelines, safety rules, project context). The SDK uses a **minimal default** with only essential tool instructions, though it can be configured to match CLI behavior using the `claude_code` preset.
+CLI 使用**模块化系统提示架构**，基础提示约 269 个 Token，包含 110+ 个条件加载的组件（工具指令、编码指南、安全规则、项目上下文）。SDK 默认使用**最小化提示**，仅包含基本工具指令，但可以通过 `claude_code` 预设配置为匹配 CLI 行为。
 
-**Q: Is there a guarantee of identical output?**
+**问：是否保证输出相同？**
 
-**No.** Even with matching system prompts, identical inputs, and `temperature=0`, there is no guarantee of identical outputs due to:
-- Absence of a seed parameter in Claude's API
-- Floating-point arithmetic variations
-- Infrastructure-level non-determinism
-- Model architecture (Mixture-of-Experts) routing variations
+**不保证。** 即使系统提示匹配、输入相同且 `temperature=0`，由于以下原因也无法保证输出相同：
+- Claude API 中不存在 seed 参数
+- 浮点运算差异
+- 基础设施级别的非确定性
+- 模型架构（Mixture-of-Experts）路由差异
 
-**Recommendation:** Design systems to be robust to output variations rather than relying on deterministic behavior. For consistency-critical applications, use structured outputs, caching, and validation layers.
-
----
-
-## Sources
-
-- [Modifying System Prompts - Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/sdk#modifying-system-prompts)
-- [Claude Code CLI Reference](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/cli)
-- [Claude Code Headless Mode](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/headless)
-- [Claude Code Best Practices - Anthropic Engineering](https://www.anthropic.com/engineering/claude-code-best-practices)
-- [Claude Messages API Reference](https://docs.anthropic.com/en/api/messages)
-- [GitHub Issue #3370: Non-deterministic output](https://github.com/anthropics/claude-code/issues/3370)
-- [Claude Code System Prompts Repository](https://github.com/Piebald-AI/claude-code-system-prompts) - 分析 of modular prompt architecture
-- [Why Deterministic Output from LLMs is Nearly Impossible](https://unstract.com/blog/understanding-why-deterministic-output-from-llms-is-nearly-impossible/)
+**建议：** 设计系统时应使其对输出变化具有鲁棒性，而非依赖确定性行为。对于一致性要求高的应用，使用结构化输出、缓存和验证层。
 
 ---
 
-*This report was generated by Claude Code using the Opus 4.5 model on February 3, 2026.*
+## 参考来源
+
+- [修改系统提示 — Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/sdk#modifying-system-prompts)
+- [Claude Code CLI 参考](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/cli)
+- [Claude Code 无头模式](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/headless)
+- [Claude Code 最佳实践 — Anthropic 工程](https://www.anthropic.com/engineering/claude-code-best-practices)
+- [Claude Messages API 参考](https://docs.anthropic.com/en/api/messages)
+- [GitHub Issue #3370：非确定性输出](https://github.com/anthropics/claude-code/issues/3370)
+- [Claude Code 系统提示仓库](https://github.com/Piebald-AI/claude-code-system-prompts) — 模块化提示架构分析
+- [为什么 LLM 的确定性输出几乎不可能](https://unstract.com/blog/understanding-why-deterministic-output-from-llms-is-nearly-impossible/)
+
+---
+
+*本报告由 Claude Code 使用 Opus 4.5 模型于 2026 年 2 月 3 日生成。*

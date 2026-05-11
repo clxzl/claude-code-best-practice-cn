@@ -70,13 +70,11 @@
 
 ### 流程图（可选在屏幕上展示）
 
-```
-/weather-orchestrator (Command)
-    → AskUser: C° or F°?
-    → weather-agent (Agent + weather-fetcher skill)
-    → weather-svg-creator (Skill)
-    → Output: weather.svg + output.md
-```
+/weather-orchestrator (命令)
+    → 询问用户：摄氏度还是华氏度？
+    → weather-agent (子智能体 + weather-fetcher 技能)
+    → weather-svg-creator (技能)
+    → 输出：weather.svg + output.md
 
 ---
 

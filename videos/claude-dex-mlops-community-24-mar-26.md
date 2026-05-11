@@ -1,191 +1,179 @@
-# Everything We Got Wrong About Research-Plan-Implement — MLOps Community
+# 我们关于“研究-计划-实施”方法犯过的所有错误 —— MLOps社区
 
-Transcript of the talk by Dexter Horthy ([@daborhey](https://x.com/daborhey)), co-founder of HumanLayer, at MLOps Community, published March 24, 2026.
+Dexter Horthy ([@daborhey](https://x.com/daborhey)) 在 MLOps 社区发表的演讲转录，他是 HumanLayer 的联合创始人，发布于 2026 年 3 月 24 日。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Video Details
+## 视频详情
 
-- **Speaker:** Dexter Horthy (Co-founder, HumanLayer)
-- **Host:** Demetrios (MLOps Community)
-- **Published:** March 24, 2026
-- **YouTube:** [Watch on YouTube](https://youtu.be/YwZR6tc7qYg)
+- **演讲者：** Dexter Horthy（HumanLayer 联合创始人）
+- **主持人：** Demetrios（MLOps 社区）
+- **发布日期：** 2026 年 3 月 24 日
+- **YouTube：** [在 YouTube 上观看](https://youtu.be/YwZR6tc7qYg)
 
 ---
+## 转录文本
 
-## Transcript
+[`0:04`](https://youtu.be/YwZR6tc7qYg?t=4) 好的，在我请出Dex之前，我得先提一下James。James在吗？你能站起来一下吗？James今早告诉我——
 
-[`0:04`](https://youtu.be/YwZR6tc7qYg?t=4) All right. Before I bring up Dex, I gotta say I met James. And James Yeah. Can you stand up real fast? James told me this morning that he is going — We can't see the QR code. You got to hit it up. He's going to be having dinner tonight and everybody's invited. So, if you want to go, just scan that QR code real fast and go hang out with James. That's awesome. And that's what we're going for here. That is great.
+等等，我们看不清二维码，你得放大一下——他今晚要请大家吃饭，所有人都可以参加。如果想去的话，快扫那个二维码，跟James一起去聚餐。太棒了，这正是我们想要的氛围，真不错。
 
-[`0:33`](https://youtu.be/YwZR6tc7qYg?t=33) Yeah, you rock. Yeah, that's I like it. I like it, too. Okay, so I'm gonna bring up Dex. Uh earlier somebody said we need to have a mustache competition. I don't think that's going to happen, but I will say that he gave us 200 slides that he's about to present.
+[`0:33`](https://youtu.be/YwZR6tc7qYg?t=33) 你真厉害。对，我很喜欢这样。我也喜欢。好，接下来我要请Dex上台。之前有人说我们应该来场胡子比赛，我觉得这不太可能，不过我要透露他准备了**200页**幻灯片要展示。
 
-[`0:48`](https://youtu.be/YwZR6tc7qYg?t=48) Whoa, whoa. 158. 158. We're going to keep him honest on the timing. All right, so let it start now everybody.
+[`0:48`](https://youtu.be/YwZR6tc7qYg?t=48) 哇哦——等等，**158页**？是158页。我们会帮他严格控制时间的。那么，现在开始吧各位！
 
-[`0:57`](https://youtu.be/YwZR6tc7qYg?t=57) Let's do it. What's up everybody? I am Dex. Uh this is a talk with a very long title that I'm not going to read because we're on the clock now. Uh I have been talking about coding agents for quite a while. Basically since like August um we did a long talk in November. Um there's this methodology that we've been talking about a lot uh called research plan implement. Um a lot of up votes on hackernews. There's probably 10,000 people who have gone to our open source and grabbed our prompts and are using them internally from small startups up to the enterprise.
+[`0:57`](https://youtu.be/YwZR6tc7qYg?t=57) 咱们开始！大家好，我是Dex。这个演讲的标题特别长，因为时间有限我就不念了。我讨论编程Agent已经有一阵子了，大概从八月开始，十一月还做过一场长讲演。我们一直在提一个叫“研究-计划-实现”（research plan implement）的方法论，在Hacker News上获得了很多支持。估计有上万开发者访问过我们的开源项目，从小型创业团队到大企业都在内部使用我们的提示词模板。
 
-[`1:29`](https://youtu.be/YwZR6tc7qYg?t=89) Um it all started with this guy. Um this guy has anyone seen this talk? Yes. Okay. So Eigor went in and he said like okay cool we're using a lot of tokens we're spending a lot of money to get AI developer productivity. But what he found was that it actually tends to lead to a lot of rework. Like you are shipping 50% more but half of that is just cleaning up the slop from last week. And the other thing they found, and these are last year's numbers, so this does not account for opus 4.5. So I would inflate this a little bit, but like it's great for low complexity green field tasks, not great for high complexity brownfield tasks.
+[`1:29`](https://youtu.be/YwZR6tc7qYg?t=89) 这一切都要从这个人说起。有人看过他的演讲吗？有的。Eigor当时提出：我们花了大量Token和资金来提升AI开发效率，但他发现这往往导致更多返工——看起来代码产出多了50%，但其中一半都在清理上周留下的烂摊子。另一个发现是（这些是去年的数据，没算上Opus 4.5，所以实际数值可能更高）：AI对低复杂度的绿地任务效果很好，但处理高复杂度的现有项目就不太理想。
 
-[`2:02`](https://youtu.be/YwZR6tc7qYg?t=122) Um, and so I could give you a talk about RPI and why it's great. Uh, but that would be boring. And there's other talks, so if you haven't seen them, go watch them. It'll give more context. But, uh, I'm going to tell you everything we got wrong about RPI today. Um, we thought we had this AI thing figured out. I, uh, am humble enough to admit when I was wrong.
+[`2:02`](https://youtu.be/YwZR6tc7qYg?t=122) 我本可以专门讲RPI有多棒，但那会很无聊，而且其他演讲已经覆盖了——如果没看过建议补一下，能帮理解背景。但今天我要重点说说**我们在RPI上犯过的所有错误**。我们原以为已经摸透了AI开发的门道，但我要谦虚地承认，我错了。
+[`2:22`](https://youtu.be/YwZR6tc7qYg?t=142) 呃，所以有些事情我们搞错了。呃，今天如果你上Twitter的话会看到一个很相关的问题，就是，呃，我认为不读代码是不对的。呃，我也不认为你应该去读那些特别长的计划文件。呃，这两件事是有关联的。呃，而且不，Cloud不应该被允许——如果你写的是生产环境代码，会直接影响用户，而且如果出问题你凌晨三点就会被叫醒。呃，绝不能容忍垃圾代码。现在是2026年了。垃圾代码该消失了。
 
-[`2:22`](https://youtu.be/YwZR6tc7qYg?t=142) Uh, so we got a couple things wrong. Uh, one thing that's very relevant if you've been on Twitter today is, uh, I don't think it's okay to not read the code. Uh, I also don't think you should read really long plan files. Uh, those two are related. Uh, and no, Cloud should not be allowed to — if you're writing production code that is used by users and you're going to get paged at 3 a.m. if it's broken. Uh, no slop. This is the year 2026. No more slop.
+[`2:46`](https://youtu.be/YwZR6tc7qYg?t=166) 所以，我们都在这条路上探索。我们都在摸索。我们总是在犯错。我们也确实做对了一些事情。呃，没有所谓的神奇提示词。呃，不要把思考外包出去。你，作为工程师，是这个过程中重要的一环，要寻求杠杆效应。现在有大量代码被写出来。要想办法确保它的正确性，而不是事后再去通读所有代码并重新调整方向。
 
-[`2:46`](https://youtu.be/YwZR6tc7qYg?t=166) So, we're all on this journey. We're all figuring this out. We all are wrong all the time. We did get a couple things right. Uh there is no magic prompt. Uh do not outsource the thinking. You the engineer are an important part of this process and seek leverage. There's a lot of code being written. Find ways to make sure it's correct without having to read all of it and resteer after the fact.
+[`3:05`](https://youtu.be/YwZR6tc7qYg?t=185) 嗯所以，我相信很多人都听说过“研究、计划、实现”这个流程。有人实际运行过这个Claude命令吗？研究代码库？好的，很棒。如果你们用过这种形式运行的，手可以留着。告诉我这个系统是怎么工作的。有人像这样运行过吗？比如，“嘿，我想构建这个东西。去做研究吧。”好的。呃，或者可能去获取一个任务之类的。那“创建计划”的提示词呢？好的。有几个人举手了。
 
-[`3:05`](https://youtu.be/YwZR6tc7qYg?t=185) Um so, lots of people I'm sure have heard of research plan implement. Has anyone actually run this claude command? Research codebase? Okay, cool. Leave your hand up if you've run it like this. Tell me how this system works. Has anyone run it like this of like, "Hey, I want to build this thing. Go do the research." Okay. Um or maybe go fetch a ticket or something. What about the create plan prompt? Okay. Couple hands.
+[`3:28`](https://youtu.be/YwZR6tc7qYg?t=208) 呃，你们中有多少人是这样运行的？嘿，我们得去构建这个东西。是的。有人这样运行过吗？从你的开放问题和大纲开始，来回与我协作，然后再写计划。好的。你们中有些人发现了“魔法词语”。但很多人没有。呃，我们接下来会讲为什么这是个问题。
 
-[`3:28`](https://youtu.be/YwZR6tc7qYg?t=208) Uh how many of you run it like that? Hey, we got to go build this thing. Yes. Has anyone run it like this? Work back and forth with me starting with your open questions and outline before writing the plan. Okay. Some of you found out about the magic words. A lot of people didn't though. Uh we'll get into why that's a problem.
+[`3:44`](https://youtu.be/YwZR6tc7qYg?t=224) 嗯，所以自从十月份以来，我们基本上与数千名工程师合作过，从小型初创公司一直到《财富》500强企业。呃，我们会一遍又一遍地发现，我们把这些工具交给专家，呃，他们就能获得出色的结果。他们会每周花70个小时和Cloud坐下来交谈，然后开始疯狂地交付功能。呃，接着他们会把这些工具给他们的团队，但效果就不总是那么好了。
 
-[`3:44`](https://youtu.be/YwZR6tc7qYg?t=224) Um so since October we've basically worked with thousands of engineers from tiny startups all the way up to Fortune 500s. Um and we would find over and over again we would give these tools to an expert uh and they would get great results. They would go sit and talk to Cloud for 70 hours a week and they would start shipping like crazy. Uh and then they would go give it to their team and the results were not always so good.
+[`4:03`](https://youtu.be/YwZR6tc7qYg?t=243) 嗯，所以人们没有得到好的结果。于是我们深入用户之中，去弄清楚哪里出了问题。第一个问题就是，人们没有得到好的研究。呃，我们在十一月讨论过这个。这是我复用的少数几张幻灯片之一，但你会选择你代码库的一个区域。你会说，“我们要在这里构建点东西。”然后你启动一个编程Agent会话，去派遣这些子Agent，沿着代码库的这些垂直深入切片进行，只获取关于“我们即将构建的是什么”的压缩上下文，对吧？
+[`4:32`](https://youtu.be/YwZR6tc7qYg?t=272) 我们强调要保持客观，避免主观意见，不要在查询中包含任何实现细节。你只需要压缩事实——当前代码是如何运作的真相是什么？而优秀的工程师擅长这样的思路：拿到一个任务，然后设计出能引导模型触碰代码库中所有关键部分的问题。比如任务是“为跨租户的样条曲线网状化添加新端点”，我们可能会这样提问：“告诉我端点的工作原理，追踪所有涉及样条曲线的逻辑流程，并找出执行网状化工作的所有worker。”
 
-[`4:03`](https://youtu.be/YwZR6tc7qYg?t=243) Um and so people weren't getting good results. And so we got in the trenches with our users and we went to go figure out what was going wrong. And the first thing that was going wrong was people were not getting good research. Um, so we talked about this in November. This is uh one of the only slides I'm reusing, but you would pick a zone of your codebase. You would say, "We're going to build something over here." And then you would launch a coding agent session to go send these sub agents through these deep vertical slices through the codebase for just the context, compressed context about what is the thing we're about to go build, right?
+[`5:03`](https://youtu.be/YwZR6tc7qYg?t=303) 嗯，如果这是你的任务，很多人可能会直接这样执行：对模型说“研究代码库，这是我正在构建的东西”。问题在于，好的研究应该完全基于事实。但如果你告诉模型你在构建什么，就会得到主观意见——我们稍后会解释为什么模型不应产生主观意见。这回到了Netflix的Jake提出的原则：不要外包思考过程。
 
-[`4:32`](https://youtu.be/YwZR6tc7qYg?t=272) And we said keep things objective, discourage opinions, don't actually put any implementation details in there. You just want to compress the truth. What is true about how the code works today? And a skilled engineer was really good at taking, okay, here's my ticket. Let me write some questions that will cause the model to go touch all the parts of the codebase that matter. So if it was, you know, add a new endpoint to reticulate splines across tenants. We would say something like, okay, tell me how endpoints work and trace the logic flow for everything that touches splines and go find the workers that do all the reticulation.
+[`5:22`](https://youtu.be/YwZR6tc7qYg?t=322) 另一个行不通的问题是，用户常得到不够好的计划方案。根本原因在于，规划提示词中嵌入了85条甚至更多的指令，形成了一个庞大的单体结构。其中包含这样的步骤：向用户展示设计选项、在编写计划前获取结构反馈等。
 
-[`5:03`](https://youtu.be/YwZR6tc7qYg?t=303) Uh, so if this is your ticket, a lot of people would run it like this. They would just say, "Hey, research codebase. Here's what I'm building." Um, and the problem is that good research is all facts. But if you tell the model what you're building, then you get opinions. And we don't, we'll get into why the model shouldn't have opinions later. Comes back to this thing that Jake from Netflix came up with, which is do not outsource the thinking.
+[`5:43`](https://youtu.be/YwZR6tc7qYg?t=343) 一次成功的规划会话应该是这样的：你拥有Claude的系统工具和提示词，然后输入“创建计划”。系统会加载技能、查看任务单、读取研究文档，并启动多个子Agent去确认代码库中可能未在研究文档中涵盖的事实。请注意，这整个过程都在同一个上下文窗口中进行（虽然通常用这些并列表示不同窗口，但今天讲的是单次会话——因为幻灯片是横向的，我只能并列展示）。
 
-[`5:22`](https://youtu.be/YwZR6tc7qYg?t=322) Um, the other thing that wasn't working is people were getting not great plans. Um, and basically there were these steps built into this planning prompt uh that was this single giant like monolithic thing with 85 or more instructions. And it had these steps in it of like cool present design options to the user uh get feedback on the structure uh before you actually go write the plan.
+[`6:11`](https://youtu.be/YwZR6tc7qYg?t=371) 嗯，Agent会提出问题。比如针对第一个问题给出几个选项，用户逐个选择后，系统会汇总：“好的，这是我们计划执行的顺序。您觉得如何？”这时用户可以回复：“我们需要在开头增加测试步骤，并且交换第三阶段和第四阶段。”Assistant随即生成新的阶段大纲，用户确认后才会最终生成计划文件。
+[`6:33`](https://youtu.be/YwZR6tc7qYg?t=393) 嗯，与用户就构建内容达成共识的过程其实相当复杂。但对大约50%的用户来说——或许更多——如果你没有用“请与我反复讨论”这类提示，或者Opus模型恰好在那段时间表现迟钝，它就会直接拿走你的输入，立刻写出计划。然后你会看到这个结果，就像“酷，它写了计划，没问我任何问题，替我做了所有决定。哎呀。”
 
-[`5:43`](https://youtu.be/YwZR6tc7qYg?t=343) And so a good planning session would look something like you know you have your claude system tools and your prompt and then you say hey create plan loads the skill looks at your ticket loads your research doc launches a bunch of sub agents to go find a bunch of things that are true about the codebase just confirms some stuff that wasn't maybe in the research. This is all one big context window by the way. Usually I'll use these columns to mean separate context windows, but today this is all one session. I just — slides are sideways, so I had to put them on next to each other.
+[`6:58`](https://youtu.be/YwZR6tc7qYg?t=418) 所以我们把工具交给了用户，有些人得到了好结果，有些人没有。我们深入研究后问：“区别在哪里？”然后用户会直接对我说：“嗯，你得说‘魔法词’。”结果我发现自己在满是企业工程师的研讨会上说：“各位，各位，没错，软件是有了，但别忘了说‘魔法词’。”坦白说，这真的很尴尬。
 
-[`6:11`](https://youtu.be/YwZR6tc7qYg?t=371) Um, but the agent would come and ask questions. So, okay, here's our options for question one. User would pick an option. User would pick an option. And then eventually it would say, cool, here's the order we're going to do the things. Um, what do you think? And the user could say, well, we need to add a testing step up front, and I want to swap phases three and four. Assistant would give the new outline of the phases. Then the user would approve it and only then would we write our plan file.
+[`7:16`](https://youtu.be/YwZR6tc7qYg?t=436) 但如果你说了这句话——“请与我反复讨论，先提出你的开放问题并概述，再写计划”——那么Agent就会问你问题。这其实不是用户的错。如果你构建的工具需要用户经过大量训练和反复尝试才能获得好结果，那就去改进工具。接下来我会谈谈我们是怎么做的。
 
-[`6:33`](https://youtu.be/YwZR6tc7qYg?t=393) Um complex process of aligning with the user on what was going to be built. Um but for about 50% of people maybe more if you didn't prompt it with this work back and forth with me or Opus was just feeling dumb for that particular hour of the day. Um it would just take the stuff and it would just immediately go and write the plan out. And so you would get this and it would be like cool. I wrote the plan, didn't ask me any questions, made all the decisions for me. Yikes.
+[`7:35`](https://youtu.be/YwZR6tc7qYg?t=455) 嗯，为什么这些步骤会被跳过？我今天要分享的一个重要启示是：你有一个“指令预算”。我的联合创始人Kyle就在这边某处。他在去年12月（或者严格说是11月）写了一篇很好的博客文章，引用了一篇arXiv论文——当然这是去年的数据，现在的数字可能略高——但结论是，前沿LLM只能良好地遵循大约150到200条指令。超过这个数量，它们就会半心半意地处理，结果就是靠运气。
 
-[`6:58`](https://youtu.be/YwZR6tc7qYg?t=418) So we gave the tools to people and some people got good results and some people didn't. And we dug in and we were like, "What's the difference?" Uh, and people would literally say this to me like, "Well, you have to say the magic words." And I found myself in workshops full of enterprise engineers saying, "Well, guys, guys, guys, yeah, here's the software, but don't forget to say the magic words." It was, quite frankly, it was embarrassing.
+[`8:04`](https://youtu.be/YwZR6tc7qYg?t=484) 所以如果你的提示里有85条指令，加上你的Cloud MD、系统提示、工具和MCP，嗯，你不太可能完全遵守工作流程。稍后我们会详细讨论如何解决这个问题。
 
-[`7:16`](https://youtu.be/YwZR6tc7qYg?t=436) But if you said this, work back and forth with me starting with your open questions and outline before writing the plan. Then the agent would ask you the questions. And this isn't the user's fault. If you built a tool that requires hours and hours of training and reps to get like good results from, go fix the tool. And so I'll talk about how we did that.
+[`8:16`](https://youtu.be/YwZR6tc7qYg?t=496) 另一个我觉得对用户不太奏效的地方是：我们主张阅读输出的计划。这是我去年11月在台上告诉用户的——你必须阅读计划，否则不会起作用。有些人甚至会把计划提交PR（Pull Request）并一起进行代码审查。但一份千行的计划往往对应大约千行的代码，误差在10%左右。而且计划中可能会有意外情况。
+[`8:38`](https://youtu.be/YwZR6tc7qYg?t=518) 但结果往往是，你让同事花一小时审阅方案，然后你自己去写代码时，实现方式却完全不同。接着你又得让同事重新读一遍代码，弄清楚哪里有出入、哪里做了改动。嗯，这根本不叫杠杆效应。真正的杠杆效应意味着用更少的工作量获得更多的产出。
 
-[`7:35`](https://youtu.be/YwZR6tc7qYg?t=455) Um, but why these steps were getting skipped, one of the big takeaways I'll give you today is like you have an instruction budget. Uh, my co-founder Kyle is somewhere over here. He wrote this really good blog post in December or November I guess technically um that basically cited this archive paper which again this is from last year so the number is probably a little bit higher now but that frontier LLMs could only follow about 150 to 200 instructions with like good consistency anything more than that and it's kind of half attending to all of them and you're rolling the dice.
+[`9:01`](https://youtu.be/YwZR6tc7qYg?t=541) 所以新的建议是：别看方案，请直接看代码。因为这两件事耗费的精力差不多，而你应该把杠杆用在其他地方。接下来我会讲我们是如何找到更好的杠杆点。
 
-[`8:04`](https://youtu.be/YwZR6tc7qYg?t=484) So if you have a prompt with 85 instructions and your cloud MD and your system prompt and your tools and your MCP um yeah you're not likely to get full adherence to the workflow. So, more on how we fix this later.
+[`9:10`](https://youtu.be/YwZR6tc7qYg?t=550) 你可能会说："嘿，Dex，你八月份还说不用看代码呢。"你说方案足够了，只管发布，让Claude Code自己处理。我错了。我足够谦逊，愿意承认错误。嗯，这其实是当下一个非常重要的话题。拜托，请一定要读代码。我们尝试了六个月不读代码的做法，结果很糟糕，不得不替换掉了系统中的大部分模块。
 
-[`8:16`](https://youtu.be/YwZR6tc7qYg?t=496) The other thing that I think really wasn't working for people was like we advocated for reading the plans that were output. This is me on stage in November telling people you have to read the plan otherwise it won't work. Um some people even would PR their plans and code review them together. But a thousand line plan tends to be about a thousand lines of code within 10% or so. And plans can have surprises.
+[`9:32`](https://youtu.be/YwZR6tc7qYg?t=572) 你可能又会说："但其他人也不读代码啊。"像Beads项目有30万行代码还在增长，据说没人逐行读过。OpenClaw的Pete也表示："我了解结构和各模块如何衔接，但不会逐行审查每个PR。"嗯，这些是开源项目，不收费。
 
-[`8:38`](https://youtu.be/YwZR6tc7qYg?t=518) So you would go and you would review the plan and then you would go write the code and it would be different. And so you're telling — you're asking one of your co-workers like, "Okay, go spend an hour reading this and tell me what's wrong with it." And then you would go implement it. It would be different. They have to go read the code again and see what the surprises were and what changed. Um, and so this isn't leverage. Leverage is about like do less work to get more output.
+[`9:58`](https://youtu.be/YwZR6tc7qYg?t=598) 它们确实是很酷的项目。我对维护者的成就深感敬佩，但风险依然存在——如果OpenClaw出问题，会有很多人受挫。不过这和你们在受监管行业开发生产级SaaS代码不同。嗯，所以如果有人依赖你的代码，我恳求你，请务必阅读代码。请一定要读。我们必须维护职业操守。2026年本该是告别粗制滥造代码的一年。
 
-[`9:01`](https://youtu.be/YwZR6tc7qYg?t=541) So the new advice, uh, don't read the plans. Please read the code. Uh, just because it's the same amount of work and like look for leverage elsewhere. And I'll talk about how we found better leverage.
+[`10:25`](https://youtu.be/YwZR6tc7qYg?t=625) 嗯，现在每个人都在讨论"粗制滥造"和"精心打磨"的区别。这就是为什么我对Agent集群和整个"gas town"概念持保留态度——因为你仍然需要保证质量。如果六个月后要全部推翻重做，开发速度快十倍又有什么意义呢？
+[`10:40`](https://youtu.be/YwZR6tc7qYg?t=640) 所以，目标应该是提升2到3倍效率。这实际上又是一个关于如何衡量、如何真正达到并维持接近人类水平质量的话题。嗯，不过我会谈谈目标，以及如果你想达到这个目标应该思考什么——你应该进行高杠杆的规划，不要外包思考过程，要阅读并理解代码，而且理想情况下我们应该避免使用"魔法词汇"。
 
-[`9:10`](https://youtu.be/YwZR6tc7qYg?t=550) Um, and you may say, "Hey, Dex, in August you said don't read the code." You said the plans are enough. Just don't — just go just ship and let Cloud do its thing. I was wrong. I am humble enough to admit when I was wrong. Uh, this is actually a very big conversation right now. Please please read the code. We tried not reading the code for like six months. Uh, it did not end well. We had to rip out and replace large parts of that system.
+[`11:02`](https://youtu.be/YwZR6tc7qYg?t=662) 那么，我们有了更好的研究，更好的规划，更高的杠杆。我接下来会分别谈谈这些，包括总体来说我们做了什么，具体来说我们做了什么，以及当你围绕编码代理构建工作流程和系统时可以做的一些通用概念。
 
-[`9:32`](https://youtu.be/YwZR6tc7qYg?t=572) Um, and you may say, "Hey, Dex, but other people don't read the code." Beads, 300,000 lines and counting. Uh, no one's read that code allegedly. Uh, OpenClaw Pete's like, "Okay, you know, I know the structure and the pieces and how they fit together, but I don't read every line of every PR." Um, these are OSS projects. They don't charge money.
+[`11:15`](https://youtu.be/YwZR6tc7qYg?t=675) 我们之前谈到，一个熟练的工程师如何将工单拆解为问题、进行研究，然后研究会变得非常客观。嗯，基本上我们只是把工单从执行研究的上下文窗口中隐藏起来，并且是确定性地执行。基本上，你用一个上下文窗口来生成问题，然后用一个全新的、对我们正在构建的内容一无所知的上下文窗口去制作研究文档。
 
-[`9:58`](https://youtu.be/YwZR6tc7qYg?t=598) They are very very cool projects. I am humbled, deeply humbled by the accomplishments of the maintainers and the stakes are still high. Like if you break openclaw, a lot of people are going to be upset but they are different than if you're say working in a regulated industry shipping production SAS code. Um so if you have people who depend on your code, please I'm begging you please read it. Please read it. We have a profession to uphold. 2026 is supposed to be the year of no more slop.
+[`11:38`](https://youtu.be/YwZR6tc7qYg?t=698) 嗯，如果你熟悉查询规划的概念，这其实相当简单。嗯，其概念类似，只不过是针对大语言模型阅读代码库而言。
 
-[`10:25`](https://youtu.be/YwZR6tc7qYg?t=625) Uh, literally everyone is talking about the difference between slop and craft. Uh, this is why I'm a little mid on agent swarms and the whole gas town thing because you still need to be able to ensure quality and like going 10 times faster doesn't matter if you're going to throw it all away in 6 months.
+[`11:48`](https://youtu.be/YwZR6tc7qYg?t=708) 嗯，我搞代理有一阵子了，在我们做编码代理之前，我写了一篇叫做《12要素代理》的文章，据称那是第一次有人大量谈论"上下文工程"。嗯，对"上下文工程"有两种理解，大多数人跳入的是第一种。有人在构建RAG管道吗？构建过RAG管道的请举手？好的。看来有些人今天不太想举手。
 
-[`10:40`](https://youtu.be/YwZR6tc7qYg?t=640) So, shoot for 2 to 3x. That's actually another talk of like how you measure this and how you actually get there and maintain like a near human level of quality. Um, but I'll talk about the goals and like what you should think about if you want to get there is you should have high leverage planning. You should not outsource the thinking, read and own the code and ideally we will avoid uh magic words.
+[`12:10`](https://youtu.be/YwZR6tc7qYg?t=730) 嗯，但这就像是，好吧，塞入更多信息。你塞入太多信息，模型就无法理解。实际上，我认为对"上下文工程"更有趣的理解是：更好的指令、更简单的任务和更小的上下文窗口。
 
-[`11:02`](https://youtu.be/YwZR6tc7qYg?t=662) So uh we got better research, we got better plans, we got better leverage. I'm going to talk about each of those um as far as like in general what we and like in specifically what we did and also some general concepts as you're building workflows and systems around coding agents what you can do.
+[`12:22`](https://youtu.be/YwZR6tc7qYg?t=742) 当然，我们现在都知道Jeff了。我不需要再介绍了。以前我跟人谈论时还得解释Jeff是谁。嗯，我们谈论过这个上下文窗口的概念，称之为"愚蠢区"，就是说，你大约有168,000个Token和200,000个Token的上限，但其中一部分是保留给输出的。你有各种用途，平均大约40%左右（取决于你在做什么，以及你的上下文中多少是用户消息、多少是文件等等），你会到达一个点，在那之后结果就开始下降了。
+[`12:48`](https://youtu.be/YwZR6tc7qYg?t=768) 当然，有时即使只用了60%的上下文窗口，结果可能也足够好了。但你用的上下文窗口越少，得到的结果就越好。我们的朋友在Databricks就谈到过，如果你有太多MCP，整个上下文窗口都塞满了关于如何使用一堆你根本不关心的工具的指令，那么等到你开始写代码时，模型就很难遵循你的指示了。所以，你不仅仅是给模型太多信息，还可能给了它太多指令。
 
-[`11:15`](https://youtu.be/YwZR6tc7qYg?t=675) So we talked about how a skilled engineer could detangle the ticket to the questions to the research uh and then the research would be very objective. Um basically we just hide the ticket from the context window that's doing research and we do it deterministically. So basically you have one context window to generate questions and then a fresh context window with no knowledge of what we're building to go make your research doc.
+[`13:12`](https://youtu.be/YwZR6tc7qYg?t=792) 因此，我们当时在做的事情背后的思路是这样的：使用提示词来控制流程，这非常合理。这是一个客户支持的例子，但你知道，如果是投诉，就去做这个；如果是产品反馈，就去做那个；如果是账单问题，就去做另一件。
 
-[`11:38`](https://youtu.be/YwZR6tc7qYg?t=698) Um this is pretty trivial if you're familiar with the concept of query planning. Um it's similar in concept but for you know LLMs reading through codebases.
+[`13:27`](https://youtu.be/YwZR6tc7qYg?t=807) 嗯，而你可以做的另一种选择是，不直接用提示词来控制流程，你可以先对输入进行分类，然后将其传递给一系列更小、更专注的提示词，这些提示词包含的指令要少得多，可供选择的操作也少得多。我相信我们中的许多人可能已经做过类似的事情来提升流水线的性能。
 
-[`11:48`](https://youtu.be/YwZR6tc7qYg?t=708) Um so I've been hacking on agents for a while and before we did the coding agent stuff I wrote this paper called 12 factor agents which was uh allegedly the first time anyone was like talking a lot about context engineering. Uh there's two ways to read context engineering and most people jumped in. Is anyone building like rag pipelines? Raise your hand if you built a rag pipeline? Okay. Some people are feeling uh not like not raising their hands today.
+[`13:43`](https://youtu.be/YwZR6tc7qYg?t=823) 嗯，所以以前这是一个包含85条指令的单一巨型提示词。嗯，如果你操作得当，你会经历所有这些不同的步骤。所有不同的阶段都包含在内。如果其中任何一条指令没有被遵循，你就会跳过那些真正高杠杆的部分。
 
-[`12:10`](https://youtu.be/YwZR6tc7qYg?t=730) Um, but it's like, okay, put more information. You put too much information in, the model can't make sense of it. I actually think the more interesting read of context engineering is like better instructions and simpler tasks and smaller context windows.
+[`13:54`](https://youtu.be/YwZR6tc7qYg?t=807) 所以我们把它拆分到了几个提示词中。比如，以前是研究、计划、实施。现在变成了提问、研究、设计、结构、计划、工作、实施、PR。今天我们其实没时间详细讨论实施的部分，但是，我们把规划阶段拆分成了设计讨论和大纲，以及一个计划。以前是85条指令，现在每条都少于40条，这真的令人兴奋。而且我认为有些其实可以做得更小。我们还在迭代中。
 
-[`12:22`](https://youtu.be/YwZR6tc7qYg?t=742) Of course, we all know Jeff now. I don't have to introduce him anymore. I used to have to tell people who Jeff was when I was talking. Um, we talked about this like context window thing as the idea of the dumb zone, which is, you know, you have about 168,000 tokens and 200,000, but some of them are reserved for output. You have various things that they're for and around like 40% on average depending on what you're doing and how much of your context is user messages versus files and all of this stuff you hit this point where you have degrading results.
+[`14:18`](https://youtu.be/YwZR6tc7qYg?t=858) 经验教训就是，如果能用控制流来实现控制流，就不要用提示词来实现控制流。就像if语句真的非常强大，而LLMs非常擅长分类。这不仅仅适用于编程智能体，你正在构建的任何基于AI LLM的系统都是如此。
+[`14:31`](https://youtu.be/YwZR6tc7qYg?t=871) 这其实很有意思，因为我们之前写了很多内容，上台后说：完整的"胖"Agent行不通。不要只是循环调用工具。要进行上下文工程，构建工作流、图和微Agent。我们告诉所有人别这么做。结果到了八月，我们自己转头又说：好吧，但这个 Cloud Code 确实挺不错的。于是我们转头写了一个巨大的单体提示词。所以，是时候真正"喝下我们自己的酷爱饮料"了（注：比喻实践自己的理念）。嗯，注意你的指令预算。
 
-[`12:48`](https://youtu.be/YwZR6tc7qYg?t=768) And obviously sometimes you can still get good enough for you results at 60% but the less of the context window you use the better results you will get. Um our friends at Databricks were just talking about you have too many MCPs the whole context window is full of instructions about how to use a bunch of tools that you don't care about and then by the time you're writing code the model is like not good at following your instructions. So you're not just giving the model too much information, you're also probably giving it too many instructions.
+[`14:56`](https://youtu.be/YwZR6tc7qYg?t=896) 我们如何获得更好的杠杆效应？所以，我们把事情拆分开来以获得更好的指令遵循能力，对吧？分成了这三个不同的阶段。但我们也获得了更大的杠杆作用。我会讲为什么。因为即使计划有1000行代码，代码本身有1000行，你的设计讨论可能只有200行。而在这个环节，你有很多机会重新调整方向。
 
-[`13:12`](https://youtu.be/YwZR6tc7qYg?t=792) And so the idea of what we were doing was this thing like makes a lot of sense. Use prompts for control flow. This is a customer support example, but you know, if it's a complaint, go do this. If it's product feedback, go do this. If it's a billing issue, go do this.
+[`15:12`](https://youtu.be/YwZR6tc7qYg?t=912) 所以，这个过程基本上是回答：我们要去哪里？最终解决方案是什么样子？它包含当前状态、期望的最终状态，以及要遵循的模式。你们中有多少人曾让一个编码代理去做事，结果它在你的代码库中找到了错误的做法，并且遵循了糟糕的模式？是吧。
 
-[`13:27`](https://youtu.be/YwZR6tc7qYg?t=807) Um, and what you can do instead is you can instead of using prompts for control flow, you can kind of classify the input and then feed it to a series of smaller, more focused prompts where there are far fewer instructions and far fewer actions to choose from. I'm sure many of us have already done things like this to improve the performance of pipelines.
+[`15:29`](https://youtu.be/YwZR6tc7qYg?t=929) 这就是你的机会去查看它找到并认为相关的所有模式，然后说：“不，我们不是那样做原子SQL更新的。那是某个已经不在这里工作的工程师写的，很疯狂，大家都讨厌。去找找我们在那边用的做法。”
 
-[`13:43`](https://youtu.be/YwZR6tc7qYg?t=823) Um, so this was a single mega prompt with 85 instructions. Um, and if you did it right, you would go through all these different steps. All these different phases were part of that. And if any of the instructions didn't get followed, you would skip the things that made this really high leverage.
+[`15:40`](https://youtu.be/YwZR6tc7qYg?t=940) 嗯，它会记录我们已确定的设计决策。它会提出开放性问题。这有点像把 Cloud Code 的计划模式和“询问用户”工具的功能，都倾倒到一个你可以交互的、可塑且灵活的单一文档里。
 
-[`13:54`](https://youtu.be/YwZR6tc7qYg?t=834) Um, so we split it across several prompts and so like before it was research, plan, implement. Now it's questions, research, design, structure, plan, work, implement, PR. We're actually not going to have time to talk about the implement side of the thing today, but um, we split up the planning into a design discussion and outline and a plan. And before it was 85 instructions, now they're all less than 40, which is really exciting. And I think some of them could actually be even smaller. We're still iterating on them.
+[`15:54`](https://youtu.be/YwZR6tc7qYg?t=954) 嗯，Matt PCO 有个想法，他称之为“设计概念”，这个理念就是锁定在上下文窗口中的、你和代理之间关于正在构建什么以及如何构建的共同理解。所以，我们把它放进了一个200行的Markdown文档中。
 
-[`14:18`](https://youtu.be/YwZR6tc7qYg?t=858) The lesson is don't use prompts for control flow if you can use control flow for control flow. Like the if statement is really really powerful and LLMs are really good at classifying things. This is not just true for coding agents. This is any AI LLM based system you're building.
+[`16:07`](https://youtu.be/YwZR6tc7qYg?t=967) 这样一来，我们现在就实现了人类与代理的对齐。这里的思路是：你强迫代理将其发现的所有信息、它想做的所有事情、它认为你想要的所有东西，以及它不知道的事情都倾倒出来并向你提问。这样，在继续后续流程之前，你就可以对代理进行“脑部手术”式的审查和调整。
+[`16:24`](https://youtu.be/YwZR6tc7qYg?t=984) 核心思想是不要外包思考过程。你要让 Agent 充分展示它可能出错的地方，而不是直接去写2000行代码。
 
-[`14:31`](https://youtu.be/YwZR6tc7qYg?t=871) Um and it's really funny because we were writing all this stuff and we got on stage we said like full fat agents don't work. Don't just call tools in a loop. Do context engineering and build workflows and graphs and micro agents. We told everybody don't do this. And then we turned around in August and we're like all right but this Cloud Code thing is pretty good. And we turned around and we wrote this giant monolithic prompt. So, we figured it was time to actually go drink our own Kool-Aid. Um, mind your instruction budget.
+[`16:35`](https://youtu.be/YwZR6tc7qYg?t=995) 所以，用200行代码代替1000行，杠杆效应会更强。我们通过结构大纲也能获得更好的杠杆作用。设计就像“我们要去哪里”，而结构大纲则是“我们怎么到达那里”。或者，如果你是个因为整天开会而痛苦不堪的工程师，那么设计相当于架构评审，而结构大纲则相当于冲刺规划会议——我们要构建什么，然后如何将其分解为具体任务。
 
-[`14:56`](https://youtu.be/YwZR6tc7qYg?t=896) How do we get better leverage? So, we split things up to get better instruction following, right? These three different phases. But we also got more leverage. I'm going to talk about why. Because even if the plan is a thousand lines and the code is 1,000 lines, your design discussion might only be 200 lines. And you get a lot of opportunities to resteer in that moment.
+[`16:56`](https://youtu.be/YwZR6tc7qYg?t=1016) 因此，我们将设计和研究带到工单中，构建新的上下文窗口，并创建结构大纲。这基本上是对各个阶段的高层次概述，不是我们要编写的精确代码，而是大致的样子、我们按什么顺序进行更改，以及我们如何在过程中进行测试。
 
-[`15:12`](https://youtu.be/YwZR6tc7qYg?t=912) And so, what this looks like is basically where are we going? What does the final solution look like? And it has, you know, the current state, the desired end state, it has the patterns to follow. How many of you ever like sent off a coding agent and it like found the wrong way to do a thing in your codebase and it followed the bad patterns? Yes. Right.
+[`17:12`](https://youtu.be/YwZR6tc7qYg?t=1032) 不过，我并不是在每个阶段构建的所有内容都进行测试。但如果它是敏感的、困难的或复杂的，我想在它编写所有代码之前就能发现问题。我想确保每个200到400行的代码块都是正确的。
 
-[`15:29`](https://youtu.be/YwZR6tc7qYg?t=929) This is your chance to go read all the patterns it found that it thinks are relevant and be like, "Nope, that's not how we do atomic SQL updates. That's some engineer that doesn't work here anymore and it's crazy and everyone hates it. Go find the way we do it over there."
+[`17:23`](https://youtu.be/YwZR6tc7qYg?t=1043) 而且，这些文档意味着更轻量级的评审。对于同一个功能，计划文档有8页，而结构大纲只有大约2页，短得多。
 
-[`15:40`](https://youtu.be/YwZR6tc7qYg?t=940) Um, it'll keep track of resolved design decisions that we've made. It will ask open questions. This is sort of like taking Cloud Code plan mode and the ask user question tool and just brain dumping it all to a single document that you can interact with that's like moldable and flexible.
+[`17:33`](https://youtu.be/YwZR6tc7qYg?t=1053) 我喜欢这样想，有人写过C头文件（.h文件）吗？好的。如果计划是实现代码，那么大纲就是C头文件。它只包含签名和我们要更改的新类型，这足以让你看清Agent的思路，并在它出错时进行纠正。
 
-[`15:54`](https://youtu.be/YwZR6tc7qYg?t=954) Um Matt PCO has this idea, he calls it the design concept and it's this idea of like the thing that is locked up in this context window that is the shared understanding between you and the agent of what's being built and how. Uh so we put it in a 200-line markdown artifact.
+[`17:50`](https://youtu.be/YwZR6tc7qYg?t=1070) 我们这样做的原因是，尽管尝试了各种模型和提示词，并疯狂地评估，我们还是无法阻止模型编写“横向计划”。这实际上是解决它们需要编写“横向计划”这一倾向的最佳方法。当我说“横向计划”时，我的意思是：模型倾向于先做完所有数据库部分，然后做完所有服务层，接着是所有API，最后是所有前端。等你反应过来时，已经写了1200多行代码，而且无法运行，这时你还得找出到底是哪部分出了问题，因为过程中根本没什么可测试的。
+[`18:24`](https://youtu.be/YwZR6tc7qYg?t=1104) 无论是模型在验证它，还是你作为人类亲自介入检查是否正确。我们观察到在各种规模的组织中效果都非常好的方法，是我所谓的垂直计划。这也是我在构建时使用的方法——比如在AI出现之前，我会先制作一个模拟API端点，让它在前端正常工作，然后进行连接，接着模拟服务层，做数据库迁移，最后把所有部分整合起来。
 
-[`16:07`](https://youtu.be/YwZR6tc7qYg?t=967) Um, and so we now have human agent alignment. And the idea here is like you're forcing the agent to brain dump out all the things it found, all the things it wants to do, all the things it thinks you want, and ask you questions about things it doesn't know. So you can do brain surgery on the agent before you proceed downstream.
+[`18:46`](https://youtu.be/YwZR6tc7qYg?t=1126) 所以，即使代码总量相同，但你会拥有这些检查点，可以看清它是否工作正常。如果有问题，你可以暂停并修复它，然后再尝试完成剩余部分。这些计划也都是markdown文档。你可以而且应该要求更多细节。它们通常从高层次开始，但这里有个例子：我觉得你可能搞不对这个。告诉我你的思路是什么。然后它就像这样列出了类型和函数签名。
 
-[`16:24`](https://youtu.be/YwZR6tc7qYg?t=984) And it's all about do not outsource the thinking. You want to give the agent every single opportunity to show you what it's wrong about before you go write 2,000 lines of code.
+[`19:04`](https://youtu.be/YwZR6tc7qYg?t=1144) 然后从计划本身获得更好的杠杆效应。我的意思是，这又和我们一直以来的做法一样。我们只是拿到这个产物，把它和所有之前的产物一起构建起来，然后我们就可以去执行计划了。如果你使用 `create plan`，也是完全一样的模板，完全一样的设置，完全一样的提示，但这是为agent准备的一份战术性文档。我们已经做了足够的对齐，所以我只是做些抽查，然后把深入的审查留给实际的代码。
 
-[`16:35`](https://youtu.be/YwZR6tc7qYg?t=995) So uh, 200 lines instead of a thousand, a little bit more leverage. We also get better leverage from the outline. So if design is like where are we going the structure outline is how do we get there or if you're an engineer who is miserable because of sitting in meetings all day there's the like architecture review and then there's the sprint planning meeting — what are we going to build and then how do we break it down into tasks.
+[`19:28`](https://youtu.be/YwZR6tc7qYg?t=1168) 所以，如果你使用过任何RPI计划，它们看起来就是这样的。模型会说：“嘿，这些是我将要做的所有更改。”
 
-[`16:56`](https://youtu.be/YwZR6tc7qYg?t=1016) And so we take our design and we take it to ticket and the research we build up a new context window and we create the structure outline and this is basically high-level overview of the phases not the exact code we're going to write but just kind of what it's going to look like what order we're going to do the changes in and how we're going to test it along the way.
+[`19:35`](https://youtu.be/YwZR6tc7qYg?t=1175) 嗯，这种杠杆效应最重要的部分，不仅仅关乎你和agent。虽然人和agent的对齐很重要，了解agent将要做什么并加以修正是好的，但同样重要的是，如果你和一个工程师团队合作，我们发现把这些设计讨论、结构大纲和审查（我说过不要审查计划，但这些较短的文档真的非常好用）拿出来分享，价值巨大。
 
-[`17:12`](https://youtu.be/YwZR6tc7qYg?t=1032) Now, I don't actually test in between every phase, everything I'm building, but if it's sensitive or if it's hard or if it's complex, I want to be able to catch it before it goes and writes all the code. I want to make sure each two, three, 400 line block is correct.
+[`19:57`](https://youtu.be/YwZR6tc7qYg?t=1197) 呃，我在HumanLayer并不是我们大部分代码的负责人，我的联合创始人是。我会特意把我的设计讨论发给他。我们并没有强制性的步骤，但我想——我想确保当我们进行代码审查时，它会是这样的：“对，这就是我想要的。就这样。就这样。” 所以，在我动手编写代码并让它运行起来，以至于对它产生依恋之前，我所有的糟糕决策都已在一份200行的文档中被拦截了。这真的非常非常强大。
+[`20:22`](https://youtu.be/YwZR6tc7qYg?t=1222) 在AI出现之前，我们基本上是这么想的——可以从节省时间的角度来看。你会说："好，这个功能需要两天完成。我得做所有这些工作。编写代码大概要两到四个小时。"如果你直接用Cloud Code来帮你交付，确实能加速，因为现在编码只需要20分钟。但这仍然是一个两天的功能，因为我仍然需要和团队对齐我们要做什么。我仍然需要进行代码审查并修复问题。也许我还需要在多个我并不拥有的代码库中工作，然后我们仍然需要验证和测试它。
 
-[`17:23`](https://youtu.be/YwZR6tc7qYg?t=1043) Um, and these docs mean lighter reviews. Instead of reviewing the plan, this is two things for the same feature. Plan, eight pages, structure outline, two-ish pages, much shorter.
+[`20:47`](https://youtu.be/YwZR6tc7qYg?t=1247) 但如果你用AI来辅助你的规划和对齐，那么你在这里也能节省时间。而且我认为你能获得更好的对齐效果。嗯，所以你的代码审查和返工也会少很多，因为你已经知道接下来会发生什么。进行审查的团队也已经有机会纠正你的方向。真正优秀的团队会这样做。他们会开一个叫做架构评审的会议，在那里我们决定，比如，我们构建这个东西的技术设计文档是什么。
 
-[`17:33`](https://youtu.be/YwZR6tc7qYg?t=1053) Um, I like to think of this, has anyone ever written a C header file, .h file? Yeah. Okay, so if the plan is the implementation, the outline is the C header files. Just here's the signatures and the new types that we're changing enough again for you to see what the agent is thinking and correct it if it's wrong.
+[`21:12`](https://youtu.be/YwZR6tc7qYg?t=1272) 所以，呃，关于测试和验证这部分，抱歉，我今天没有很好的答案给你。这完全是另一个议题了。如果你去了楼下Drew的演讲，会后去找Drew Brun吧。他会告诉你所有关于测试和验证的事情。
 
-[`17:50`](https://youtu.be/YwZR6tc7qYg?t=1070) Um, and the reason why we do this is despite like every single model and trying to prompt this out and eval the hell out of this, we cannot get models to stop writing horizontal plans or — it like this is the best way to fix their need to write horizontal plans. And when I say horizontal plans, I basically mean you start with — models love to like we're going to do all the database and then we're going to do all the services and then we're going to do all the API and then we're going to do all the front end and before you know it, you're on the other side of 1,200 lines of code and it's not working and now you have to go figure out which part is broken because there was nothing really to test along the way.
+[`21:21`](https://youtu.be/YwZR6tc7qYg?t=1281) 嗯，让我们把所有这些整合起来。所以我们有这五个阶段：研究和规划。这个流程基本上是：提问、研究、设计、构建结构、制定大纲、规划、工作树、实施。最后是提交PR。呃，但这没能组成一个很好的缩写，所以我们只挑了我们喜欢的那些。而且，呃，我们把这个叫做CRISPY。所以，从RPI到CRISPY。就是这样。
 
-[`18:24`](https://youtu.be/YwZR6tc7qYg?t=1104) Whether the model is verifying it or whether you the human are jumping in and checking it's correct. And so what we've seen work really really well across orgs of all sizes um is what I call vertical plans. This is how I build when I'm like before AI I would like make a mock API endpoint and then get it working in the front end and then wire that and then mock out the services layer and then do the database migration and then put everything together.
+[`21:43`](https://youtu.be/YwZR6tc7qYg?t=1303) 嗯，接下来是什么，以及我今天没有时间讨论的是什么？嗯，三个步骤对一些人来说已经很多要学了，现在变成了七个。我以为我们的目标是让团队更容易学习并采纳这个流程。我们可以谈谈我们是如何考虑这个问题的。
 
-[`18:46`](https://youtu.be/YwZR6tc7qYg?t=1126) And so even though it's the same amount of code you have these like checkpoints where you can see if it's working and if it's not you can pause and fix it before you go try to do the rest of it. So these are just markdown docs too. Like you can and should ask for more detail. They start high level, but like here's an example of like I don't think you're going to get this right. Tell me what you're thinking. And it like dumped out the types and the signatures.
+[`21:57`](https://youtu.be/YwZR6tc7qYg?t=1317) 嗯，关于如何衡量在工程团队中执行此流程的影响力这个想法，我认为，嗯，我们尝试衡量开发者生产力已经有50年了，我们仍然不太知道如何做好这件事。
+[`22:06`](https://youtu.be/YwZR6tc7qYg?t=1326) 当你作为中央平台团队向整个组织推广这些变更时，如何优化这些提示？如何改进这套工程系统？我是说，我们刚讨论过每个团队现在都有专属技能集，我们想要整合并共享它们，让大家都能从彼此的经验中受益。但怎样才能在不破坏某个团队工作流程、不造成回退的情况下持续改进这些内容呢？
 
-[`19:04`](https://youtu.be/YwZR6tc7qYg?t=1144) Um and then getting better leverage from the plan itself. I mean again like usual like we've been doing. We just take that artifact, we build it up with all the previous artifacts and then we can go build the plan. Um and it is the same if you use create plan. It's the exact same template, exact same setup, exact same prompt, but this is a tactical doc for the agent. We've already done enough aligning that like I'm just going to spot check this and then we save the deep review for the actual code.
+[`22:31`](https://youtu.be/YwZR6tc7qYg?t=1351) 如果您身在旧金山，正在开发关键系统，并希望探索如何让编码 Agent 承担更多工作，欢迎与我们交流。我们也在招聘团队成员。无论哪种情况，请通过 Founders@humanlayer.dev 给我们发送消息。
 
-[`19:28`](https://youtu.be/YwZR6tc7qYg?t=1168) And so if you've used any of the RPI plans, they look like this. It's the model saying, "Hey, here's all the changes I'm going to make."
+[`22:43`](https://youtu.be/YwZR6tc7qYg?t=1363) 我们正在构建一款能够协调这些流程的 IDE。虽然没有它也能获得这些价值，但这正是我们当前努力的方向。
 
-[`19:35`](https://youtu.be/YwZR6tc7qYg?t=1175) Um, the most important part of this leverage is not just about you and the agent, though. Like human agent alignment is important and knowing what the agent's going to do and correcting that is good but it's also you know if you're working with a team of engineers we've found a lot of value from taking these design discussions these structure outlines and review — I said don't review the plans but these shorter docs are really really good.
+[`22:52`](https://youtu.be/YwZR6tc7qYg?t=1372) 如果想交流互动，本周六我将举办沙箱研究黑客松。我们将与众多优秀的构建者齐聚一堂，共同测试所有沙箱服务提供商，找出最佳方案并分享实践心得。我也会出席 Daytona 计算机大会。如果大家愿意来迈阿密，AI 工程师迈阿密峰会将会非常精彩，届时我将分享本次演讲的升级版，包含更多今天未能展开的内容。
 
-[`19:57`](https://youtu.be/YwZR6tc7qYg?t=1197) Uh I am not the code owner of most of our code at HumanLayer my uh co-founder is and I send him my design discussions on purpose we don't have a required step but I want to — I want to know that when we get code review, it's just going to be like, "Yep, that's what I wanted. That's it. That's it." So any of my bad decisions are headed off on a 200-line doc before I've gone and written the code and gotten it working and I'm attached to it. And so this is really really powerful.
+[`23:15`](https://youtu.be/YwZR6tc7qYg?t=1395) 衷心感谢各位带来的热情能量，感谢 Demetrios 和整个组织团队。祝各位顺利！
 
-[`20:22`](https://youtu.be/YwZR6tc7qYg?t=1222) Um before AI, we would basically — the way another way to think about this is like time savings. You would say, "Okay, it's a two-day feature. I got to do all this stuff. The coding is probably two to four hours." If you just pick up Cloud Code and use it to ship for you, you do get some speed up because now the coding takes 20 minutes. It's still a two-day feature because I still have to like align with my team on what we're going to do. I still have to get a code review and fix stuff. Maybe I'm working across repos that I don't personally own and then we still have to verify and test it.
+[`23:22`](https://youtu.be/YwZR6tc7qYg?t=1402) 现在进入提问环节。哪位想向 Dex 提问？结束得真快。我很喜欢这种节奏。我原本很担心你无法按时完成，但现在看来效果很好。
 
-[`20:47`](https://youtu.be/YwZR6tc7qYg?t=1247) But if you use AI to help you with your planning and alignment, then you also save time there. And I think you get much better alignment. Um, and so your code review and rework is also much shorter because you already know what's coming. The team that's reviewing it already kind of like had their chance to resteer you. And really good teams do this. It's they have a meeting that's called architecture review where we decide, you know, what's our technical design doc on how we're going to build this.
+[`23:32`](https://youtu.be/YwZR6tc7qYg?t=1412) 有个问题我很感兴趣——关于代码审阅。这种方式似乎不具备可扩展性，对吧？六个月后你还会持相同观点吗？我得说，六个月前我就提出过不必阅读代码。现在所有主张"不必审阅代码"的人，很可能在六个月后都会承认："是的，我们不得不放弃这个方案。"这中间应该存在某种平衡点，我们正在通过二分法探索代码审阅的最佳程度。
 
-[`21:12`](https://youtu.be/YwZR6tc7qYg?t=1272) So, um, as far as testing and verifying, sorry, I don't have a good answer for you. It's a whole other talk. If you went to Drew's talk downstairs, go find Drew Brun after this. He will tell you all about testing and verifying.
+[`23:55`](https://youtu.be/YwZR6tc7qYg?t=1435) 我认为关键在于，如果坚持审阅代码，依然能获得两到三倍的效率提升。相比盲目追求十倍速而交付粗糙代码、寄希望于未来 GPT-7 能来修复的策略，这实际上能带来更佳的商业成果。
+[`24:12`](https://youtu.be/YwZR6tc7qYg?t=1452) 是的，我确实有遇到过。很棒的分享。好奇你对"软件工厂"这个概念的看法？我记得好像 Strong DM 持相反观点，认为永远不要让人去阅读代码两端（生成与接收的代码）。我觉得这推动了评估体系的发展，对此你怎么看？
 
-[`21:21`](https://youtu.be/YwZR6tc7qYg?t=1281) Um, let's put this all together. So, we have these five stages of research and planning. Um, the process is basically questions, research, design, structure, outline, plan, work tree, implement. Finally, the poll request. Uh, that didn't make a very good acronym though, so we just picked the ones we liked. And, uh, we're calling this crispy. Uh, so RPI to crispy. That's the — There you go.
+[`24:35`](https://youtu.be/YwZR6tc7qYg?t=1475) 是的，确实存在一整类...比如形式化验证和 TLA plus 这类方法可以深入探讨。我曾和一位正在开发新一代 TLA++ 的开发者交流，他的思路是：如果我们不阅读代码，如何通过形式化方法验证所有功能是否正常运行？
 
-[`21:43`](https://youtu.be/YwZR6tc7qYg?t=1303) Um, what's next and what did I not have time to talk about today? Um, three steps was already a lot for some people to learn and now there are seven. I thought we were supposed to make this easier for teams to learn this and adopt it. We can talk about how we're like thinking about that.
+[`24:52`](https://youtu.be/YwZR6tc7qYg?t=1492) 呃，我觉得这个领域还有很多值得建设的地方，而且目前很多人确实需要更快地将代码部署到生产系统。所以也许未来会实现吧。我以前经常引用 Sean Gro 的演讲观点，他认为文档才是核心——只需撰写描述预期行为的文档，然后把代码当作汇编语言一样不必再阅读。嗯，我个人并不完全认同这种观点。
 
-[`21:57`](https://youtu.be/YwZR6tc7qYg?t=1317) Um the idea of how do you measure the impact of doing this um in engineering teams I think is like we've been trying to measure developer productivity for 50 years and we still don't know how to do it very well.
+[`25:17`](https://youtu.be/YwZR6tc7qYg?t=1517) 还有一个问题。最后一个问题。我注意到你幻灯片中提到关于上下文窗口和"愚笨区"的概念。你之前深入研究过这个，现在考虑到自压缩等新方法的发展，是否重新验证过这个概念在当前上下文窗口下的有效性？
 
-[`22:06`](https://youtu.be/YwZR6tc7qYg?t=1326) Um and then it's like if you're a central kind of platform team rolling out changes to everybody in your org, how do you make these prompts better? How do you make this engineering system better? I mean, um, we were just talking about like, oh, every team has a skill now, and we want to consolidate and make that shared and let people benefit from each other's learnings. How do you make that stuff better without like breaking somebody's workflow or regressing it for some team?
+[`25:41`](https://youtu.be/YwZR6tc7qYg?t=1541) 我觉得...如果你持续使用AI编码工具六个月到九个月，并且每周使用60小时，那么"愚笨区"这个概念对你可能不太适用。我个人经常使用到60k token，也会刻意控制在30k以内。这完全取决于任务复杂度、指令量与信息量的比例。
 
-[`22:31`](https://youtu.be/YwZR6tc7qYg?t=1351) Uh, if you want to help us, if you're in San Francisco and you're working on critical systems and you want to like figure out how to get coding agents to do more, uh, let's chat. We're also hiring. Um, send us a note either way. Founders@humanlayer.dev.
+[`26:06`](https://youtu.be/YwZR6tc7qYg?t=1566) 所以实际效果因人而异。我们对新手的建议是：如果还不确定如何操作且缺乏使用直觉，尽量将token量控制在40k以内；如果接近60k时，就应该考虑收尾工作了。
 
-[`22:43`](https://youtu.be/YwZR6tc7qYg?t=1363) Uh we're building an IDE that orchestrates this stuff for you. Uh you don't need this to get this value out of this, but this is the kind of stuff we're working on.
-
-[`22:52`](https://youtu.be/YwZR6tc7qYg?t=1372) Uh if you want to hang out, I'm doing a sandbox research hackathon on Saturday. We're going to just get together with a bunch of cool builders, test all of the sandbox providers together, uh and see which one's the best and then share our learnings. I'll also be at the Daytona Compute Conference. Uh and if you feel like coming to Miami, uh AI Engineer Miami is going to be really fun. Will be giving uh the updated version of this talk with more stuff that I didn't have time to get to today.
-
-[`23:15`](https://youtu.be/YwZR6tc7qYg?t=1395) Um, thank you so much to all of you for your energy to Demetrios and the entire organizing squad. Good luck.
-
-[`23:22`](https://youtu.be/YwZR6tc7qYg?t=1402) Questions. Who's got a question for Dex? That was super fast. I like it. I was very doubtful that you were going to get through it, but I like it.
-
-[`23:32`](https://youtu.be/YwZR6tc7qYg?t=1412) All right. I'm curious about reading the code. Like, it's not scalable, right? Like, are you going to be saying the same thing in six months? I mean, six months ago, I said not to read it. Uh, and it was — I think everyone who is saying don't read the code now is going to be in six months being like, "Yeah, we had to throw that out." There's something there's something in the middle, right? We're binary searching through the space uh of how much of the code should you read.
-
-[`23:55`](https://youtu.be/YwZR6tc7qYg?t=1435) Um, I think, yeah, the idea is if you still read the code, you can still get two to three x speed up. And that's actually better business outcomes than uh than going 10x faster and shipping a bunch of slop and hoping that you know GPT7 will fix it for you.
-
-[`24:12`](https://youtu.be/YwZR6tc7qYg?t=1452) Yeah, I hit things. Uh awesome talk. Um curious your thoughts on like the software factory. I think it's like strong DM that's saying the opposite which is like never have a human read either side of it. And I think that pushes us further into eval. So what is your thinking on that?
-
-[`24:35`](https://youtu.be/YwZR6tc7qYg?t=1475) Yeah, there is a whole class of like there's a whole rabbit hole you can go down with like formal verification and TLA plus or — I talked to a guy who's building a new TLA plus that is TLA++ that is like okay what if we don't read the code? How can we actually like formally verify everything that's working?
-
-[`24:52`](https://youtu.be/YwZR6tc7qYg?t=1492) Uh, I think there's a lot more to be built and I think there's a lot of people right now who need to ship like code to production systems faster. So like maybe someday, but like I used to cite Sean Gro's talk where he was like it's just the spec. Just write the document that explains the desired behavior and you treat the code like it's assembly and you never read it anymore. Um, I do not endorse that. Let's put it that way.
-
-[`25:17`](https://youtu.be/YwZR6tc7qYg?t=1517) We got one more. All right, last one. Uh I know you mentioned one of the slides about the like context window and uh the the dumb zone, right? Uh I know you researched that like heavily a few — like have you gone back to look at that again to see how true that still is after certain like context window especially with like all the autocompaction they have now and other methods for that.
-
-[`25:41`](https://youtu.be/YwZR6tc7qYg?t=1541) I mean, I think like for if you have been using AI coding agents for six to nine months and you use them for 60 hours a week, like the dumb zone is not a useful concept to you. I will regularly go up to 60. I will regularly like aggressively keep it below 30. It depends on the complexity of your task, the amount of instructions versus information.
-
-[`26:06`](https://youtu.be/YwZR6tc7qYg?t=1566) So like your mileage may vary. If you are using coding agents for the first time, this is what we teach people is like if you don't know what to do and you haven't developed that intuition, then like shoot to keep it under 40 and if you get up to 60, like think about wrapping it up.
-
-[`26:15`](https://youtu.be/YwZR6tc7qYg?t=1575) And like you can keep iterating on the same doc. That's what's also nice about these is like we don't use the built-in compaction because everything that matters is going into static assets and so you can always resume from where you left off without having to worry about the quality of an autocompact or a manual compact.
-
-[`26:32`](https://youtu.be/YwZR6tc7qYg?t=1592) Brilliant, Dex. Well done, dude. Thank you. Let's give it up for him.
+[`26:15`](https://youtu.be/YwZR6tc7qYg?t=1575) 而且这些对话文档可以持续迭代使用。这也是我们不采用内置压缩功能的原因——所有关键信息都存储在静态资源中，因此随时可以从上次中断处继续，完全不必担心自动压缩或手动压缩的质量问题。
+[`26:32`](https://youtu.be/YwZR6tc7qYg?t=1592) 太棒了，Dex。干得漂亮，兄弟。谢谢。让我们把掌声送给他。

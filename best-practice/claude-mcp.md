@@ -1,6 +1,6 @@
 # MCP 服务器最佳实践
 
-![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2002%2C%202026%2012%3A30%20PM%20PKT-white?style=flat&labelColor=555)<br>
+![最后更新](https://img.shields.io/badge/Last_Updated-Mar%2002%2C%202026%2012%3A30%20PM%20PKT-white?style=flat&labelColor=555)<br>
 [![已实现](https://img.shields.io/badge/Implemented-2ea44f?style=flat)](../.mcp.json)
 
 MCP（Model Context Protocol）服务器通过连接外部工具、数据库和 API 扩展 Claude Code。本指南介绍日常使用的推荐服务器和配置最佳实践。
@@ -45,22 +45,22 @@ MCP 服务器在项目根目录的 `.mcp.json`（项目作用域）或 `~/.claud
 
 ```json
 {
-  "mcpServers": {
+  "mCP服务器": {
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "命令": "npx",
+      "参数": ["-y", "@upstash/context7-mcp"]
     },
     "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp"]
+      "命令": "npx",
+      "参数": ["-y", "@playwright/mcp"]
     },
     "deepwiki": {
-      "command": "npx",
-      "args": ["-y", "deepwiki-mcp"]
+      "命令": "npx",
+      "参数": ["-y", "deepwiki-mcp"]
     },
     "remote-api": {
-      "type": "http",
-      "url": "https://mcp.example.com/mcp"
+      "类型": "http",
+      "URL": "https://mcp.example.com/mcp"
     }
   }
 }
@@ -72,8 +72,8 @@ MCP 服务器在项目根目录的 `.mcp.json`（项目作用域）或 `~/.claud
 {
   "mcpServers": {
     "remote-api": {
-      "type": "http",
-      "url": "https://mcp.example.com/mcp?token=${MCP_API_TOKEN}"
+      "type": "http",                          // 类型：HTTP
+      "url": "https://mcp.example.com/mcp?token=${MCP_API_TOKEN}"  // 地址：包含MCP API令牌的认证URL
     }
   }
 }
@@ -95,13 +95,13 @@ MCP 工具在权限规则中遵循 `mcp__<server>__<tool>` 命名约定：
 
 ```json
 {
-  "permissions": {
-    "allow": [
+  "权限": {
+    "允许": [
       "mcp__*",
       "mcp__context7__*",
       "mcp__playwright__browser_snapshot"
     ],
-    "deny": [
+    "拒绝": [
       "mcp__dangerous-server__*"
     ]
   }

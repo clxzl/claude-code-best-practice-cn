@@ -1,45 +1,45 @@
-# Verification Checklist — README CONCEPTS Section
+# 验证清单 — README CONCEPTS 部分
 
-Rules for verifying CONCEPTS table accuracy. Each rule is checked during every workflow run.
+用于验证 CONCEPTS 表准确性的规则。每条规则在每次工作流运行时都会检查。
 
-## Rules
+## 规则
 
-### 1. External URL Liveness
-- **Category**: URL Accuracy
-- **What to check**: Every external URL in the CONCEPTS table (docs links) returns a valid page
-- **Depth**: Fetch each URL and confirm it loads the expected page (not a redirect to wrong page)
-- **Source to compare against**: `https://code.claude.com/docs/llms.txt` for canonical URL list
-- **Date added**: 2026-03-02
-- **Origin**: Permissions URL `/iam` was found to redirect to Authentication page instead of Permissions
+### 1. 外部 URL 有效性
+- **类别**：URL 准确性
+- **检查内容**：CONCEPTS 表中每个外部 URL（文档链接）返回有效页面
+- **深度**：获取每个 URL 并确认加载了预期页面（不是重定向到错误页面）
+- **比较来源**：`https://code.claude.com/docs/llms.txt` 用于规范 URL 列表
+- **添加日期**：2026-03-02
+- **来源**：发现 Permissions URL `/iam` 重定向到认证页面而非权限页面
 
-### 2. Anchor Fragment Validity
-- **Category**: URL Accuracy
-- **What to check**: Any URL with an anchor fragment (`#section-name`) matches an actual heading on the target page
-- **Depth**: Fetch the page and verify the heading exists with the expected anchor
-- **Source to compare against**: Fetched page content
-- **Date added**: 2026-03-02
-- **Origin**: Rules anchor `#modular-rules-with-clauderules` was stale; section renamed to `#organize-rules-with-clauderules`
+### 2. 锚点片段有效性
+- **类别**：URL 准确性
+- **检查内容**：任何带锚点片段（`#section-name`）的 URL 是否匹配目标页面上的实际标题
+- **深度**：获取页面并验证标题存在且锚点正确
+- **比较来源**：已获取的页面内容
+- **添加日期**：2026-03-02
+- **来源**：Rules 锚点 `#modular-rules-with-clauderules` 已过时；章节已重命名为 `#organize-rules-with-clauderules`
 
-### 3. Missing Docs Pages
-- **Category**: Missing Concepts
-- **What to check**: Every page in the official docs index (`llms.txt`) that represents a user-facing feature has a corresponding row in the CONCEPTS table
-- **Depth**: Compare full docs index against CONCEPTS table entries
-- **Source to compare against**: `https://code.claude.com/docs/llms.txt`
-- **Date added**: 2026-03-02
-- **Origin**: Multiple missing concepts found (Agent Teams, Keybindings, Model Configuration, etc.)
+### 3. 缺失的文档页面
+- **类别**：缺失概念
+- **检查内容**：官方文档索引（`llms.txt`）中每个代表面向用户功能的页面是否在 CONCEPTS 表中有对应行
+- **深度**：将完整文档索引与 CONCEPTS 表条目进行比较
+- **比较来源**：`https://code.claude.com/docs/llms.txt`
+- **添加日期**：2026-03-02
+- **来源**：发现多个缺失概念（Agent Teams、Keybindings、Model Configuration 等）
 
-### 4. Local Badge Link Validity
-- **Category**: Badge Accuracy
-- **What to check**: Every badge target path in the CONCEPTS table (`best-practice/*.md`, `implementation/*.md`, `.claude/*/`) points to a file or directory that exists
-- **Depth**: Use Read/Glob to verify file existence
-- **Source to compare against**: Local filesystem
-- **Date added**: 2026-03-02
-- **Origin**: Initial checklist creation
+### 4. 本地徽章链接有效性
+- **类别**：徽章准确性
+- **检查内容**：CONCEPTS 表中每个徽章目标路径（`best-practice/*.md`、`implementation/*.md`、`.claude/*/`）指向存在的文件或目录
+- **深度**：使用 Read/Glob 验证文件存在
+- **比较来源**：本地文件系统
+- **添加日期**：2026-03-02
+- **来源**：初始清单创建
 
-### 5. Description Currency
-- **Category**: Description Accuracy
-- **What to check**: Each concept's description accurately reflects the current official docs description
-- **Depth**: Compare README description against the official page's meta description or first paragraph
-- **Source to compare against**: Official docs page content
-- **Date added**: 2026-03-02
-- **Origin**: Memory description missing auto memory; MCP Servers location missing `.mcp.json`
+### 5. 描述时效性
+- **类别**：描述准确性
+- **检查内容**：每个概念的描述是否准确反映当前官方文档的描述
+- **深度**：将 README 描述与官方页面的元描述或第一段进行比较
+- **比较来源**：官方文档页面内容
+- **添加日期**：2026-03-02
+- **来源**：Memory 描述缺少自动记忆；MCP Servers 位置缺少 `.mcp.json`

@@ -98,14 +98,14 @@ https://api.github.com/repos/{owner}/{repo}/commits?per_page=10
 对每个仓库，返回以下精确结构：
 
 ```
-REPO: {owner}/{repo}
-STARS: {number}k ({exact number})
-AGENTS: {count} ({breakdown of agent names or "none"})
-SKILLS: {count} ({breakdown or "none"})
-COMMANDS: {count} ({breakdown or "none"})
-UNIQUENESS: {1-2 sentences}
-CHANGES: {recent notable changes or "No significant changes"}
-CONFIDENCE: {0-1 overall confidence in the counts}
+仓库：{owner}/{repo}
+星标：{number}k（精确数字）
+Agent 数量：{count}（具体 Agent 名称或"无"）
+技能数量：{count}（具体内容或"无"）
+命令数量：{count}（具体内容或"无"）
+独特性：{1-2 句描述}
+更新：{近期重要更新或"无显著变化"}
+置信度：{0-1 数量统计的总体置信度}
 ```
 
 ---

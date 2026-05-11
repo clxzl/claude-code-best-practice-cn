@@ -1,10 +1,10 @@
-# LLM Day-to-Day Degradation: Myth vs Reality
+# LLM 日常性能退化：神话与现实
 
-Can a deployed LLM's performance change day-to-day even though the model weights are frozen? A deep-dive into proven causes, infrastructure bugs, and psychological factors.
+即使模型权重已冻结，已部署的 LLM 性能也会日复一日地发生变化吗？深入探讨已证实的原因、基础设施缺陷和心理因素。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
@@ -13,348 +13,350 @@ Can a deployed LLM's performance change day-to-day even though the model weights
 
 <table width="100%">
 <tr>
-<td width="50%"><a href="https://x.com/nicksdot/status/2029520949176049704"><img src="assets/llm-degradation.png" alt="Twitter users reporting day-to-day Claude quality degradation" width="100%" /></a></td>
-<td width="50%"><a href="https://x.com/levelsio/status/2029369159893569680"><img src="assets/llm-degradation-2.png" alt="Twitter users reporting day-to-day Claude quality degradation" width="100%" /></a></td>
+<td width="50%"><a href="https://x.com/nicksdot/status/2029520949176049704"><img src="assets/llm-degradation.png" alt="Twitter 用户报告 Claude 质量日常退化" width="100%" /></a></td>
+<td width="50%"><a href="https://x.com/levelsio/status/2029369159893569680"><img src="assets/llm-degradation-2.png" alt="Twitter 用户报告 Claude 质量日常退化" width="100%" /></a></td>
 </tr>
 </table>
 
 ---
----
-
-# 🔥 Claude Code Ops 4.6 分析. High Reasoning
-
-When Anthropic launches a model like Opus 4.6, the **model weights** — billions of learned parameters — are frozen. Training is enormously expensive (millions of dollars, weeks of compute). Nobody is retraining the model overnight.
-
-But weights are only one layer of a much larger system. Research reveals at least **7 distinct mechanisms** that can cause real or perceived quality changes, even when model weights are frozen.
-
-| Question | Answer |
-|----------|--------|
-| Do model weights change after launch? | **No** — confirmed by all providers |
-| Can the model behave differently day-to-day? | **Yes** — proven with ±8-14% variance |
-| Is it intentional "nerfing"? | **No** — no evidence of deliberate degradation |
-| Are infrastructure bugs real? | **Yes** — Anthropic confirmed 3 bugs affecting up to 16% of requests |
-| Is some of it psychological? | **Yes** — confirmation bias and honeymoon effects are real |
-| Can system prompts/post-training change? | **Yes** — documented across providers |
-| Should users trust their perception? | **Partially** — real causes exist, but perception amplifies them |
 
 ---
 
-## The Full Inference Stack
+# 🔥 Claude Code Opus 4.6 分析 — 高级推理
 
-The model weights are frozen, but **nine layers above them** can independently affect what you experience:
+当 Anthropic 发布如 Opus 4.6 这样的模型时，**模型权重**——数十亿个学习到的参数——是冻结的。训练成本极其高昂（数百万美元，数周的计算资源）。没有人会在一夜之间重新训练模型。
+
+但权重只是一个更大系统中的一层。研究表明，即使模型权重冻结，至少有 **7 种不同的机制** 可能导致真实的或感知到的质量变化。
+
+| 问题 | 回答 |
+|------|------|
+| 模型发布后权重会变化吗？ | **不会** — 所有提供商均已确认 |
+| 模型日复一日的表现会不同吗？ | **会** — 已证实存在 ±8-14% 的方差 |
+| 这是故意的"削弱"吗？ | **不是** — 没有证据表明存在蓄意退化 |
+| 基础设施缺陷是真实存在的吗？ | **是的** — Anthropic 确认了 3 个影响高达 16% 请求的缺陷 |
+| 部分是心理因素吗？ | **是的** — 确认偏误和蜜月效应是真实存在的 |
+| 系统提示词/后训练会变化吗？ | **会** — 各提供商均有记录 |
+| 用户应该信任自己的感知吗？ | **部分应该** — 存在真实原因，但感知会放大这些原因 |
+
+---
+
+## 完整推理栈
+
+模型权重是冻结的，但**其上方的九个层**可以独立地影响你的体验：
 
 ```
 ┌──────────────────────────────────────────────┐
-│  YOUR SESSION CONTEXT                        │  ← Degrades within session
-│  (accumulated errors, long conversations)    │
+│  你的会话上下文                                │  ← 会话内退化
+│  （累积的错误、长对话）                        │
 ├──────────────────────────────────────────────┤
-│  SYSTEM PROMPT                               │  ← Updated regularly
-│  (safety rules, behavior instructions)       │
+│  系统提示词                                    │  ← 定期更新
+│  （安全规则、行为指令）                        │
 ├──────────────────────────────────────────────┤
-│  POST-TRAINING (RLHF / Fine-tuning)         │  ← Can be updated quietly
-│  (instruction following, safety alignment)   │
+│  后训练（RLHF / 微调）                        │  ← 可能悄然更新
+│  （指令遵循、安全对齐）                        │
 ├──────────────────────────────────────────────┤
-│  SAMPLING PARAMETERS                         │  ← Can be tuned server-side
-│  (temperature, top-p, top-k)                 │
+│  采样参数                                      │  ← 可在服务端调优
+│  （temperature、top-p、top-k）                 │
 ├──────────────────────────────────────────────┤
-│  SPECULATIVE DECODING                        │  ← Draft model quality varies
-│  (draft model predictions + verification)    │
+│  推测解码                                      │  ← 草稿模型质量不一
+│  （草稿模型预测 + 验证）                       │
 ├──────────────────────────────────────────────┤
-│  MoE ROUTING / BATCH COMPOSITION             │  ← ±8-14% variance proven
-│  (which experts activate per request)        │
+│  MoE 路由 / 批次组成                           │  ← 已证实 ±8-14% 方差
+│  （每个请求激活哪些专家）                      │
 ├──────────────────────────────────────────────┤
-│  HARDWARE ROUTING                            │  ← TPU vs GPU vs Trainium
-│  (which cluster serves your request)         │
+│  硬件路由                                      │  ← TPU vs GPU vs Trainium
+│  （哪个集群处理你的请求）                      │
 ├──────────────────────────────────────────────┤
-│  QUANTIZATION LEVEL                          │  ← May vary under load
-│  (FP16 vs INT8 vs INT4 precision)            │
+│  量化级别                                      │  ← 负载下可能变化
+│  （FP16 vs INT8 vs INT4 精度）                 │
 ├──────────────────────────────────────────────┤
-│  COMPILER & RUNTIME                          │  ← XLA bugs proven real
-│  (XLA:TPU, CUDA, hardware-specific code)     │
+│  编译器和运行时                                │  ← XLA 缺陷已被证实
+│  （XLA:TPU、CUDA、特定硬件代码）               │
 ├──────────────────────────────────────────────┤
-│  MODEL WEIGHTS (FROZEN)                      │  ← These DON'T change
-│  (billions of learned parameters)            │
+│  模型权重（已冻结）                            │  ← 这些不会变化
+│  （数十亿个学习到的参数）                      │
 └──────────────────────────────────────────────┘
 ```
 
-The key mental model: **frozen weights ≠ frozen behavior**. This is like saying "same engine = same driving experience" while ignoring the tires, road conditions, fuel quality, and driver fatigue.
+关键心智模型：**冻结的权重 ≠ 冻结的行为**。这就像说"同一引擎 = 同样的驾驶体验"，却忽略了轮胎、路况、燃油质量和驾驶疲劳。
 
 ---
 
-## Proven Causes: Infrastructure Bugs
+## 已证实的原因：基础设施缺陷
 
-### Anthropic's September 2025 Postmortem
+### Anthropic 的 2025 年 9 月事后分析
 
-In September 2025, Anthropic published a detailed postmortem revealing **three separate infrastructure bugs** that degraded Claude's quality between August and September 2025. Their official statement:
+2025 年 9 月，Anthropic 发布了详细的事后分析，揭示了在 2025 年 8 月至 9 月期间降低 Claude 质量的**三个独立基础设施缺陷**。其官方声明：
 
-> "We never reduce model quality due to demand, time of day, or server load. The problems our users reported were due to infrastructure bugs alone."
+> "我们从不因需求量、时段或服务器负载而降低模型质量。用户报告的问题完全是由基础设施缺陷引起的。"
 
-### Bug #1 — Context Window Routing Error
+### 缺陷 #1 — 上下文窗口路由错误
 
-Sonnet 4 requests were accidentally routed to servers configured for 1M token context windows instead of standard servers.
+Sonnet 4 请求被意外路由到配置为 100 万 token 上下文窗口的服务器，而非标准服务器。
 
-- **Timeline**: Introduced August 5, worsened August 29 after a load balancing change
-- **Peak impact**: 16% of Sonnet 4 requests affected at worst hour (August 31)
-- **User impact**: ~30% of Claude Code users had at least one degraded message
-- **Insidious detail**: Routing was "sticky" — once you hit a bad server, subsequent requests kept going there
-- **Fixed**: September 4–18 (rolled out across platforms)
+- **时间线**：8 月 5 日引入，8 月 29 日在负载均衡变更后恶化
+- **峰值影响**：最严重时（8 月 31 日）16% 的 Sonnet 4 请求受到影响
+- **用户影响**：约 30% 的 Claude Code 用户至少有一条消息质量下降
+- **隐蔽细节**：路由是"粘性的"——一旦命中了问题服务器，后续请求会继续发往该服务器
+- **修复**：9 月 4-18 日（跨平台逐步推出）
 
-### Bug #2 — TPU Output Corruption
+### 缺陷 #2 — TPU 输出损坏
 
-A misconfiguration on TPU servers caused errors during token generation, assigning high probability to tokens that should rarely appear.
+TPU 服务器上的配置错误导致 token 生成过程中出现错误，为本应极少出现的 token 赋予了高概率。
 
-- **Symptoms**: Thai or Chinese characters appearing mid-English response, obvious code syntax errors
-- **Affected**: Opus 4.1 and Opus 4 (August 25–28), Sonnet 4 (August 25–September 2)
-- **Scope**: Only Claude API; third-party platforms unaffected
-- **Fixed**: Rolled back September 2
+- **症状**：英文回复中出现泰文或中文字符，明显的代码语法错误
+- **影响范围**：Opus 4.1 和 Opus 4（8 月 25-28 日），Sonnet 4（8 月 25 日至 9 月 2 日）
+- **范围**：仅 Claude API；第三方平台未受影响
+- **修复**：9 月 2 日回滚
 
-### Bug #3 — XLA:TPU Compiler Miscompilation (the nastiest)
+### 缺陷 #3 — XLA:TPU 编译器错误编译（最严重的）
 
-A code change to fix precision issues accidentally exposed a **latent compiler bug** in Google's XLA:TPU.
+一次修复精度问题的代码变更意外暴露了 Google XLA:TPU 中一个**潜在的编译器缺陷**。
 
-- **Root cause**: The approximate top-k operation (used to pick the most likely next tokens) "sometimes returned completely wrong results, but only for certain batch sizes and model configurations"
-- **Why it was hard to find**: It changed behavior depending on what operations ran before or after it, and whether debugging tools were enabled
-- **Hidden for months**: A previous workaround from December 2024 had been accidentally masking this deeper bug
-- **Affected**: Haiku 3.5 confirmed; subset of Sonnet 4 and Opus 3 suspected
-- **Resolution**: Switched from approximate to exact top-k; accepted "minor efficiency impact" because "Model quality is non-negotiable"
+- **根本原因**：近似 top-k 操作（用于选择最可能的下一个 token）"有时返回完全错误的结果，但仅在特定批次大小和模型配置下"
+- **难以发现的原因**：其行为取决于之前或之后运行了哪些操作，以及是否启用了调试工具
+- **隐藏数月**：2024 年 12 月的一个先前的解决方案意外掩盖了这个更深层的缺陷
+- **影响范围**：确认影响 Haiku 3.5；怀疑影响 Sonnet 4 和 Opus 3 的子集
+- **解决方案**：从近似 top-k 切换到精确 top-k；接受"轻微的效率影响"，因为"模型质量是不可妥协的"
 
-### Why Detection Was Difficult
+### 检测困难的原因
 
-Anthropic's own automated evaluations didn't catch the degradation users reported, "in part because Claude often recovers well from isolated mistakes." Each bug produced different symptoms on different platforms at different rates, creating "a confusing mix of reports that didn't point to any single cause."
+Anthropic 自己的自动化评估没有捕捉到用户报告的退化，"部分原因是 Claude 通常能很好地从孤立错误中恢复。"每个缺陷在不同平台上以不同速率产生不同症状，造成了"指向多个原因的令人困惑的报告混合"。
 
-Key context: Claude runs on **three different hardware platforms** (AWS Trainium, NVIDIA GPUs, Google TPUs), each with different failure modes, compilers, and precision behaviors. Your request might hit different hardware on different days.
-
----
-
-## Proven Causes: MoE Routing Variance
-
-Modern large models often use a **Mixture-of-Experts (MoE)** architecture, where only a subset of the model's parameters ("experts") activate for each input. A learned router decides which experts to use.
-
-Scale AI's research revealed a critical finding:
-
-> "The combination of Sparse MoE and batched inference creates unpredictable results because the composition of a batch can determine which expert your query gets routed to, and the mix of queries from other users in the same batch is not deterministic."
-
-### Measured Day-to-Day Variance Across Providers
-
-| Provider | Day-to-Day Score Variance |
-|----------|--------------------------|
-| OpenAI (GPT-4 variants) | ±10–12% |
-| Anthropic (Claude variants) | ±8–11% |
-| Google (Gemini variants) | ±9–14% |
-
-Concrete example: the same model scored **77% on jailbreak resistance one day and 63% the next**. Same model, same weights, same test — 14 percentage points of swing from infrastructure alone.
-
-This means even with zero bugs and zero changes, the same model can produce noticeably different quality outputs on different days purely due to how requests are batched and routed. An A/B test cannot reliably detect a 5% quality signal when the day-to-day noise is 10–15%.
+关键背景：Claude 运行在**三种不同的硬件平台**上（AWS Trainium、NVIDIA GPU、Google TPU），每种都有不同的故障模式、编译器和精度行为。你的请求在不同日期可能命中不同的硬件。
 
 ---
 
-## Proven Causes: System Prompt & Post-Training Updates
+## 已证实的原因：MoE 路由方差
 
-### System Prompt Changes
+现代大型模型通常使用**混合专家（MoE）**架构，其中只有模型参数的一个子集（"专家"）对每个输入进行激活。学习到的路由器决定使用哪些专家。
 
-The model weights don't change, but the **system prompt** wrapping those weights can be updated at any time. 分析 of Claude's system prompt evolution shows dozens of iterations, with "hot-fixes" — short instructions added to patch undesired behavior — being added and removed regularly.
+Scale AI 的研究揭示了一个关键发现：
 
-Claude 3.7's system prompt contained multiple hot-fix instructions targeting common LLM "gotchas." Claude 4.0's system prompt removed all of them, with the behaviors addressed during post-training through reinforcement learning instead.
+> "稀疏 MoE 和批量推理的结合产生了不可预测的结果，因为批次的组成可以决定你的查询被路由到哪个专家，而同一批次中来自其他用户的查询组合不是确定性的。"
 
-### The Post-Training Theory
+### 跨提供商测量的日常方差
 
-The most plausible theory for unexplained quality shifts: companies can update **fine-tuning and RLHF** (reinforcement learning from human feedback) without changing the base model weights. This would technically make it truthful to say "the model hasn't changed" while still altering behavior through updated safety guardrails and instruction-following adjustments.
+| 提供商 | 日常分数方差 |
+|--------|-------------|
+| OpenAI（GPT-4 变体） | ±10–12% |
+| Anthropic（Claude 变体） | ±8–11% |
+| Google（Gemini 变体） | ±9–14% |
 
----
+具体例子：同一模型在某天的越狱抵抗力评分为 **77%，第二天为 63%**。相同的模型、相同的权重、相同的测试——仅基础设施就导致了 14 个百分点的波动。
 
-## Proven Causes: Silent Model Swaps
-
-OpenAI has been documented multiple times silently changing which model users interact with:
-
-- Removing the model picker overnight, forcing users from GPT-4o to GPT-5
-- Making GPT-4o a hidden "legacy model" requiring a manual toggle in settings, with no in-app notification
-- An "autoswitcher" bug routing users to wrong models
-- Plus subscribers reported models switching to a "restricted version" without consent
-
-Sam Altman acknowledged the rollout was "a little more bumpy than we hoped for." Reddit threads received thousands of upvotes calling the new model a "disaster" and a "downgrade."
-
-This demonstrates that model swaps **do happen** in the industry — sometimes intentionally (product decisions) and sometimes accidentally (routing bugs).
+这意味着即使零缺陷、零变更，同一模型在不同日期也可能产生明显不同的输出质量，纯粹是因为请求的批处理和路由方式不同。当日常噪声为 10-15% 时，A/B 测试无法可靠地检测到 5% 的质量信号。
 
 ---
 
-## 贡献指南 Factors
+## 已证实的原因：系统提示词与后训练更新
 
-### Quantization Under Load
+### 系统提示词变化
 
-To serve millions of users cost-effectively, companies may serve **quantized** versions of models — reducing precision from FP16 to INT8 or INT4. This can reduce memory usage by 2–4x and accelerate inference, but introduces subtle quality loss. Whether providers dynamically switch quantization levels under load is debated, but the technical capability exists and is well-documented in serving frameworks like vLLM and TensorRT.
+模型权重不变，但包裹这些权重的**系统提示词**可以随时更新。对 Claude 系统提示词演变的分析显示了数十次迭代，其中"热修复"——为修补不良行为而添加的简短指令——被定期添加和移除。
 
-### Speculative Decoding
+Claude 3.7 的系统提示词包含多个针对常见 LLM "陷阱"的热修复指令。Claude 4.0 的系统提示词移除了所有这些指令，改为在后训练中通过强化学习来解决这些行为。
 
-Modern serving stacks use a smaller "draft" model to predict multiple tokens ahead, then have the real model verify them. Theoretically this preserves the same output distribution, but in practice acceptance rates vary by domain and context. Out-of-the-box draft models may work fine in some cases but often struggle with domain-specific tasks or very long contexts.
+### 后训练理论
 
-### Context Window Pollution
-
-In a long coding session, earlier mistakes accumulate in context. The model sees its own errors and may perpetuate them. This is the most common cause of "Claude got dumber" within a single session — it's not the model degrading, it's context contamination.
-
-**Practical tip**: Use `/compact` or start fresh sessions when quality feels off. This is the single most actionable thing you can do.
+对于无法解释的质量变化，最可信的理论是：公司可以在不改变基础模型权重的情况下更新**微调和 RLHF**（基于人类反馈的强化学习）。这在技术上可以在说"模型没有变化"的同时，通过更新的安全护栏和指令遵循调整来改变行为。
 
 ---
 
-## The Stanford Study — And Why It's Complicated
+## 已证实的原因：静默模型替换
 
-The landmark 2023 study by Stanford and UC Berkeley (Chen, Zaharia, Zou) — "How is ChatGPT's Behavior Changing Over Time?" — is frequently cited as proof that LLMs degrade. The headline finding:
+OpenAI 被多次记录到静默更改用户交互的模型：
 
-> GPT-4's accuracy on "Is this number prime? Think step by step" fell from **97.6% to 2.4%** between March and June 2023.
+- 一夜之间移除模型选择器，强制用户从 GPT-4o 转到 GPT-5
+- 将 GPT-4o 设为隐藏的"旧版模型"，需要在设置中手动切换，无应用内通知
+- 一个"自动切换器"缺陷将用户路由到错误模型
+- Plus 订阅者报告模型未经同意切换到"受限版本"
 
-### What the Study Proved
+Sam Altman 承认推出过程"比我们希望的稍微颠簸一些。" Reddit 帖子获得了数千个点赞，称新模型是"灾难"和"降级"。
 
-- The behavior of the "same" LLM service **can change substantially** in a short period
-- Different capabilities can move in opposite directions (GPT-4 got worse at math, GPT-3.5 got better)
-- Code generation quality dropped (GPT-4 executable code: 52% → 10%)
-- The study coined the term **"LLM drift"**
-
-### Methodological Critiques
-
-- The March version used **temperature 0.0** while the June version used **temperature 1.0** — a fundamental confounding variable that increases randomness
-- Only **500 queries per task** — too small for definitive statistical claims
-- The "math questions" were actually yes/no questions where the model's guessing pattern changed, not its mathematical ability
-- Changes likely reflected intentional **post-training safety updates**, not degradation
-
-The study proved something important — LLM behavior changes over time — but the mechanism was likely intentional updates, not unintentional degradation.
+这证明模型替换**确实在行业中发生**——有时是故意的（产品决策），有时是意外的（路由缺陷）。
 
 ---
 
-## The Psychology
+## 加剧因素
 
-### Confirmation Bias
+### 负载下的量化
 
-Once someone tweets "Claude is dumb today," you start noticing every mistake. On days when nobody complains, you brush off the same errors. Social media amplifies this effect.
+为了以经济高效的方式服务数百万用户，公司可能会提供模型的**量化**版本——将精度从 FP16 降低到 INT8 或 INT4。这可以将内存使用减少 2-4 倍并加速推理，但会引入微妙的质量损失。提供商是否在负载下动态切换量化级别仍有争议，但技术能力确实存在，并在 vLLM 和 TensorRT 等服务框架中有充分记录。
 
-### The Honeymoon Effect
+### 推测解码
 
-Users experience an initial honeymoon period with new models, then gradually discover limitations. The model didn't change — expectations adjusted upward faster than capabilities warranted.
+现代服务栈使用较小的"草稿"模型来预测多个 token，然后让真实模型进行验证。理论上这保持了相同的输出分布，但在实践中接受率因领域和上下文而异。开箱即用的草稿模型在某些情况下可能工作良好，但通常在特定领域任务或非常长的上下文中表现不佳。
 
-### Task Difficulty Variance
+### 上下文窗口污染
 
-Your tasks vary day to day. A day of hard problems feels like the model got worse, even when it hasn't.
+在长时间编码会话中，早期错误会在上下文中累积。模型看到自己的错误并可能延续它们。这是单个会话内"Claude 变笨了"最常见的原因——不是模型退化了，而是上下文被污染了。
 
-### The "Weekend Claude" Myth
-
-Despite many users believing in day-of-week patterns, rigorous analysis found **no consistent evidence** for day-of-week quality patterns. One analysis titled "AI is Dumber on Mondays" came up empty.
-
-### Stochastic Nature of LLMs
-
-LLMs are probabilistic. The same prompt can produce different outputs each time. On a bad luck streak, you might get several poor responses in a row — pure randomness, not degradation.
+**实用技巧**：当感觉质量下降时使用 `/compact` 或开启新的会话。这是你能做的最有用的事情。
 
 ---
 
-## Bottom Line
+## 斯坦福研究——以及为什么它很复杂
 
-The phenomenon users describe is **real but misattributed**:
+斯坦福大学和加州大学伯克利分校 2023 年的里程碑研究（Chen、Zaharia、Zou）——"ChatGPT 的行为如何随时间变化？"——经常被引用为 LLM 退化的证据。主要发现：
 
-- **Correct**: their experience degraded on certain days
-- **Incorrect**: the model was intentionally "nerfed"
+> GPT-4 在"这个数字是质数吗？逐步思考"上的准确率从 2023 年 3 月的 **97.6% 下降到 6 月的 2.4%**。
 
-The actual causes are a combination of:
+### 该研究证明了什么
 
-1. **Infrastructure bugs** — proven by Anthropic's postmortem (up to 16% of requests affected)
-2. **MoE routing variance** — ±8-14% quality swing measured by Scale AI, even with zero changes
-3. **System prompt and post-training updates** — documented across providers
-4. **Hardware heterogeneity** — TPU vs GPU vs Trainium, each with different failure modes
-5. **Context pollution** — long sessions degrade within-session quality
-6. **Confirmation bias** — social media amplifies perceived patterns
-7. **Stochastic variance** — same model, same prompt, different output every time
+- "相同"LLM 服务的行为**可以在短时间内发生重大变化**
+- 不同能力可能朝相反方向移动（GPT-4 数学变差了，GPT-3.5 变好了）
+- 代码生成质量下降（GPT-4 可执行代码：52% → 10%）
+- 该研究创造了**"LLM 漂移"**这一术语
 
-The measurement problem is severe: day-to-day variance of ±8-14% means you cannot distinguish a real 5% quality change from noise. This is why both the "it's all in your head" and "they nerfed it" camps feel confident — the signal-to-noise ratio makes it impossible to tell from individual experience alone.
+### 方法论批评
+
+- 3 月版本使用 **temperature 0.0**，而 6 月版本使用 **temperature 1.0**——这是一个增加随机性的根本性混淆变量
+- 每个任务仅 **500 次查询**——统计样本太小，无法得出确切结论
+- "数学问题"实际上是是/否问题，模型的猜测模式改变了，而非数学能力
+- 变化可能反映了有意的**后训练安全更新**，而非退化
+
+该研究证明了一件重要的事情——LLM 行为会随时间变化——但机制很可能是有意的更新，而非无意的退化。
+
+---
+
+## 心理因素
+
+### 确认偏误
+
+一旦有人发推说"Claude 今天很笨"，你就开始注意到每一个错误。在没有人抱怨的日子里，你会忽略同样的错误。社交媒体放大了这种效应。
+
+### 蜜月效应
+
+用户在使用新模型时经历一个初始蜜月期，然后逐渐发现局限性。模型没有改变——期望上升的速度超过了能力的增长。
+
+### 任务难度方差
+
+你的任务每天都在变化。一天的难题会让人觉得模型变差了，即使它没有。
+
+### "周末 Claude"神话
+
+尽管许多用户相信存在星期几的模式，但严谨的分析发现**没有一致的证据**支持星期几的质量模式。一篇标题为"AI 在周一更笨"的分析一无所获。
+
+### LLM 的随机性
+
+LLM 是概率性的。相同的提示每次可以产生不同的输出。在运气不好的时候，你可能连续得到几个糟糕的回复——纯粹是随机性，而非退化。
 
 ---
 
-## Sources
+## 结论
 
-- [Anthropic: A Postmortem of Three Recent Issues](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues) — Official postmortem detailing three infrastructure bugs (September 2025)
-- [Anthropic Reveals Three Infrastructure Bugs — InfoQ](https://www.infoq.com/news/2025/10/anthropic-infrastructure-bugs/) — Technical analysis of the postmortem
-- [How is ChatGPT's Behavior Changing Over Time? — Stanford/UC Berkeley](https://arxiv.org/abs/2307.09009) — Landmark study on LLM drift (2023)
-- [The Truth About ChatGPT's Degrading Capabilities — TechTalks](https://bdtechtalks.com/2023/07/24/chatgpt-capabilities-degrading-study/) — Methodological critique of the Stanford study
-- [LLMs Are Getting Dumber and We Have No Idea Why — Ignorance.ai](https://www.ignorance.ai/p/llms-are-getting-dumber-and-we-have) — Five theories for perceived degradation
-- [When Claude Forgets How to Code — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — 分析 of Claude quality fluctuations and infrastructure causes
-- [Smoothing Out LLM Variance — Scale AI](https://scale.com/blog/smoothing-out-llm-variance) — Measured ±8-14% day-to-day variance across providers
-- [What We Can Learn from Anthropic's System Prompt Updates — PromptLayer](https://blog.promptlayer.com/what-we-can-learn-from-anthropics-system-prompt-updates/) — System prompt evolution analysis
-- [Claude's System Prompt Changes Reveal Anthropic's Priorities — Drew Breunig](https://www.dbreunig.com/2025/06/03/comparing-system-prompts-across-claude-versions.html) — Hot-fix patterns in system prompts
-- [Complaints About Secretly Switching Models — OpenAI Forum](https://community.openai.com/t/complaints-about-secretly-switching-models/1360150) — Documented silent model swaps
-- [Speculative Decoding — BentoML LLM Inference Handbook](https://bentoml.com/llm/inference-optimization/speculative-decoding) — How draft models affect serving
-- [A Visual 指南 to Mixture of Experts — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE architecture and routing explained
+用户描述的现象是**真实但归因错误的**：
+
+- **正确的**：他们在某些天的体验确实退化了
+- **错误的**：模型被故意"削弱"了
+
+实际原因是以下因素的组合：
+
+1. **基础设施缺陷** — Anthropic 的事后分析证实（高达 16% 的请求受影响）
+2. **MoE 路由方差** — Scale AI 测量的 ±8-14% 质量波动，即使零变更
+3. **系统提示词和后训练更新** — 各提供商均有记录
+4. **硬件异构性** — TPU vs GPU vs Trainium，每种有不同的故障模式
+5. **上下文污染** — 长会话内质量退化
+6. **确认偏误** — 社交媒体放大感知到的模式
+7. **随机方差** — 相同模型、相同提示、每次输出都不同
+
+测量问题非常严重：±8-14% 的日常方差意味着你无法区分真实的 5% 质量变化和噪声。这就是为什么"都是你的幻觉"和"他们削弱了它"两个阵营都充满信心——信噪比使得仅凭个人经验无法判断。
 
 ---
+
+## 来源
+
+- [Anthropic: Three Recent Issues 事后分析](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues) — 详述三个基础设施缺陷的官方事后分析（2025 年 9 月）
+- [Anthropic 揭示三个基础设施缺陷 — InfoQ](https://www.infoq.com/news/2025/10/anthropic-infrastructure-bugs/) — 事后分析的技术分析
+- [ChatGPT 的行为如何随时间变化？ — 斯坦福/加州大学伯克利分校](https://arxiv.org/abs/2307.09009) — LLM 漂移的里程碑研究（2023 年）
+- [ChatGPT 能力退化的真相 — TechTalks](https://bdtechtalks.com/2023/07/24/chatgpt-capabilities-degrading-study/) — 对斯坦福研究的方法论批评
+- [LLM 越来越笨了而我们不知道为什么 — Ignorance.ai](https://www.ignorance.ai/p/llms-are-getting-dumber-and-we-have) — 感知退化的五种理论
+- [当 Claude 忘记如何编码 — Robert Matsuoka](https://hyperdev.matsuoka.com/p/when-claude-forgets-how-to-code) — Claude 质量波动和基础设施原因分析
+- [平滑 LLM 方差 — Scale AI](https://scale.com/blog/smoothing-out-llm-variance) — 跨提供商测量的 ±8-14% 日常方差
+- [从 Anthropic 系统提示词更新中学到什么 — PromptLayer](https://blog.promptlayer.com/what-we-can-learn-from-anthropics-system-prompt-updates/) — 系统提示词演变分析
+- [Claude 系统提示词变化揭示 Anthropic 的优先级 — Drew Breunig](https://www.dbreunig.com/2025/06/03/comparing-system-prompts-across-claude-versions.html) — 系统提示词中的热修复模式
+- [关于秘密切换模型的投诉 — OpenAI Forum](https://community.openai.com/t/complaints-about-secretly-switching-models/1360150) — 记录的静默模型替换
+- [推测解码 — BentoML LLM 推理手册](https://bentoml.com/llm/inference-optimization/speculative-decoding) — 草稿模型如何影响服务
+- [混合专家的可视化指南 — Maarten Grootendorst](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts) — MoE 架构和路由详解
+
 ---
 
-# 🔥 Codex 5.3 High Reason and Finding
+---
 
-### 报告 Scope
+# 🔥 Codex 5.3 高级推理与发现
 
-This section explains why users can experience a short window where Claude output quality drops while Codex 5.3 feels stable or stronger on coding tasks. The focus is not on permanent model quality rankings. The focus is short-horizon production behavior under real serving conditions.
+### 报告范围
 
-报告 date: March 5, 2026.
+本节解释为什么用户可能会经历一个短暂窗口期，其中 Claude 输出质量下降，而 Codex 5.3 在编码任务上感觉稳定或更强。重点不在于永久性模型质量排名，而在于真实服务条件下的短期生产行为。
 
-### Observed Pattern
+报告日期：2026 年 3 月 5 日。
 
-The reported pattern is:
+### 观察到的模式
 
-1. Model quality is acceptable for a period.
-2. Quality appears to degrade for several days.
-3. Quality returns close to prior baseline.
+所报告的模式是：
 
-This shape is usually a serving-stack or rollout pattern, not a permanent base-model capability change. Permanent capability decline would not normally recover this quickly without an explicit rollback or fix.
+1. 模型质量在一段时间内是可接受的。
+2. 质量似乎在几天内下降。
+3. 质量恢复到之前的基线水平。
 
-### High Reason: Why Codex 5.3 Can Look Better in a Bad Window
+这种形态通常是服务栈或推出模式，而非永久性的基础模型能力变化。永久性能力下降通常不会在没有显式回滚或修复的情况下如此快速恢复。
 
-Codex 5.3 can appear clearly stronger during another provider's degraded period for several technical reasons that can all happen at the same time:
+### 高级推理：为什么 Codex 5.3 在糟糕窗口期看起来更好
 
-1. Product-objective fit. Codex 5.3 is optimized for code-generation and agentic coding workflows, so even equal raw model strength can yield better coding outcomes due to tool orchestration, repository reasoning, and code-centric instruction tuning.
-2. Inference policy differences. Providers tune latency, reasoning depth, and decoding defaults independently. A more conservative policy at one provider can look "smarter" than an aggressive speed-optimized policy at another for the same day.
-3. Serving-path separation. Even if two providers host state-of-the-art models, they run different routing layers, compiler/runtime stacks, and rollout pipelines. An incident in one stack does not imply correlated degradation in the other.
-4. Rollout and rollback timing. If one provider is mid-rollout while another is stable, users can see large temporary quality divergence with no underlying long-term change in model weights.
-5. Session-level contamination effects. In long coding chats, error accumulation can amplify perceived decline. A competing assistant can feel better simply because the failing session was reset or because its tool loop recovered faster.
+Codex 5.3 在另一个提供商的退化期可能看起来明显更强，这有几个技术原因，且这些原因可以同时发生：
 
-### Detailed Finding
+1. **产品目标匹配度**。Codex 5.3 针对代码生成和 agent 编码工作流进行了优化，因此即使原始模型能力相同，由于工具编排、仓库推理和以代码为中心的指令调优，也能产生更好的编码结果。
+2. **推理策略差异**。提供商独立调优延迟、推理深度和解码默认值。一个提供商的更保守策略在同一天看起来可能比另一个提供商的激进速度优化策略更"智能"。
+3. **服务路径分离**。即使两个提供商托管最先进的模型，它们运行的路由层、编译器/运行时栈和推出管道也不同。一个栈中的事件不意味着另一个栈中的相关退化。
+4. **推出和回滚时机**。如果一个提供商正在推出中而另一个是稳定的，用户可以看到很大的临时质量差异，而底层模型权重没有长期变化。
+5. **会话级污染效应**。在长编码对话中，错误累积会放大感知到的下降。竞争助手可能感觉更好，仅仅是因为失败的会话被重置了，或者因为其工具循环恢复更快。
 
-For a report like "Claude felt very weak for about four days, then came back," the most probable explanation is:
+### 详细发现
 
-1. A provider-side incident, routing issue, decoding/runtime bug, or rollout regression affected a subset of requests.
-2. The issue persisted long enough to be noticed repeatedly in real workflows.
-3. The issue was fixed or rolled back.
-4. Perceived quality returned quickly.
+对于"Claude 大约四天感觉很弱，然后恢复了"这样的报告，最可能的解释是：
 
-During that same period, Codex 5.3 could feel substantially better because it did not share the same incident path and because coding-task optimization magnified the gap in practical outcomes.
+1. 提供商端事件、路由问题、解码/运行时缺陷或推出回归影响了一部分请求。
+2. 问题持续了足够长的时间，在真实工作流中被反复注意到。
+3. 问题被修复或回滚。
+4. 感知到的质量迅速恢复。
 
-### Hypothesis Ranking for This Pattern
+在同一时期，Codex 5.3 可能感觉明显更好，因为它没有共享相同的事件路径，且编码任务的优化放大了实际结果中的差距。
 
-| Hypothesis | Likelihood | Rationale |
-|------------|------------|-----------|
-| Provider incident plus rollback | High | Best match for multi-day dip followed by fast recovery |
-| Serving configuration change (sampling/latency/reasoning budget) | High | Common source of sudden behavior shifts without model retraining |
-| Silent alias or snapshot movement | Medium-High | Can change behavior with no visible user action |
-| Prompt drift and context contamination only | Medium | Can degrade sessions, but less likely to explain broad multi-day reports alone |
-| Permanent base-model degradation | Low | Inconsistent with fast return to previous quality |
+### 此模式的假设排序
 
-### What Would Confirm or Falsify This Finding
+| 假设 | 可能性 | 理由 |
+|------|--------|------|
+| 提供商事件加回滚 | 高 | 最符合多天下降后快速恢复的模式 |
+| 服务配置变更（采样/延迟/推理预算） | 高 | 无模型重训练时突然行为变化的常见来源 |
+| 静默别名或快照移动 | 中高 | 可在无可见用户操作的情况下改变行为 |
+| 仅提示漂移和上下文污染 | 中 | 可使会话退化，但不太可能单独解释广泛的多天报告 |
+| 永久性基础模型退化 | 低 | 与快速恢复到之前质量不一致 |
 
-To turn this from high-confidence inference into hard proof, collect request-level telemetry for the same task set across days:
+### 如何证实或证伪此发现
 
-1. Exact model identifier and snapshot/alias at request time.
-2. Any backend fingerprint or release marker exposed by the provider.
-3. Decoding parameters (temperature, top_p, top_k, max tokens).
-4. Latency, timeout, and error-rate traces.
-5. Structured quality scores on a fixed coding benchmark prompt set.
-6. Session length and token-context depth at failure points.
+要将此从高置信度推断转变为确凿证据，需要跨天收集同一任务集的请求级遥测数据：
 
-If quality drops correlate with an incident window, a config change, or a backend fingerprint shift, the incident/config hypothesis is confirmed. If no such shifts exist and degradation is only in long sessions, context contamination becomes the primary explanation.
+1. 请求时的精确模型标识符和快照/别名。
+2. 提供商暴露的任何后端指纹或发布标记。
+3. 解码参数（temperature、top_p、top_k、最大 token 数）。
+4. 延迟、超时和错误率跟踪。
+5. 固定编码基准提示集上的结构化质量分数。
+6. 故障点的会话长度和 token 上下文深度。
 
-### Practical Engineering Guidance
+如果质量下降与事件窗口、配置变更或后端指纹转移相关，则事件/配置假设得到证实。如果不存在此类变化且退化仅出现在长会话中，则上下文污染成为主要解释。
 
-To reduce day-to-day variance in production:
+### 实用工程指导
 
-1. Pin model snapshots when available instead of using floating aliases.
-2. Store request metadata (model ID, parameters, latency, errors, response quality label).
-3. Run a fixed daily canary suite for coding tasks and alert on regression.
-4. Reset or compact long-running sessions after several failed turns.
-5. Keep a fallback provider/model path for incident windows.
-6. Separate "model quality" from "serving reliability" in internal dashboards.
+为减少生产中的日常方差：
 
-### Final 结论
+1. 在可用时固定模型快照，而非使用浮动别名。
+2. 存储请求元数据（模型 ID、参数、延迟、错误、响应质量标签）。
+3. 每天运行固定的编码任务金丝雀套件，并在回归时告警。
+4. 在多次失败回合后重置或压缩长时间运行的会话。
+5. 为事件窗口期保留备用提供商/模型路径。
+6. 在内部仪表板中将"模型质量"与"服务可靠性"分开。
 
-Codex 5.3 looking better during a short Claude degradation window is a technically plausible and expected outcome in modern LLM operations. The strongest explanation is not permanent model collapse. The strongest explanation is temporary serving-path degradation at one provider, combined with coding-specific optimization and stable operation at the other provider during the same period.
+### 最终结论
+
+Codex 5.3 在短暂的 Claude 退化窗口期看起来更好是现代 LLM 运营中一个技术上合理且预期的结果。最有力的解释不是永久性模型崩溃，而是一个提供商的临时服务路径退化，结合了另一个提供商同期的编码特定优化和稳定运行。

@@ -20,6 +20,7 @@ agent-browser open https://example.com/form
 agent-browser snapshot -i
 # 输出：@e1 [input type="email"]，@e2 [input type="password"]，@e3 [button] "Submit"
 
+```
 agent-browser fill @e1 "user@example.com"
 agent-browser fill @e2 "password123"
 agent-browser click @e3
@@ -70,27 +71,28 @@ agent-browser pdf output.pdf          # 保存为 PDF
 ### 表单提交
 
 ```bash
-agent-browser open https://example.com/signup
-agent-browser snapshot -i
-agent-browser fill @e1 "Jane Doe"
-agent-browser fill @e2 "jane@example.com"
-agent-browser select @e3 "California"
-agent-browser check @e4
-agent-browser click @e5
-agent-browser wait --load networkidle
+agent-browser 打开 https://example.com/signup
+agent-browser 截图 -i
+agent-browser 填写 @e1 "Jane Doe"
+agent-browser 填写 @e2 "jane@example.com"
+agent-browser 选择 @e3 "California"
+agent-browser 勾选 @e4
+agent-browser 点击 @e5
+agent-browser 等待网络空闲 --load networkidle
 ```
 
 ### 带状态持久化的身份验证
 
 ```bash
 # 登录一次并保存状态
-agent-browser open https://app.example.com/login
-agent-browser snapshot -i
-agent-browser fill @e1 "$USERNAME"
-agent-browser fill @e2 "$PASSWORD"
-agent-browser click @e3
-agent-browser wait --url "**/dashboard"
-agent-browser state save auth.json
+agent-browser 打开 https://app.example.com/login
+agent-browser 快照 -i
+agent-browser 填充 @e1 "$USERNAME"
+agent-browser 填充 @e2 "$PASSWORD"
+agent-browser 点击 @e3
+agent-browser 等待 --url "**/dashboard"
+agent-browser 保存状态 auth.json
+```
 
 # 在未来的会话中复用
 agent-browser state load auth.json
@@ -184,11 +186,11 @@ agent-browser click @e1              # 使用新的引用
 当引用不可用或不可靠时，使用语义定位器：
 
 ```bash
-agent-browser find text "Sign In" click
-agent-browser find label "Email" fill "user@test.com"
-agent-browser find role button click --name "Submit"
-agent-browser find placeholder "Search" type "query"
-agent-browser find testid "submit-btn" click
+agent-browser 查找文本 "登录" 点击
+agent-browser 查找标签 "Email" 填写 "user@test.com"
+agent-browser 查找角色 按钮 点击 --名称 "提交"
+agent-browser 查找占位符 "搜索" 输入 "查询"
+agent-browser 查找测试id "submit-btn" 点击
 ```
 
 ## 深入文档

@@ -53,15 +53,13 @@ argument-hint: [要检查的版本数量，默认 10]
 
 最后以带优先级的**操作项**摘要表结束。每个项必须包含一个 `Status` 列，显示 `NEW`、`RECURRING (first seen: <date>)` 或 `RESOLVED`：
 
-```
-Priority Actions:
-#  | Type              | Action                                | Status
-1  | New Field         | Add <field> to frontmatter table      | NEW
-2  | Removed Field     | Remove <field> from table             | RECURRING (first seen: <date>)
-3  | New Command       | Add <command> to official table        | NEW
-4  | Removed Command   | Remove <command> from table           | NEW
-5  | Changed Tag       | Update <command> tag from X to Y      | NEW
-```
+优先行动：
+#  | 类型              | 操作                                | 状态
+1  | 新增字段         | 将 <field> 添加到 frontmatter 表格    | 新增
+2  | 已移除字段       | 从表格中移除 <field>                  | 重复出现（首次出现：<date>）
+3  | 新增命令         | 将 <command> 添加到官方表格            | 新增
+4  | 已移除命令       | 从表格中移除 <command>                 | 新增
+5  | 标签已变更       | 将 <command> 标签从 X 更新为 Y         | 新增
 
 同时包含一个**上次运行以来已解决项**部分，列出之前运行中已不再是问题的项。
 
@@ -78,7 +76,7 @@ Priority Actions:
 
 ## [<YYYY-MM-DD HH:MM AM/PM PKT>] Claude Code v<VERSION>
 
-| # | Priority | Type | Action | Status |
+| # | 优先级 | 类型 | 操作描述 | 状态 |
 |---|----------|------|--------|--------|
 | 1 | HIGH/MED/LOW | <type> | <action description> | <status> |
 | ... | ... | ... | ... | ... |

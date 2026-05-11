@@ -1,6 +1,6 @@
 # Subagents 最佳实践
 
-![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2027%2C%202026%206%3A28%20PM%20PKT-white?style=flat&labelColor=555)<br>
+![最后更新](https://img.shields.io/badge/Last_Updated-2026%E5%B9%B43%E6%9C%8827%E6%97%A5%2018%3A28%20PKT-white?style=flat&labelColor=555)<br>
 [![已实现](https://img.shields.io/badge/Implemented-2ea44f?style=flat)](../implementation/claude-subagents-implementation.md)
 
 Claude Code 子代理（subagents）—— frontmatter 字段和官方内置代理类型。

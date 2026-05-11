@@ -1,7 +1,7 @@
 # Commands 最佳实践
 
-![Last Updated](https://img.shields.io/badge/Last_Updated-Mar%2027%2C%202026%206%3A25%20PM%20PKT-white?style=flat&labelColor=555)<br>
-[![已实现](https://img.shields.io/badge/Implemented-2ea44f?style=flat)](../implementation/claude-commands-implementation.md)
+![最后更新](https://img.shields.io/badge/Last_Updated-Mar%2027%2C%202026%206%3A25%20PM%20PKT-white?style=flat&labelColor=555)<br>
+[![Implemented](https://img.shields.io/badge/Implemented-2ea44f?style=flat)](../implementation/claude-commands-implementation.md)
 
 Claude Code 命令 —— frontmatter 字段和官方内置斜杠命令。
 

@@ -21,11 +21,11 @@ formatted: 2026-03-12 14:30:45 +04
     </linearGradient>
   </defs>
   <rect width="400" height="250" rx="16" fill="url(#bg)"/>
-  <text x="200" y="50" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="16" font-weight="600">Dubai Time</text>
+  <text x="200" y="50" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="16" font-weight="600">迪拜时间</text>
   <text x="200" y="120" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="52" font-weight="bold">14:30:45</text>
   <text x="200" y="160" text-anchor="middle" fill="#64ffda" font-family="sans-serif" font-size="16">GST (UTC+4)</text>
-  <text x="200" y="195" text-anchor="middle" fill="#ccd6f6" font-family="sans-serif" font-size="14">Dubai, UAE</text>
-  <text x="200" y="225" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="12">2026-03-12</text>
+  <text x="200" y="195" text-anchor="middle" fill="#ccd6f6" font-family="sans-serif" font-size="14">迪拜，阿联酋</text>
+  <text x="200" y="225" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="12">2026年3月12日</text>
 </svg>
 ```
 
@@ -66,10 +66,10 @@ formatted: 2026-03-12 08:15:02 +04
     </linearGradient>
   </defs>
   <rect width="400" height="250" rx="16" fill="url(#bg)"/>
-  <text x="200" y="50" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="16" font-weight="600">Dubai Time</text>
+  <text x="200" y="50" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="16" font-weight="600">迪拜时间</text>
   <text x="200" y="120" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="52" font-weight="bold">08:15:02</text>
   <text x="200" y="160" text-anchor="middle" fill="#64ffda" font-family="sans-serif" font-size="16">GST (UTC+4)</text>
-  <text x="200" y="195" text-anchor="middle" fill="#ccd6f6" font-family="sans-serif" font-size="14">Dubai, UAE</text>
+  <text x="200" y="195" text-anchor="middle" fill="#ccd6f6" font-family="sans-serif" font-size="14">迪拜，阿拉伯联合酋长国</text>
   <text x="200" y="225" text-anchor="middle" fill="#8892b0" font-family="sans-serif" font-size="12">2026-03-12</text>
 </svg>
 ```

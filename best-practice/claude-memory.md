@@ -24,7 +24,7 @@
 在 monorepo 中使用 Claude Code 时，理解 CLAUDE.md 文件如何加载到上下文中对于有效组织项目指令至关重要。
 
 <p align="center">
-  <a href="https://x.com/bcherny/status/2016339448863355206"><img src="assets/claude-memory/claude-memory-monorepo.jpg" alt="CLAUDE.md loading in monorepos" width="600"></a>
+  <a href="https://x.com/bcherny/status/2016339448863355206"><img src="assets/claude-memory/claude-memory-monorepo.jpg" alt="Claude.md在monorepos中的加载" width="600"></a>
 </p>
 
 ### 两种加载机制

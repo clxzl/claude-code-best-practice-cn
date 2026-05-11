@@ -40,9 +40,9 @@ description: 关于演示文稿中 CSS 类、组件模式和语法高亮的知�
 
 ```html
 <div class="code-block">
-<span class="comment"># This is a comment</span>
+<span class="comment"># 这是一条注释</span>
 <span class="key">field_name</span>: <span class="string">value</span>
-<span class="cmd">&gt;</span> command to run
+<span class="cmd">&gt;</span> 要运行的命令
 </div>
 ```
 
@@ -91,8 +91,8 @@ description: 关于演示文稿中 CSS 类、组件模式和语法高亮的知�
     <div class="use-case-item">
         <span class="use-case-icon">EMOJI</span>
         <div class="use-case-text">
-            <strong>Title</strong>
-            <span>Description text</span>
+            <strong>标题</strong>
+            <span>描述文本</span>
         </div>
     </div>
 </div>

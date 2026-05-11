@@ -1,260 +1,260 @@
-# Lessons from Building Claude Code: How We Use Skills — Thariq
+# 构建 Claude Code 的经验教训：我们如何使用 Skills — Thariq
 
-A comprehensive guide on how Anthropic uses skills internally, shared by Thariq ([@trq212](https://x.com/trq212)) on March 17, 2026.
+关于 Anthropic 内部如何使用 skills 的全面指南，由 Thariq ([@trq212](https://x.com/trq212)) 于 2026 年 3 月 17 日分享。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Context
+## 背景
 
-Skills have become one of the most used extension points in Claude Code. They're flexible, easy to make, and simple to distribute. But this flexibility also makes it hard to know what works best. Thariq shares the lessons learned from using skills extensively at Anthropic with hundreds of them in active use.
+Skills 已成为 Claude Code 中使用最广泛的扩展点之一。它们灵活、易于创建且便于分发。但这种灵活性也使人难以确定最佳实践。Thariq 分享了在 Anthropic 内部大量使用 skills 的经验教训——他们有数百个 skills 正在活跃使用中。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/1.png" alt="Thariq intro tweet" width="50%" /></a>
 
 ---
 
-## What are Skills?
+## 什么是 Skills？
 
-A common misconception is that skills are "just markdown files", but the most interesting part is that they're **folders** that can include scripts, assets, data, etc. — things the agent can discover, explore, and manipulate. Skills also have a wide variety of configuration options including registering dynamic hooks.
+一个常见的误解是 skills "只是 Markdown 文件"，但实际上最有趣的部分是它们是**文件夹**，可以包含脚本、资源、数据等——这些是 agent 可以发现、探索和操作的内容。Skills 还有各种各样的配置选项，包括注册动态 Hooks。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/2.png" alt="What are Skills?" width="50%" /></a>
 
 ---
 
-## Types of Skills
+## Skills 的类型
 
-After cataloging all of their skills, the team noticed they cluster into 9 recurring categories. The best skills fit cleanly into one; the more confusing ones straddle several.
+在对所有 skills 进行分类后，团队发现它们可以归入 9 个常见类别。最好的 skills 清晰地归入某一类；令人困惑的则横跨多个类别。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/3.png" alt="Types of Skills grid" width="50%" /></a>
 
 ---
 
-### 1/ Library & API Reference
+### 1/ 库与 API 参考
 
-Skills that explain how to correctly use a library, CLI, or SDKs. These could be for internal libraries or common libraries that Claude Code sometimes has trouble with. They often include a folder of reference code snippets and a list of gotchas to avoid when writing a script.
+解释如何正确使用库、CLI 或 SDK 的 Skills。这些可以是内部库或 Claude Code 有时难以处理的常用库。它们通常包含一个参考代码片段文件夹和编写脚本时需要避免的常见问题列表。
 
-**Examples:** billing-lib, internal-platform-cli, frontend-design
+**示例：** billing-lib, internal-platform-cli, frontend-design
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/4.png" alt="Library & API Reference" width="50%" /></a>
 
 ---
 
-### 2/ Product Verification
+### 2/ 产品验证
 
-Skills that describe how to test or verify that your code is working. These are often paired with an external tool like Playwright, tmux, etc. Verification skills are extremely useful for ensuring Claude's output is correct. It can be worth having an engineer spend a week just making your verification skills excellent.
+描述如何测试或验证代码是否正常工作的 Skills。这些通常与 Playwright、tmux 等外部工具配合使用。验证 Skills 对于确保 Claude 的输出正确非常有用。值得让一位工程师花一周时间专门优化验证 Skills。
 
-**Examples:** signup-flow-driver, checkout-verifier, tmux-cli-driver
+**示例：** signup-flow-driver, checkout-verifier, tmux-cli-driver
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/5.png" alt="Product Verification" width="50%" /></a>
 
 ---
 
-### 3/ Data Fetching & Analysis
+### 3/ 数据获取与分析
 
-Skills that connect to your data and monitoring stacks. These might include libraries to fetch your data with credentials, specific dashboard IDs, etc., as well as instructions on common workflows or ways to get data.
+连接到数据和监控系统的 Skills。这些可能包括带凭据获取数据的库、特定的仪表板 ID 等，以及常见工作流或获取数据方式的说明。
 
-**Examples:** funnel-query, cohort-compare, grafana
+**示例：** funnel-query, cohort-compare, grafana
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/6.png" alt="Data Fetching & Analysis" width="50%" /></a>
 
 ---
 
-### 4/ Business Process & Team Automation
+### 4/ 业务流程与团队自动化
 
-Skills that automate repetitive workflows into one command. These are usually fairly simple instructions but might have more complicated dependencies on other skills or MCPs. Saving previous results in log files can help the model stay consistent and reflect on previous executions of the workflow.
+将重复性工作流自动化为一条命令的 Skills。这些通常是比较简单的指令，但可能对其他 Skills 或 MCP 有更复杂的依赖关系。将之前的结果保存在日志文件中可以帮助模型保持一致性并参考之前的工作流执行结果。
 
-**Examples:** standup-post, create-\<ticket-system\>-ticket, weekly-recap
+**示例：** standup-post, create-\<ticket-system\>-ticket, weekly-recap
 
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/7.png" alt="Business Process & Team Automation" width="50%" /></a>
-
----
-
-### 5/ Code Scaffolding & Templates
-
-Skills that generate framework boilerplate for a specific function in the codebase. You might combine these skills with scripts that can be composed. They are especially useful when your scaffolding has natural language requirements that can't be purely covered by code.
-
-**Examples:** new-\<framework\>-workflow, new-migration, create-app
-
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/8.png" alt="Code Scaffolding & Templates" width="50%" /></a>
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/7.png" alt="业务流程与团队自动化" width="50%" /></a>
 
 ---
 
-### 6/ Code Quality & Review
+### 5/ 代码脚手架与模板
 
-Skills that enforce code quality inside of your org and help review code. These can include deterministic scripts or tools for maximum robustness. You may want to run these skills automatically as part of hooks or inside of a GitHub Action.
+为代码库中特定功能生成框架样板代码的 Skills。你可以将这些 Skills 与可组合的脚本结合使用。当你的脚手架有无法纯靠代码覆盖的自然语言需求时，它们特别有用。
 
-**Examples:** adversarial-review, code-style, testing-practices
+**示例：** new-\<framework\>-workflow, new-migration, create-app
+
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/8.png" alt="代码脚手架与模板（Code Scaffolding & Templates）" width="50%" /></a>
+
+---
+
+### 6/ 代码质量与审查
+
+在组织内部强制执行代码质量并帮助审查代码的 Skills。这些可以包含确定性的脚本或工具以实现最大鲁棒性。你可能希望将这些 Skills 作为 Hooks 的一部分或在 GitHub Action 中自动运行。
+
+**示例：** adversarial-review, code-style, testing-practices
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/10.png" alt="Code Quality & Review" width="50%" /></a>
 
 ---
 
-### 7/ CI/CD & Deployment
+### 7/ CI/CD 与部署
 
-Skills that help you fetch, push, and deploy code inside of your codebase. These skills may reference other skills to collect data.
+帮助你在代码库中获取、推送和部署代码的 Skills。这些 Skills 可能会引用其他 Skills 来收集数据。
 
-**Examples:** babysit-pr, deploy-\<service\>, cherry-pick-prod
+**示例：** babysit-pr, deploy-\<service\>, cherry-pick-prod
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/11.png" alt="CI/CD & Deployment" width="50%" /></a>
 
 ---
 
-### 8/ Runbooks
+### 8/ 运维手册
 
-Skills that take a symptom (such as a Slack thread, alert, or error signature), walk through a multi-tool investigation, and produce a structured report.
+接受一个症状（如 Slack 线程、告警或错误签名），通过多工具调查进行排查，并生成结构化报告的 Skills。
 
-**Examples:** \<service\>-debugging, oncall-runner, log-correlator
+**示例：** \<service\>-debugging, oncall-runner, log-correlator
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/12.png" alt="Runbooks" width="50%" /></a>
 
 ---
 
-### 9/ Infrastructure Operations
+### 9/ 基础设施运维
 
-Skills that perform routine maintenance and operational procedures — some of which involve destructive actions that benefit from guardrails. These make it easier for engineers to follow best practices in critical operations.
+执行例行维护和运维操作的 Skills——其中一些涉及需要防护栏的破坏性操作。这些 Skills 使工程师在关键操作中更容易遵循最佳实践。
 
-**Examples:** \<resource\>-orphans, dependency-management, cost-investigation
+**示例：** \<resource\>-orphans, dependency-management, cost-investigation
 
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/13.png" alt="Infrastructure Operations" width="50%" /></a>
-
----
-
-## 技巧 for Making Skills
-
-9 best practices for writing effective skills, plus guidance on distribution and measurement.
-
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/14.png" alt="技巧 for Making Skills grid" width="50%" /></a>
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/13.png" alt="基础设施运营" width="50%" /></a>
 
 ---
 
-### 提示 1: Don't State the Obvious
+## 创建 Skills 的技巧
 
-Claude Code knows a lot about your codebase, and Claude knows a lot about coding, including many default opinions. If you're publishing a skill that is primarily about knowledge, try to focus on information that pushes Claude out of its normal way of thinking. The frontend design skill is a great example — it was built by iterating with customers on improving Claude's design taste, avoiding classic patterns like the Inter font and purple gradients.
+编写高效 Skills 的 9 个最佳实践，以及分发和度量的指导。
+
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/14.png" alt="创建技能网格的提示" width="50%" /></a>
+
+---
+
+### 提示 1：不要陈述显而易见的内容
+
+Claude Code 对你的代码库了解很多，Claude 也知道很多关于编码的知识，包括许多默认观点。如果你发布的 Skill 主要是关于知识的，试着聚焦于那些能让 Claude 脱离其常规思维方式的信息。前端设计 Skill 是一个很好的例子——它是通过与客户迭代改进 Claude 的设计品味而构建的，避免了 Inter 字体和紫色渐变等经典模式。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/15.png" alt="Don't State the Obvious" width="50%" /></a>
 
 ---
 
-### 提示 2: Build a Gotchas Section
+### 提示 2：构建常见问题 (Gotchas) 部分
 
-The highest-signal content in any skill is the Gotchas section. These sections should be built up from common failure points that Claude runs into when using your skill. Ideally, you will update your skill over time to capture these gotchas.
+任何 Skill 中信噪比最高的内容就是 Gotchas 部分。这些部分应该基于 Claude 在使用你的 Skill 时遇到的常见失败点来构建。理想情况下，你会随着时间的推移更新 Skill 来捕获这些注意事项。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/16.png" alt="Build a Gotchas Section" width="50%" /></a>
 
 ---
 
-### 提示 3: Use the File System & Progressive Disclosure
+### 提示 3：使用文件系统与渐进式披露
 
-A skill is a folder, not just a markdown file. You should think of the entire file system as a form of context engineering and progressive disclosure. Tell Claude what files are in your skill, and it will read them at appropriate times. The simplest form is to point to other markdown files — e.g., split detailed function signatures and usage examples into `references/api.md`. You can have folders of references, scripts, examples, etc.
+Skill 是一个文件夹，而不仅仅是一个 Markdown 文件。你应该把整个文件系统看作一种上下文工程和渐进式披露的形式。告诉 Claude 你的 Skill 中有哪些文件，它会在适当的时候读取它们。最简单的形式是指向其他 Markdown 文件——例如，将详细的函数签名和使用示例拆分到 `references/api.md` 中。你可以有 references、scripts、examples 等文件夹。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/17.png" alt="Progressive Disclosure" width="50%" /></a>
 
 ---
 
-### 提示 4: Avoid Railroading Claude
+### 提示 4：避免过度约束 Claude
 
-Claude will generally try to stick to your instructions, and because skills are so reusable you'll want to be careful of being too specific. Give Claude the information it needs, but give it the flexibility to adapt to the situation. Instead of prescriptive step-by-step instructions, give the goal and constraints.
+Claude 通常会尽量遵循你的指令，而且由于 Skills 的复用性很高，你需要小心不要过于具体。给 Claude 它需要的信息，但要让它有灵活性来适应情况。与其给出规定性的逐步指令，不如给出目标和约束条件。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/18.png" alt="Avoid Railroading Claude" width="50%" /></a>
 
 ---
 
-### 提示 5: Think through the Setup
+### 提示 5：仔细考虑设置流程
 
-Some skills may need to be set up with context from the user. A good pattern is to store this setup information in a `config.json` file in the skill directory. If the config is not set up, the agent can then ask the user for information. You can instruct Claude to use the AskUserQuestion tool for structured, multiple choice questions.
+某些 Skills 可能需要从用户那里获取上下文信息来设置。一个好的模式是将这些设置信息存储在 Skill 目录下的 `config.json` 文件中。如果配置未设置，agent 可以向用户请求信息。你可以指示 Claude 使用 AskUserQuestion 工具来提出结构化的多选问题。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/19.png" alt="Think through the Setup" width="50%" /></a>
 
 ---
 
-### 提示 6: The Description Field Is For the Model
+### 提示 6：描述字段是给模型看的
 
-When Claude Code starts a session, it builds a listing of every available skill with its description. This listing is what Claude scans to decide "is there a skill for this request?" Which means the description field is not a summary — it's a description of **when to trigger** this skill. Write it for the model.
+当 Claude Code 启动会话时，它会构建每个可用 Skill 及其描述的列表。这个列表就是 Claude 扫描以判断"这个请求有对应的 Skill 吗？"的依据。这意味着描述字段不是一个摘要——它是关于**何时触发**这个 Skill 的描述。为模型而写。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/20.png" alt="Description = Trigger" width="50%" /></a>
 
 ---
 
-### 提示 7: Memory & Storing Data
+### 提示 7：记忆与数据存储
 
-Some skills can include a form of memory by storing data within them. You could store data in anything as simple as an append-only text log file or JSON files, or as complicated as a SQLite database. Data stored in the skill directory may be deleted when you upgrade the skill, so use `${CLAUDE_PLUGIN_DATA}` as a stable folder per plugin to store data in.
+一些 Skills 可以通过在其内部存储数据来包含某种形式的记忆。你可以将数据存储在简单的仅追加文本日志文件或 JSON 文件中，也可以存储在复杂的 SQLite 数据库中。存储在 Skill 目录中的数据在升级 Skill 时可能会被删除，所以请使用 `${CLAUDE_PLUGIN_DATA}` 作为每个插件的稳定存储文件夹。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/21.png" alt="Memory & Storing Data" width="50%" /></a>
 
 ---
 
-### 提示 8: Store Scripts & Generate Code
+### 提示 8：存储脚本与生成代码
 
-One of the most powerful tools you can give Claude is code. Giving Claude scripts and libraries lets Claude spend its turns on composition, deciding what to do next rather than reconstructing boilerplate. Claude can then generate scripts on the fly to compose this functionality for more advanced analysis.
+你可以给 Claude 的最强大工具之一就是代码。给 Claude 脚本和库可以让 Claude 把它的回合花在组合上，决定下一步做什么，而不是重构样板代码。Claude 随后可以动态生成脚本来组合这些功能以进行更高级的分析。
 
-<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/22.png" alt="Store Scripts & Generate Code" width="50%" /></a>
+<a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/22.png" alt="存储脚本与生成代码" width="50%" /></a>
 
 ---
 
-### 提示 9: On Demand Hooks
+### 提示 9：按需 Hooks
 
-Skills can include hooks that are only activated when the skill is called, and last for the duration of the session. Use this for more opinionated hooks that you don't want to run all the time but are extremely useful sometimes.
+Skills 可以包含仅在 Skill 被调用时才激活的 Hooks，其持续时间为会话期间。将此用于你不想一直运行但有时非常有用的更有主见的 Hooks。
 
-**Examples:**
-- `/careful` — blocks rm -rf, DROP TABLE, force-push, kubectl delete via PreToolUse matcher on Bash
-- `/freeze` — blocks any Edit/Write that's not in a specific directory
+**示例：**
+- `/careful` — 通过 PreToolUse Bash 匹配器阻止 rm -rf、DROP TABLE、force-push、kubectl delete
+- `/freeze` — 阻止不在特定目录中的任何 Edit/Write 操作
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/23.png" alt="On Demand Hooks" width="50%" /></a>
 
 ---
 
-## Distributing Skills
+## 分发 Skills
 
-Two ways to share skills with your team:
-- **Check into your repo** (under `.claude/skills`) — best for smaller teams working across relatively few repos
-- **Make a plugin** and have a Claude Code Plugin marketplace where users can upload and install plugins
+与团队共享 Skills 的两种方式：
+- **提交到仓库**（放在 `.claude/skills` 下）——最适合在相对较少的仓库中工作的小型团队
+- **制作插件**并建立 Claude Code 插件市场，用户可以在其中上传和安装插件
 
-Every skill that is checked in also adds a little bit to the context of the model. As you scale, an internal plugin marketplace allows you to distribute skills and let your team decide which ones to install.
+每一个提交的 Skill 也会为模型的上下文增加一点内容。随着规模扩大，内部插件市场允许你分发 Skills 并让你的团队决定安装哪些。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/24.png" alt="Distributing Skills" width="50%" /></a>
 
 ---
 
-## Managing a Marketplace
+## 管理市场
 
-There isn't a centralized team that decides which skills go into a marketplace. Instead, try and find the most useful skills organically. Upload to a sandbox folder in GitHub and point people to it in Slack or other forums. Once a skill has gotten traction (which is up to the skill owner to decide), they can put in a PR to move it into the marketplace. Curation before release is important to avoid redundant skills.
+没有一个集中的团队来决定哪些 Skills 进入市场。相反，试着有机地发现最有用的 Skills。上传到 GitHub 中的沙盒文件夹，并在 Slack 或其他论坛中引导人们去查看。一旦一个 Skill 获得了关注（由 Skill 所有者决定），他们可以提交 PR 将其移入市场。发布前的策划很重要，以避免冗余的 Skills。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/25.png" alt="Managing a Marketplace" width="50%" /></a>
 
 ---
 
-## Composing Skills
+## 组合 Skills
 
-You may want to have skills that depend on each other. For example, a file upload skill that uploads a file, and a CSV generation skill that makes a CSV and uploads it. This sort of dependency management is not natively built into marketplaces or skills yet, but you can just reference other skills by name, and the model will invoke them if they are installed.
+你可能希望有相互依赖的 Skills。例如，一个上传文件的文件上传 Skill 和一个生成 CSV 并上传的 CSV 生成 Skill。这种依赖管理目前还没有内建到市场或 Skills 中，但你可以通过名称引用其他 Skills，如果它们已安装，模型就会调用它们。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/26.png" alt="Composing Skills" width="50%" /></a>
 
 ---
 
-## Measuring Skills
+## 度量 Skills
 
-To understand how a skill is doing, use a PreToolUse hook that lets you log skill usage within the company. This means you can find skills that are popular or are undertriggering compared to expectations.
+要了解一个 Skill 的表现如何，可以使用 PreToolUse Hook 来记录公司内的 Skill 使用情况。这意味着你可以找到热门的或与预期相比触发不足的 Skills。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/27.png" alt="Measuring Skills" width="50%" /></a>
 
 ---
 
-## Conclusion
+## 总结
 
-Skills are incredibly powerful, flexible tools for agents, but it's still early and we're all figuring out how to use them best. Think of this more as a grab bag of useful tips that we've seen work than a definitive guide. The best way to understand skills is to get started, experiment, and see what works for you. Most of ours began as a few lines and a single gotcha, and got better because people kept adding to them as Claude hit new edge cases.
+Skills 对 agents 来说是极其强大和灵活的工具，但目前仍处于早期阶段，我们都在探索如何最好地使用它们。与其说这是一份权威指南，不如说这是我们看到有效的一组实用技巧的合集。理解 Skills 的最佳方式是动手开始、尝试实验，看看什么对你有效。我们的大多数 Skills 起初只有几行代码和一个注意事项，然后因为人们在 Claude 遇到新的边缘情况时不断添加内容而变得更好。
 
 <a href="https://x.com/trq212/status/2033949937936085378"><img src="assets/thariq-17-mar-26/28.png" alt="Conclusion" width="50%" /></a>
 
 ---
 
-## Sources
+## 来源
 
-- [Thariq (@trq212) on X — March 17, 2026](https://x.com/trq212/status/2033949937936085378)
-- [Skilljar — Agent Skills course](https://code.claude.com/docs/en/skills)
-- [Skill Creator](https://code.claude.com/docs/en/skills)
+- [Thariq (@trq212) on X — 2026 年 3 月 17 日](https://x.com/trq212/status/2033949937936085378)
+- [Skilljar — Agent 技能课程](https://code.claude.com/docs/en/skills)
+- [技能创建器](https://code.claude.com/docs/en/skills)

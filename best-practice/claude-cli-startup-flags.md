@@ -224,8 +224,8 @@
 ## 来源
 
 - [Claude Code CLI 参考](https://code.claude.com/docs/en/cli-reference)
-- [Claude Code Headless Mode](https://code.claude.com/docs/en/headless)
-- [Claude Code Setup](https://code.claude.com/docs/en/setup)
-- [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- [Claude Code Common Workflows](https://code.claude.com/docs/en/common-workflows)
+- [Claude Code 无头模式](https://code.claude.com/docs/en/headless)
+- [Claude Code 设置](https://code.claude.com/docs/en/setup)
+- [Claude Code 更新日志](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- [Claude Code 常见工作流程](https://code.claude.com/docs/en/common-workflows)
 

@@ -53,14 +53,12 @@ argument-hint: [number of versions to check, default 10]
 
 最后以优先级排序的**操作项**汇总表结束。每个条目必须包含一个 `Status` 列，显示 `NEW`、`RECURRING (first seen: <date>)` 或 `RESOLVED`：
 
-```
-Priority Actions:
-#  | Type              | Action                                | Status
-1  | New Field         | Add <field> to frontmatter table      | NEW
-2  | Removed Field     | Remove <field> from table             | RECURRING (first seen: <date>)
-3  | New Skill         | Add <skill> to official skills table   | NEW
-4  | Removed Skill     | Remove <skill> from table             | NEW
-```
+优先级行动：
+# | 类型 | 操作 | 状态
+1 | 新增字段 | 将 `<field>` 添加到frontmatter表 | 新增
+2 | 删除字段 | 从表中移除 `<field>` | 复现（首次出现：`<date>`）
+3 | 新增技能 | 将 `<skill>` 添加到官方技能表 | 新增
+4 | 删除技能 | 从表中移除 `<skill>` | 新增
 
 同时包含一个**自上次运行以来已解决**的章节，列出之前运行中不再是问题的条目。
 
@@ -77,11 +75,10 @@ Priority Actions:
 
 ## [<YYYY-MM-DD HH:MM AM/PM PKT>] Claude Code v<VERSION>
 
-| # | Priority | Type | Action | Status |
-|---|----------|------|--------|--------|
-| 1 | HIGH/MED/LOW | <type> | <action description> | <status> |
+| # | 优先级 | 类型 | 操作 | 状态 |
+|---|--------|------|--------|--------|
+| 1 | 高/中/低 | <类型> | <操作描述> | <状态> |
 | ... | ... | ... | ... | ... |
-```
 
 **状态格式 — 必须使用以下三种格式之一：**
 - `COMPLETE (reason)` — 操作已执行并成功解决

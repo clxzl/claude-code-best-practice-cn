@@ -110,15 +110,13 @@ argument-hint: [要检查的更新日志版本数量，默认 10]
 
 以优先级**操作项**汇总表结束：
 
-```
-Priority Actions:
-#  | Type                | Action                                     | Status
-1  | Missing Concept     | Add <concept> row to CONCEPTS table         | NEW
-2  | Changed URL         | Update <concept> docs link                  | NEW
-3  | Changed Description | Update <concept> description                | RECURRING (first seen: <date>)
-4  | Deprecated Concept  | Remove <concept> row from CONCEPTS table    | NEW
-5  | Broken Badge        | Fix badge link for <concept>                | NEW
-```
+优先操作：
+#  | 类型                | 操作                                     | 状态
+1  | 缺失概念     | 向 CONCEPTS 表添加 <concept> 行         | NEW
+2  | URL已变更         | 更新 <concept> 文档链接                  | NEW
+3  | 描述已变更 | 更新 <concept> 描述                | 循环出现 (首次出现: <date>)
+4  | 概念已弃用  | 从 CONCEPTS 表移除 <concept> 行    | NEW
+5  | 徽章失效        | 修复 <concept> 的徽章链接                | NEW
 
 同时包含一个**自上次运行以来已解决**部分，列出之前运行中不再是问题的任何项目。
 
@@ -135,9 +133,9 @@ Priority Actions:
 
 ## [<YYYY-MM-DD HH:MM AM/PM PKT>] Claude Code v<VERSION>
 
-| # | Priority | Type | Action | Status |
+| # | 优先级 | 类型 | 操作 | 状态 |
 |---|----------|------|--------|--------|
-| 1 | HIGH/MED/LOW | <type> | <action description> | <status> |
+| 1 | 高/中/低 | <type> | <action description> | <status> |
 | ... | ... | ... | ... | ... |
 ```
 
@@ -179,11 +177,11 @@ Priority Actions:
 在报告中包含**URL 验证日志**：
 
 ```
-URL Validation Log:
-#  | Concept     | URL Type  | URL                                           | Status | Notes
-1  | Commands    | External  | https://code.claude.com/docs/en/skills         | OK     |
-2  | Commands    | Badge     | best-practice/claude-commands.md               | OK     |
-3  | Sub-Agents  | External  | https://code.claude.com/docs/en/sub-agents     | OK     |
+URL 验证日志:
+#  | 概念       | URL类型  | URL                                           | 状态 | 备注
+1  | Commands   | External | https://code.claude.com/docs/en/skills         | OK   |
+2  | Commands   | Badge    | best-practice/claude-commands.md               | OK   |
+3  | Sub-Agents | External | https://code.claude.com/docs/en/sub-agents     | OK   |
 ...
 ```
 

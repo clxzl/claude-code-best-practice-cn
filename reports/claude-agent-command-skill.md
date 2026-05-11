@@ -100,7 +100,7 @@ weather-svg-creator（Skill — 内联创建 SVG）
 ```yaml
 ---
 name: my-agent
-description: Use this agent PROACTIVELY when...
+description: 当需要主动执行时使用此智能体...
 tools: Read, Write, Edit, Bash
 model: sonnet
 maxTurns: 10
@@ -127,7 +127,7 @@ model: sonnet
 ```yaml
 ---
 name: my-skill
-description: Do something when the user asks for...
+description: 当用户请求...时执行相应操作
 argument-hint: [file-path]
 disable-model-invocation: false
 user-invocable: true

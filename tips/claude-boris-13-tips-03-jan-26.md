@@ -1,97 +1,97 @@
-# How I Use Claude Code — 13 技巧 from Boris Cherny
+# 我如何使用 Claude Code — 13 技巧 from Boris Cherny
 
-A summary of setup tips shared by Boris Cherny ([@bcherny](https://x.com/bcherny)), creator of Claude Code, on January 3, 2026.
+Claude Code 创建者 Boris Cherny ([@bcherny](https://x.com/bcherny)) 于 2026 年 1 月 3 日分享的配置技巧总结。
 
 <table width="100%">
 <tr>
-<td><a href="../">← Back to Claude Code Best Practice</a></td>
+<td><a href="../">← 返回 Claude Code 最佳实践</a></td>
 <td align="right"><img src="../!/claude-jumping.svg" alt="Claude" width="60" /></td>
 </tr>
 </table>
 
 ---
 
-## Context
+## 背景
 
-Boris shared his personal Claude Code setup, noting it's "surprisingly vanilla" — Claude Code works great out of the box, so he doesn't customize it much. There's no one correct way to use it: the team intentionally builds it so you can use, customize, and hack it however you like. Each person on the Claude Code team uses it very differently.
+Boris 分享了他的个人 Claude Code 配置，并指出它"出奇地朴实"——Claude Code 开箱即用效果很好，所以他没有做太多自定义。使用它没有唯一正确的方式：团队有意将它设计成你可以随意使用、自定义和修改的样子。Claude Code 团队中的每个人使用方式都非常不同。
 
 <a href="https://x.com/bcherny/status/2007179832300581177"><img src="assets/boris-3-jan-26/0.png" alt="Boris Cherny intro tweet" width="50%" /></a>
 
 ---
 
-## 1/ Run 5 Claudes in Parallel
+## 1/ 并行运行 5 个 Claude
 
-Run 5 Claudes in parallel in your terminal. Number your tabs 1–5, and use system notifications to know when a Claude needs input.
+在终端中并行运行 5 个 Claude。将标签页编号为 1-5，使用系统通知来了解何时 Claude 需要输入。
 
-See: [Terminal Setup Docs](https://code.claude.com/docs/en/terminal)
+参见：[终端设置文档](https://code.claude.com/docs/en/terminal)
 
 <a href="https://x.com/bcherny/status/2007179833990885678"><img src="assets/boris-3-jan-26/1.png" alt="Run 5 Claudes in parallel" width="50%" /></a>
 
 ---
 
-## 2/ Use claude.ai/code for Even More Parallelism
+## 2/ 使用 claude.ai/code 实现更多并行
 
-Run 5–10 Claudes on claude.ai/code in parallel with your local Claudes. Hand off local sessions to web sessions using `claude.ai/code`, manually kick off sessions in Chrome, and teleport back and forth.
+在 claude.ai/code 上并行运行 5-10 个 Claude，与本地 Claude 配合使用。使用 `claude.ai/code` 将本地会话交接到 web 会话，在 Chrome 中手动启动会话，并在两者之间自由切换。
 
 <a href="https://x.com/bcherny/status/2007179836704600237"><img src="assets/boris-3-jan-26/2.png" alt="claude.ai/code parallelism" width="50%" /></a>
 
 ---
 
-## 3/ Use Opus with Thinking for Everything
+## 3/ 所有场景都使用带思考的 Opus
 
-Use Opus 4.5 with thinking for everything. It's the best coding model Boris has ever used — even though it's bigger and slower than Sonnet, since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end.
+所有场景都使用带思考的 Opus 4.5。这是 Boris 使用过的最好的编码模型——虽然它比 Sonnet 更大更慢，但由于你不需要频繁引导它，而且它在工具使用方面更出色，最终几乎总是比使用更小的模型更快。
 
 <a href="https://x.com/bcherny/status/2007179838864666847"><img src="assets/boris-3-jan-26/3.png" alt="Opus with thinking" width="50%" /></a>
 
 ---
 
-## 4/ Share a Single CLAUDE.md with Your Team
+## 4/ 与团队共享一个 CLAUDE.md
 
-Share a single `CLAUDE.md` for the repo. Check it into git, and have the whole team contribute multiple times a week. Anytime Claude does something incorrectly, add it to the `CLAUDE.md` so Claude knows not to do it next time.
+为仓库共享一个 `CLAUDE.md`。将其检入 git，让整个团队每周多次贡献。每当 Claude 做错事情时，将其添加到 `CLAUDE.md` 中，这样 Claude 下次就知道不要这样做。
 
 <a href="https://x.com/bcherny/status/2007179840848597422"><img src="assets/boris-3-jan-26/4.png" alt="Shared CLAUDE.md" width="50%" /></a>
 
 ---
 
-## 5/ Tag @claude on PRs to Update CLAUDE.md
+## 5/ 在 PR 上 @claude 来更新 CLAUDE.md
 
-During code review, tag `@claude` on your coworkers' PRs to add something to the `CLAUDE.md` as part of the PR. Use the Claude Code GitHub action ([install-@hub-action](https://github.com/apps/claude)) for this — it's Boris's version of Compounding Engineering.
+在代码审查期间，在同事的 PR 上标记 `@claude`，将内容添加到 `CLAUDE.md` 中作为 PR 的一部分。使用 Claude Code GitHub action（[install-@hub-action](https://github.com/apps/claude)）来实现——这是 Boris 版本的复合工程（Compounding Engineering）。
 
 <a href="https://x.com/bcherny/status/2007179842928947333"><img src="assets/boris-3-jan-26/5.png" alt="Tag @claude on PRs" width="50%" /></a>
 
 ---
 
-## 6/ Start Most Sessions in Plan Mode
+## 6/ 大多数会话从 Plan 模式开始
 
-Start most sessions in Plan mode (shift+tab twice). If the goal is to write a Pull Request, use Plan mode and go back and forth with Claude until you like its plan. From there, switch into auto-accept edits mode and Claude can usually 1-shot it. A good plan is really important.
+大多数会话从 Plan 模式开始（按两次 shift+tab）。如果目标是编写 Pull Request，使用 Plan 模式并与 Claude 反复交流，直到你满意它的计划。然后切换到自动接受编辑模式，Claude 通常可以一次性完成。好的计划真的很重要。
 
 <a href="https://x.com/bcherny/status/2007179845336527000"><img src="assets/boris-3-jan-26/6.png" alt="Plan mode" width="50%" /></a>
 
 ---
 
-## 7/ Use Slash Commands for Inner Loop Workflows
+## 7/ 使用 Slash Commands 处理内部循环工作流
 
-Use slash commands for every "inner loop" workflow that you do many times a day. This saves you from repeated prompting, and makes it so Claude can use these workflows too. Commands are checked into git and live in `.claude/commands/`.
+对每个你一天做很多次的"内部循环"工作流使用 slash commands。这可以避免重复输入提示，并且让 Claude 也能使用这些工作流。Commands 检入 git 并存放在 `.claude/commands/` 中。
 
-Example: `/commit-push-pr` — Commit, push, and open a PR.
+示例：`/commit-push-pr` — 提交、推送并打开一个 PR。
 
 <a href="https://x.com/bcherny/status/2007179847949500714"><img src="assets/boris-3-jan-26/7.png" alt="Slash commands" width="50%" /></a>
 
 ---
 
-## 8/ Use Subagents to Automate Common Workflows
+## 8/ 使用 Subagents 自动化常见工作流
 
-Use a few subagents regularly: `code-simplifier` simplifies the code after Claude is done working, `verify-app` has detailed instructions for testing Claude Code end to end, and so on. Think of subagents as automating the most common workflows — similar to slash commands.
+经常使用几个 subagents：`code-simplifier` 在 Claude 完成工作后简化代码，`verify-app` 有详细的端到端测试 Claude Code 的指令，等等。将 subagents 视为自动化最常见的工作流——类似于 slash commands。
 
-Subagents live in `.claude/agents/`.
+Subagents 存放在 `.claude/agents/` 中。
 
 <a href="https://x.com/bcherny/status/2007179850139000872"><img src="assets/boris-3-jan-26/8.png" alt="Subagents" width="50%" /></a>
 
 ---
 
-## 9/ Use a PostToolUse Hook to Auto-Format Code
+## 9/ 使用 PostToolUse Hook 自动格式化代码
 
-Use a `PostToolUse` hook to format Claude's code. Claude usually generates well-formatted code out of the box, and the hook handles the last 10% to avoid formatting errors in CI later.
+使用 `PostToolUse` hook 来格式化 Claude 的代码。Claude 通常能生成格式良好的代码，hook 处理最后的 10%，以避免之后在 CI 中出现格式错误。
 
 ```json
 "PostToolUse": [
@@ -107,44 +107,44 @@ Use a `PostToolUse` hook to format Claude's code. Claude usually generates well-
 ]
 ```
 
-<a href="https://x.com/bcherny/status/2007179852047335529"><img src="assets/boris-3-jan-26/9.png" alt="PostToolUse hook for formatting" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2007179852047335529"><img src="assets/boris-3-jan-26/9.png" alt="用于格式化的PostToolUse钩子" width="50%" /></a>
 
 ---
 
-## 10/ Pre-allow Permissions Instead of --dangerously-skip-permissions
+## 10/ 预先允许权限而不是使用 --dangerously-skip-permissions
 
-Don't use `--dangerously-skip-permissions`. Instead, use `/permissions` to pre-allow common bash commands that you know are safe in your environment, to avoid unnecessary permission prompts. Most of these are checked into `.claude/settings.json` and shared with the team.
+不要使用 `--dangerously-skip-permissions`。而是使用 `/permissions` 来预先允许你知道在你的环境中安全的常用 bash 命令，以避免不必要的权限提示。其中大部分检入到 `.claude/settings.json` 并与团队共享。
 
 <a href="https://x.com/bcherny/status/2007179854077407667"><img src="assets/boris-3-jan-26/10.png" alt="Pre-allow permissions" width="50%" /></a>
 
 ---
 
-## 11/ Let Claude Use All Your Tools via MCP
+## 11/ 通过 MCP 让 Claude 使用你所有的工具
 
-Claude Code uses all your tools. It often searches and posts to Slack (via the MCP server), runs BigQuery queries to answer analytics questions (using `bq` CLI), grabs error logs from Sentry, etc. The Slack MCP configuration is checked into `.mcp.json` and shared with the team.
+Claude Code 使用你所有的工具。它经常搜索和发布到 Slack（通过 MCP 服务器），运行 BigQuery 查询来回答分析问题（使用 `bq` CLI），从 Sentry 获取错误日志等。Slack MCP 配置检入到 `.mcp.json` 并与团队共享。
 
 <a href="https://x.com/bcherny/status/2007179856266789204"><img src="assets/boris-3-jan-26/11.png" alt="MCP tools" width="50%" /></a>
 
 ---
 
-## 12/ Verify Long-Running Tasks with Background Agents
+## 12/ 使用后台 Agents 验证长时间运行的任务
 
-For very long-running tasks, either (a) prompt Claude to verify its work with a background agent when it's done, (b) use an agent Stop hook to do that more deterministically, or (c) use the ralph-wiggum plugin (originally dreamt up by @GeoffreyHuntley).
+对于非常长时间运行的任务，可以 (a) 提示 Claude 完成后用后台 agent 验证其工作，(b) 使用 agent Stop hook 更确定性地完成此操作，或 (c) 使用 ralph-wiggum 插件（最初由 @GeoffreyHuntley 构想）。
 
-<a href="https://x.com/bcherny/status/2007179858435281082"><img src="assets/boris-3-jan-26/12.png" alt="Long-running tasks verification" width="50%" /></a>
-
----
-
-## 13/ Give Claude a Way to Verify Its Work
-
-Probably the most important thing to get great results out of Claude Code — give Claude a way to verify its work. If Claude has that feedback loop, it will 2–3x the quality of the final result.
-
-Claude tests every single change Boris lands.
-
-<a href="https://x.com/bcherny/status/2007179861115511237"><img src="assets/boris-3-jan-26/13.png" alt="Give Claude a way to verify" width="50%" /></a>
+<a href="https://x.com/bcherny/status/2007179858435281082"><img src="assets/boris-3-jan-26/12.png" alt="长期运行任务验证" width="50%" /></a>
 
 ---
 
-## Sources
+## 13/ 给 Claude 验证其工作的方式
 
-- [Boris Cherny (@bcherny) on X — January 3, 2026](https://x.com/bcherny/status/2007179832300581177)
+这可能是从 Claude Code 获得出色结果的最重要的一点——给 Claude 一种验证其工作的方式。如果 Claude 有了这个反馈循环，最终结果的质量将提升 2-3 倍。
+
+Claude 测试了 Boris 提交的每一个更改。
+
+<a href="https://x.com/bcherny/status/2007179861115511237"><img src="assets/boris-3-jan-26/13.png" alt="为Claude提供验证方式" width="50%" /></a>
+
+---
+
+## 来源
+
+- [Boris Cherny (@bcherny) on X — 2026 年 1 月 3 日](https://x.com/bcherny/status/2007179832300581177)

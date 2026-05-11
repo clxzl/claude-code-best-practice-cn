@@ -10,15 +10,15 @@ description: 通过并行研究所有 9 个工作流仓库来更新 DEVELOPMENT 
 
 ## 9 个仓库
 
-| # | Repo | Owner |
+| 序号 | 仓库 | 所有者 |
 |---|------|-------|
-| 1 | `github/spec-kit` | GitHub (John Lam / Den Delimarsky) |
+| 1 | `github/spec-kit` | GitHub 公司 (John Lam / Den Delimarsky) |
 | 2 | `Fission-AI/OpenSpec` | Fission-AI (@0xTab) |
 | 3 | `humanlayer/humanlayer` | HumanLayer (Dex Horthy) |
 | 4 | `affaan-m/everything-claude-code` | Affaan Mustafa |
 | 5 | `gsd-build/get-shit-done` | Lex Christopherson |
 | 6 | `obra/superpowers` | Jesse Vincent |
-| 7 | `garrytan/gstack` | Garry Tan (YC CEO) |
+| 7 | `garrytan/gstack` | Garry Tan (YC 总裁) |
 | 8 | `bmad-code-org/BMAD-METHOD` | BMAD Code Org |
 | 9 | `EveryInc/compound-engineering-plugin` | Every.to |
 
@@ -29,7 +29,7 @@ description: 通过并行研究所有 9 个工作流仓库来更新 DEVELOPMENT 
 README 表格包含以下列：
 
 ```markdown
-| Name | ★ | Uniqueness | Plan | <img src="!/tags/a.svg" height="14"> | <img src="!/tags/c.svg" height="14"> | <img src="!/tags/s.svg" height="14"> |
+| 名称 | ★ | 独特性 | 计划 | <img src="!/tags/a.svg" height="14"> | <img src="!/tags/c.svg" height="14"> | <img src="!/tags/s.svg" height="14"> |
 ```
 
 - **Name**：`[Short Name](github-url)` — 使用项目名称，而非 owner/repo
@@ -128,23 +128,23 @@ README 表格包含以下列：
 Development Workflows — Update Report
 ══════════════════════════════════════
 
-Changes Found:
-  <repo>: ★ <old>k → <new>k | agents <old>→<new> | commands <old>→<new> | skills <old>→<new>
-  <repo>: tags updated: <old tags> → <new tags>
-  <repo>: Plan link changed: <old> → <new>
+发现变更：
+  <repo>：★ <old>k → <new>k | 代理 <old>→<new> | 命令 <old>→<new> | 技能 <old>→<new>
+  <repo>：标签已更新：<old tags> → <new tags>
+  <repo>：计划链接已更改：<old> → <new>
   ...
 
 No Changes:
   <repo>: ✓ (all values match)
   ...
 
-Action Items:
-#  | Type        | Action                              | Status
-1  | Star        | Update <repo> ★ from Xk to Yk       | NEW/RECURRING
-2  | Count       | Update <repo> agents from X to Y     | NEW/RECURRING
-3  | Tags        | Update <repo> tags                   | NEW/RECURRING
-4  | Plan        | Update <repo> Plan link              | NEW/RECURRING
-5  | Sort        | Move <repo> (Plan type changed)      | NEW/RECURRING
+行动项：
+#  | 类型        | 操作                              | 状态
+1  | 星标        | 将 <repo> 的星标数从 Xk 更新至 Yk       | 新任务/周期性任务
+2  | 计数        | 将 <repo> 的 Agent 数从 X 更新至 Y     | 新任务/周期性任务
+3  | 标签        | 更新 <repo> 的标签                   | 新任务/周期性任务
+4  | 计划        | 更新 <repo> 的计划链接              | 新任务/周期性任务
+5  | 排序        | 移动 <repo>（计划类型已变更）      | 新任务/周期性任务
 ```
 
 与之前的更新日志条目比较，将项目标记为 `NEW`、`RECURRING` 或 `RESOLVED`。
